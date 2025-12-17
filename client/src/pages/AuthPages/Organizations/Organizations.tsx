@@ -183,22 +183,31 @@ export default function Organizations() {
 
   const handleFormSubmit = async (data: any) => {
     try {
+      // Prepare common payload fields
+      const basePayload = {
+        name: data.organizationName,
+        owner_email: data.ownerEmail,
+        subscription_plan: data.subscriptionPlan,
+        api_limit: parseInt(data.customApiLimit) || 0,
+        number_of_users: parseInt(data.numberOfUsers) || 1,
+        status: data.status,
+        billing_status: data.billingStatus,
+        send_invitation: data.sendInvitation,
+        require_password_reset: data.requirePasswordReset,
+        notes: data.notes || '',
+      };
+
       if (editingOrganization) {
         // Update existing organization
         const payload = {
           id: editingOrganization.id,
-          name: data.organizationName,
-          // Add other fields as needed based on API requirements
+          ...basePayload,
         };
         await updateOrganization(payload).unwrap();
         console.log("Organization updated successfully");
       } else {
         // Create new organization
-        const payload = {
-          name: data.organizationName,
-          // Add other fields as needed based on API requirements
-        };
-        await createOrganization(payload).unwrap();
+        await createOrganization(basePayload).unwrap();
         console.log("Organization created successfully");
       }
       

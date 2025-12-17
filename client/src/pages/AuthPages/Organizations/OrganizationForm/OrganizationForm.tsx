@@ -187,9 +187,25 @@ export default function OrganizationForm({
   };
 
   const handleSubmit = () => {
-    console.log("Creating organization:", formData);
+    // Extract numeric API limit from selected plan
+    let apiLimitToSubmit = formData.customApiLimit;
+    
+    if (formData.useDefaultLimit && selectedPlan) {
+      // Extract numeric value from plan's apiCalls string (e.g., "20,000 SAGE API calls" -> 20000)
+      const numericMatch = selectedPlan.apiCalls.match(/[\d,]+/);
+      if (numericMatch) {
+        apiLimitToSubmit = numericMatch[0].replace(/,/g, '');
+      }
+    }
+    
+    const submissionData = {
+      ...formData,
+      customApiLimit: apiLimitToSubmit || '0'
+    };
+    
+    console.log("Creating organization:", submissionData);
     if (onSubmit) {
-      onSubmit(formData);
+      onSubmit(submissionData);
     }
     handleClose();
   };
