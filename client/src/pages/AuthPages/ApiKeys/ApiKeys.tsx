@@ -82,7 +82,7 @@ interface ApiKey {
   lastUsed: string;
 }
 
-const apiKeysData: ApiKey[] = [
+const apiKeysDataStatic: ApiKey[] = [
   {
     id: "1",
     name: "Production API Key",
@@ -96,188 +96,6 @@ const apiKeysData: ApiKey[] = [
     usageLimit: 100000,
     lastUsed: "2 hours ago",
   },
-  // {
-  //   id: "2",
-  //   name: "Development API Key",
-  //   organization: "TechCorp Solutions",
-  //   apiKey: "sk-dev-xyz7...4d9a678",
-  //   environment: "Development",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 15,
-  //   usageToday: 340,
-  //   usageLimit: 10000,
-  //   lastUsed: "5 minutes ago",
-  // },
-  // {
-  //   id: "3",
-  //   name: "Testing API Key",
-  //   organization: "DataFlow Systems",
-  //   apiKey: "sk-test-qwe4...78k1981",
-  //   environment: "Staging",
-  //   status: "inactive",
-  //   permissions: "SAMPLE-API",
-  //   endpoints: 1,
-  //   usageToday: 0,
-  //   usageLimit: 1000,
-  //   lastUsed: "1 day ago",
-  // },
-  // {
-  //   id: "4",
-  //   name: "Analytics API Key",
-  //   organization: "Cloudify Inc.",
-  //   apiKey: "sk-analytics...x1612",
-  //   environment: "Production",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 7,
-  //   usageToday: 2890,
-  //   usageLimit: 50000,
-  //   lastUsed: "30 minutes ago",
-  // },
-  // {
-  //   id: "5",
-  //   name: "Staging API Key",
-  //   organization: "TechCorp Solutions",
-  //   apiKey: "sk-stg-mnb5...9c2e3a1",
-  //   environment: "Staging",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 25,
-  //   usageToday: 1250,
-  //   usageLimit: 25000,
-  //   lastUsed: "1 hour ago",
-  // },
-  // {
-  //   id: "6",
-  //   name: "Integration API Key",
-  //   organization: "DataFlow Systems",
-  //   apiKey: "sk-int-pqr9...3f7b8c2",
-  //   environment: "Production",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 30,
-  //   usageToday: 8920,
-  //   usageLimit: 75000,
-  //   lastUsed: "15 minutes ago",
-  // },
-  // {
-  //   id: "7",
-  //   name: "Mobile App API Key",
-  //   organization: "Infiniti Software Solutions",
-  //   apiKey: "sk-mobile...5a9d1e4",
-  //   environment: "Production",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 40,
-  //   usageToday: 15780,
-  //   usageLimit: 120000,
-  //   lastUsed: "3 minutes ago",
-  // },
-  // {
-  //   id: "8",
-  //   name: "Backend Service Key",
-  //   organization: "Cloudify Inc.",
-  //   apiKey: "sk-backend...2b8c6f9",
-  //   environment: "Production",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 45,
-  //   usageToday: 9340,
-  //   usageLimit: 80000,
-  //   lastUsed: "45 minutes ago",
-  // },
-  // {
-  //   id: "9",
-  //   name: "QA Testing Key",
-  //   organization: "TechCorp Solutions",
-  //   apiKey: "sk-qa-test...7e4a1b3",
-  //   environment: "Staging",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 20,
-  //   usageToday: 560,
-  //   usageLimit: 15000,
-  //   lastUsed: "2 hours ago",
-  // },
-  // {
-  //   id: "10",
-  //   name: "Legacy API Key",
-  //   organization: "DataFlow Systems",
-  //   apiKey: "sk-legacy...9f2c8d1",
-  //   environment: "Production",
-  //   status: "inactive",
-  //   permissions: "SAMPLE-API",
-  //   endpoints: 5,
-  //   usageToday: 0,
-  //   usageLimit: 5000,
-  //   lastUsed: "3 days ago",
-  // },
-  // {
-  //   id: "11",
-  //   name: "Webhook API Key",
-  //   organization: "Infiniti Software Solutions",
-  //   apiKey: "sk-webhook...4c1e9a7",
-  //   environment: "Production",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 12,
-  //   usageToday: 4560,
-  //   usageLimit: 60000,
-  //   lastUsed: "20 minutes ago",
-  // },
-  // {
-  //   id: "12",
-  //   name: "Dashboard API Key",
-  //   organization: "Cloudify Inc.",
-  //   apiKey: "sk-dash...8b3f2c6",
-  //   environment: "Development",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 18,
-  //   usageToday: 780,
-  //   usageLimit: 20000,
-  //   lastUsed: "10 minutes ago",
-  // },
-  // {
-  //   id: "13",
-  //   name: "Monitoring API Key",
-  //   organization: "TechCorp Solutions",
-  //   apiKey: "sk-monitor...6d9e1a4",
-  //   environment: "Production",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 35,
-  //   usageToday: 6720,
-  //   usageLimit: 70000,
-  //   lastUsed: "1 hour ago",
-  // },
-  // {
-  //   id: "14",
-  //   name: "Partner Integration Key",
-  //   organization: "DataFlow Systems",
-  //   apiKey: "sk-partner...3a7c9f2",
-  //   environment: "Production",
-  //   status: "active",
-  //   permissions: "GRM-API",
-  //   endpoints: 28,
-  //   usageToday: 11250,
-  //   usageLimit: 90000,
-  //   lastUsed: "25 minutes ago",
-  // },
-  // {
-  //   id: "15",
-  //   name: "Demo API Key",
-  //   organization: "Infiniti Software Solutions",
-  //   apiKey: "sk-demo...5e8b2d1",
-  //   environment: "Development",
-  //   status: "inactive",
-  //   permissions: "SAMPLE-API",
-  //   endpoints: 3,
-  //   usageToday: 0,
-  //   usageLimit: 2000,
-  //   lastUsed: "1 week ago",
-  // },
 ];
 
 export default function ApiKeys() {
@@ -299,7 +117,7 @@ export default function ApiKeys() {
       page: 1,
       page_size: 6,
     };
-  
+
     // The following line is used to set the filter option for the group list
     const [filterData, setFilterData] = useState<any>(defaultFilterData);
 
@@ -532,14 +350,22 @@ export default function ApiKeys() {
    useEffect(() => {
       getApiKeysList(filterData);
     }, [filterData]);
-  
+
     useEffect(() => {
       if (getApiKeysListStatus.isSuccess) {
         // Handle successful data fetching
         setApiKeysData((getApiKeysListStatus as any)?.data?.results || []);
         setApiKeysCount((getApiKeysListStatus as any)?.data?.count)
+      } else if (getApiKeysListStatus.isError) {
+        // Handle API call failure
+        setApiKeysData([]);
+        setApiKeysCount(0);
       }
     }, [getApiKeysListStatus]);
+
+    // Determine if the table should show the empty state
+    const showEmptyState = apiKeysData.length === 0 && !getApiKeysListStatus.isLoading;
+
 
   return (
     <AppLayout
@@ -553,7 +379,7 @@ export default function ApiKeys() {
             <CardContent className="cls-stat-content">
               <div className="cls-stat-info">
                 <p className="cls-stat-label">Total API Keys</p>
-                <h3 className="cls-stat-value">{totalKeys}</h3>
+                <h3 className="cls-stat-value">{apiKeysCount}</h3>
               </div>
               <div className="cls-stat-icon cls-icon-blue">
                 <Key />
@@ -608,19 +434,13 @@ export default function ApiKeys() {
               </div>
               <div className="cls-header-actions">
                 <div className="cls-search-container">
-                  {/* <Search
-                    className="cls-search-icon"
-                    onClick={() => {
-                      console.log(searchQuery);
-                    }}
-                  /> */}
                   <Input
                     type="text"
                     placeholder="Search API keys..."
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchQuery(e.target.value);
-                      setCurrentPage(1);
+                      setFilterData({ ...filterData, page: 1 });
                     }}
                     className="cls-search-input"
                   />
@@ -717,118 +537,130 @@ export default function ApiKeys() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paginatedKeys.map((apiKey) => (
-                    <TableRow key={apiKey.id}>
-                      <TableCell>
-                        <div className="cls-name-cell">
-                          <p className="cls-key-name">{apiKey.name}</p>
-                          <p className="cls-organization">
-                            {apiKey.organization}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="cls-api-key-cell">
-                          <code className="cls-api-key-code">
-                            {apiKey.key}
-                          </code>
-                          <button
-                            onClick={() => handleCopyKey(apiKey.key)}
-                            className="cls-copy-button"
-                            title="Copy API Key"
-                          >
-                            <Copy size={14} />
-                          </button>
-                        </div>
-                      </TableCell>
-                      {columnVisibility.environment && (
-                        <TableCell>
-                          <Badge
-                            className={`cls-env-badge cls-env-${apiKey.environment.toLowerCase()}`}
-                          >
-                            {apiKey.environment}
-                          </Badge>
-                        </TableCell>
-                      )}
-                      {columnVisibility.status && (
-                        <TableCell>
-                          <Badge
-                            className={`cls-status-badge cls-status-${apiKey.is_active === true ? "active" : "inactive"}`}
-                          >
-                            {apiKey.is_active === true ? "Active" : "Inactive"}
-                          </Badge>
-                        </TableCell>
-                      )}
-                      {columnVisibility.permissions && (
-                        <TableCell>
-                          <div className="cls-permissions-cell">
-                            <p className="cls-permission-name">
-                              {apiKey.permissions}
-                            </p>
-                            <p className="cls-endpoints-count">
-                              {apiKey.endpoints} endpoint(s)
-                            </p>
-                          </div>
-                        </TableCell>
-                      )}
-                      {columnVisibility.usage && (
-                        <TableCell>
-                          <div className="cls-usage-cell">
-                            <p className="cls-usage-count">
-                              {apiKey.usageToday.toLocaleString()}
-                            </p>
-                            <p className="cls-usage-limit">
-                              / {(apiKey.usageLimit / 1000).toFixed(0)}k/hour
-                            </p>
-                          </div>
-                        </TableCell>
-                      )}
-                      {columnVisibility.lastUsed && (
-                        <TableCell>
-                          <div className="cls-last-used-cell">
-                            <Clock size={14} className="cls-clock-icon" />
-                            <span>{apiKey.created_at}</span>
-                          </div>
-                        </TableCell>
-                      )}
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="cls-actions-button"
-                            >
-                              <MoreVertical size={16} />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() => handleCopyKey(apiKey.key)}
-                              className="cls-menu-item"
-                            >
-                              <Copy size={16} />
-                              Copy Key
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleEdit(apiKey)}
-                              className="cls-menu-item"
-                            >
-                              <Edit size={16} />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDelete(apiKey.id)}
-                              className="cls-delete-item"
-                            >
-                              <Trash2 size={16} />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                  {showEmptyState ? (
+                    <TableRow>
+                      <TableCell colSpan={9} className="text-center py-10">
+                        {getApiKeysListStatus.isLoading ? (
+                          <p>Loading API keys...</p>
+                        ) : (
+                          <p>No API keys found. Create a new one to get started.</p>
+                        )}
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ) : (
+                    paginatedKeys.map((apiKey) => (
+                      <TableRow key={apiKey.id}>
+                        <TableCell>
+                          <div className="cls-name-cell">
+                            <p className="cls-key-name">{apiKey.name}</p>
+                            <p className="cls-organization">
+                              {apiKey.organization}
+                            </p>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="cls-api-key-cell">
+                            <code className="cls-api-key-code">
+                              {apiKey.key}
+                            </code>
+                            <button
+                              onClick={() => handleCopyKey(apiKey.key)}
+                              className="cls-copy-button"
+                              title="Copy API Key"
+                            >
+                              <Copy size={14} />
+                            </button>
+                          </div>
+                        </TableCell>
+                        {columnVisibility.environment && (
+                          <TableCell>
+                            <Badge
+                              className={`cls-env-badge cls-env-${apiKey.environment.toLowerCase()}`}
+                            >
+                              {apiKey.environment}
+                            </Badge>
+                          </TableCell>
+                        )}
+                        {columnVisibility.status && (
+                          <TableCell>
+                            <Badge
+                              className={`cls-status-badge cls-status-${apiKey.is_active === true ? "active" : "inactive"}`}
+                            >
+                              {apiKey.is_active === true ? "Active" : "Inactive"}
+                            </Badge>
+                          </TableCell>
+                        )}
+                        {columnVisibility.permissions && (
+                          <TableCell>
+                            <div className="cls-permissions-cell">
+                              <p className="cls-permission-name">
+                                {apiKey.permissions}
+                              </p>
+                              <p className="cls-endpoints-count">
+                                {apiKey.endpoints} endpoint(s)
+                              </p>
+                            </div>
+                          </TableCell>
+                        )}
+                        {columnVisibility.usage && (
+                          <TableCell>
+                            <div className="cls-usage-cell">
+                              <p className="cls-usage-count">
+                                {apiKey.usageToday.toLocaleString()}
+                              </p>
+                              <p className="cls-usage-limit">
+                                / {(apiKey.usageLimit / 1000).toFixed(0)}k/hour
+                              </p>
+                            </div>
+                          </TableCell>
+                        )}
+                        {columnVisibility.lastUsed && (
+                          <TableCell>
+                            <div className="cls-last-used-cell">
+                              <Clock size={14} className="cls-clock-icon" />
+                              <span>{apiKey.created_at}</span>
+                            </div>
+                          </TableCell>
+                        )}
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="cls-actions-button"
+                              >
+                                <MoreVertical size={16} />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => handleCopyKey(apiKey.key)}
+                                className="cls-menu-item"
+                              >
+                                <Copy size={16} />
+                                Copy Key
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleEdit(apiKey)}
+                                className="cls-menu-item"
+                              >
+                                <Edit size={16} />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDelete(apiKey.id)}
+                                className="cls-delete-item"
+                              >
+                                <Trash2 size={16} />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
                 </TableBody>
               </Table>
             </div>
