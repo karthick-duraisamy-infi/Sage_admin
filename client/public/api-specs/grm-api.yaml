@@ -1,0 +1,5904 @@
+openapi: 3.0.3
+info:
+  title: ClearTrip API
+  version: 1.0.0
+  description: 'ClearTrip API provides endpoints for authentication, user management, ancillary services, policy management, help desk, and more.'
+paths:
+  /checksession/:
+    post:
+      summary: Check Session
+      operationId: checksession_create
+      description: Checks if the user session exists and is valid.
+      tags:
+      - Login
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                example:
+                  responseCode: 0
+                  response:
+                    Message: Success
+          description: Successful Session Check Response
+        '400':
+          content:
+            application/json:
+              schema:
+                example:
+                  responseCode: 1
+                  response:
+                    Message: Session not exists
+          description: Successful Session Check Response
+  /createtoken/:
+    post:
+      summary: Create Token
+      operationId: createtoken_create
+      description: Takes user credentials and returns access and refresh JWT tokens.
+      tags:
+      - Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /forgotpassword/:
+    post:
+      summary: Forgot Password
+      operationId: forgotpassword_create
+      description: Initiates the password reset process for a user.
+      tags:
+      - Login
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                example:
+                  responseCode: 0
+                  response:
+                    Message: password reset request initiated successfully!!!!
+          description: Successful Response for forgot password
+        '400':
+          content:
+            application/json:
+              schema:
+                example:
+                  responseCode: 1
+                  response:
+                    Message: Invalid input
+          description: UnSuccessful forgot password Response
+  /getjwtusingtoken/:
+    post:
+      summary: Get JWT Using Token
+      operationId: getjwtusingtoken_create
+      description: Returns a JWT token using a provided token.
+      tags:
+      - Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairSerializerWithWebAppToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairSerializerWithWebAppToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairSerializerWithWebAppToken'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPairSerializerWithWebAppToken'
+          description: ''
+  /refreshtoken/:
+    post:
+      summary: Refresh Token
+      operationId: refreshtoken_create
+      description: Refreshes the JWT token using a refresh token.
+      tags:
+      - Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /web_app_login/:
+    post:
+      summary: Web App Login
+      operationId: web_app_login_create
+      description: Authenticates a user for the web application.
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - html
+          - json
+      tags:
+      - Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSerializer1'
+              examples:
+                Success:
+                  value:
+                    response:
+                      Message: Success
+                      data:
+                        user_id: 0
+                        email_id: user@example.com
+                        user_type: string
+                  summary: success
+                Failure:
+                  value:
+                    responseCode: 0
+                    response:
+                      Message: Credentials invalid couldn't login !!!
+            text/html:
+              schema:
+                $ref: '#/components/schemas/ResponseSerializer1'
+          description: login Response
+  /grmapi/corporate/:
+    get:
+      summary: List Corporates
+      operationId: grmapi_corporate_list
+      description: Lists all corporate entities with optional filters and pagination.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedListCorporateDetailsList'
+          description: ''
+    post:
+      summary: Create Corporate
+      operationId: create_corporate
+      description: Creates a new corporate entity.
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCorporateDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateCorporateDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateCorporateDetails'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/corporate/{corporate_id}/:
+    get:
+      summary: Retrieve Corporate
+      operationId: retrieve_corporate
+      description: Retrieves details for a specific corporate entity.
+      parameters:
+      - in: path
+        name: corporate_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+    put:
+      summary: Update Corporate
+      operationId: update_corporate
+      description: Updates details for a specific corporate entity.
+      parameters:
+      - in: path
+        name: corporate_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCorporateDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateCorporateDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateCorporateDetails'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/corporateusermapping/:
+    get:
+      summary: List Corporate User Mappings
+      operationId: list_corporate_user_mapping
+      description: Lists all corporate user mappings with optional filters and pagination.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGenericApiSuccessResponseList'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+    post:
+      summary: Create Corporate User Mapping
+      operationId: create_corporate_user_mapping
+      description: Creates a new corporate user mapping.
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCorportateUserMapping'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateCorportateUserMapping'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateCorportateUserMapping'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/corporateusermapping/{sub_agency_mapping_id}/:
+    get:
+      summary: Retrieve Corporate User Mapping
+      operationId: retrieve_corporate_user_mapping
+      description: Retrieves details for a specific corporate user mapping.
+      parameters:
+      - in: path
+        name: sub_agency_mapping_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+    put:
+      summary: Update Corporate User Mapping
+      operationId: update_corporate_user_mapping
+      description: Updates details for a specific corporate user mapping.
+      parameters:
+      - in: path
+        name: sub_agency_mapping_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCorportateUserMapping'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateCorportateUserMapping'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateCorportateUserMapping'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/travelagent/:
+    get:
+      summary: List Travel Agents
+      operationId: list_travelagent
+      description: Lists all travel agents with optional filters.
+      parameters:
+      - in: query
+        name: agent
+        schema:
+          type: string
+          minLength: 1
+      - in: query
+        name: approvedStatus
+        schema:
+          enum:
+          - Y
+          - N
+          type: string
+          minLength: 1
+      - in: query
+        name: corporateId
+        schema:
+          type: integer
+      - in: query
+        name: corporateIdList
+        schema:
+          type: string
+          minLength: 1
+      - in: query
+        name: country
+        schema:
+          type: string
+          minLength: 1
+      - in: query
+        name: emailVerification
+        schema:
+          enum:
+          - Y
+          - N
+          type: string
+          minLength: 1
+      - in: query
+        name: firstName
+        schema:
+          type: string
+          minLength: 1
+      - in: query
+        name: lastName
+        schema:
+          type: string
+          minLength: 1
+      - in: query
+        name: pagination
+        schema:
+          enum:
+          - Y
+          - N
+          type: string
+          minLength: 1
+      - in: query
+        name: paginationLimit
+        schema:
+          type: integer
+      - in: query
+        name: paginationSource
+        schema:
+          type: string
+          minLength: 1
+      - in: query
+        name: posDetails
+        schema:
+          type: string
+          minLength: 1
+      - in: query
+        name: sortBy
+        schema:
+          type: string
+          minLength: 1
+      - in: query
+        name: sortList
+        schema:
+          enum:
+          - Y
+          - N
+          type: string
+          minLength: 1
+      - in: query
+        name: sortType
+        schema:
+          enum:
+          - ASC
+          - DESC
+          type: string
+          minLength: 1
+      - in: query
+        name: userEmailIdSearch
+        schema:
+          type: string
+          format: email
+          minLength: 1
+      - in: query
+        name: userTypeQueryBox
+        schema:
+          type: string
+          minLength: 1
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+    post:
+      summary: Create Travel Agent
+      operationId: create_travelagent
+      description: Creates a new travel agent.
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTravelAgent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateTravelAgent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateTravelAgent'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/travelagent/{corporate_id}/:
+    get:
+      summary: Retrieve Travel Agent
+      operationId: retrieve_travelagent
+      description: Retrieves details for a specific travel agent.
+      parameters:
+      - in: path
+        name: corporate_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+    put:
+      summary: Update Travel Agent
+      operationId: update_travelagent
+      description: Updates details for a specific travel agent.
+      parameters:
+      - in: path
+        name: corporate_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTravelAgent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateTravelAgent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateTravelAgent'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/user/:
+    get:
+      summary: List Users
+      operationId: grmapi_user_list
+      description: Lists all users with optional filters.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedViewUserDetailsResponseList'
+          description: ''
+    post:
+      summary: Create User
+      operationId: create_user
+      description: Creates a new user.
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddUserDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AddUserDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AddUserDetails'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/user/{user_id}/:
+    get:
+      summary: Retrieve User
+      operationId: retrieve_user
+      description: Retrieves details for a specific user.
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+    put:
+      summary: Update User
+      operationId: update_user
+      description: Updates details for a specific user.
+      parameters:
+      - in: path
+        name: user_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDetails'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/requestraising/:
+    post:
+      summary: Raise Request
+      operationId: grmapi_requestraising_create
+      description: Raises adhoc, series, or conference requests.
+      tags:
+      - Request Raising
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TravelAgencyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TravelAgencyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TravelAgencyRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSerializer7'
+          description: Success Response For Request Raising
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/immediate-action/:
+    get:
+      summary: List Immediate Actions
+      operationId: grmapi_immediate_action_list
+      description: Lists request details that are near to expiry.
+      parameters:
+      - in: query
+        name: ends_in
+        schema:
+          type: string
+        description: Filter the message based on user email address
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: validity_type
+        schema:
+          type: string
+          enum:
+          - fare
+          - passenger
+          - payment
+        description: Filter the actions based on the validity type
+      tags:
+      - View Request
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedImmediateActionResponseList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/userresponse/:
+    post:
+      summary: Respond to Request
+      operationId: respond_to_request
+      description: Sends the user's response for a processed request.
+      tags:
+      - View Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UserResponse'
+          application/x-www-form-urlencoded:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UserResponse'
+          multipart/form-data:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UserResponse'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/viewrequest/:
+    get:
+      summary: List Requests
+      operationId: list_request
+      description: Lists all requests with optional filters.
+      parameters:
+      - in: query
+        name: corporateId
+        schema:
+          type: string
+      - in: query
+        name: corporateIdHidden
+        schema:
+          type: integer
+      - in: query
+        name: country
+        schema:
+          type: string
+      - in: query
+        name: creatorId
+        schema:
+          type: integer
+      - in: query
+        name: destination
+        schema:
+          type: string
+          maxLength: 3
+          minLength: 3
+      - in: query
+        name: endDate
+        schema:
+          type: string
+          format: date
+        required: true
+      - in: query
+        name: endDeptDate
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: fareType
+        schema:
+          type: string
+      - in: query
+        name: flightNumber
+        schema:
+          type: string
+      - in: query
+        name: groupCategoryValue
+        schema:
+          type: integer
+      - in: query
+        name: pagination
+        schema:
+          enum:
+          - Y
+          - N
+          type: string
+          minLength: 1
+      - in: query
+        name: paginationLimit
+        schema:
+          type: integer
+      - in: query
+        name: penaltyEndDate
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: penaltyStartDate
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: pnr
+        schema:
+          type: string
+      - in: query
+        name: pos
+        schema:
+          type: string
+      - in: query
+        name: requestGroupName
+        schema:
+          type: string
+      - in: query
+        name: requestMasterId
+        schema:
+          type: integer
+      - in: query
+        name: requestType
+        schema:
+          type: string
+      - in: query
+        name: sortBy
+        schema:
+          type: string
+          minLength: 1
+      - in: query
+        name: sortList
+        schema:
+          enum:
+          - Y
+          - N
+          type: string
+          minLength: 1
+      - in: query
+        name: sortType
+        schema:
+          enum:
+          - ASC
+          - DESC
+          type: string
+          minLength: 1
+      - in: query
+        name: source
+        schema:
+          type: string
+          maxLength: 3
+          minLength: 3
+      - in: query
+        name: startDate
+        schema:
+          type: string
+          format: date
+        required: true
+      - in: query
+        name: startDeptDate
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: status
+        schema:
+          type: string
+      - in: query
+        name: tripType
+        schema:
+          enum:
+          - 1
+          - 2
+          - 3
+          type: integer
+      tags:
+      - View Request
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSerializer8'
+          description: Success Response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/viewrequest/{requestMasterId}/:
+    get:
+      summary: Retrieve Request
+      operationId: retrieve_request
+      description: Retrieves details for a specific request.
+      parameters:
+      - in: path
+        name: requestMasterId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - View Request
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/makepayment/:
+    get:
+      summary: Make Payment
+      operationId: grmapi_get_payment_details
+      description: Retrieve payment details such as bank details, agency balance, etc.
+      tags:
+      - Make Payment
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      parameters:
+      - in: query
+        name: pnr
+        schema:
+          type: string
+        description: The PNR number to retrieve payment details for
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentDetailsResponse'
+          description: Successful response with payment details
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request due to invalid input
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Payment details not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden access
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+    post:
+      summary: Complete Payment
+      operationId: grmapi_complete_payment
+      description: Complete payment against a PNR, including EMD creation
+      tags:
+      - Make Payment
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Successful payment completion
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request due to invalid input
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: PNR not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden access
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/getpassengertemplate/:
+    post:
+      summary: Get Passenger Template
+      operationId: grmapi_getpassengertemplate_create
+      description: Retrieves passenger templates for the requested input.
+      tags:
+      - Add Guest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestSerializerGetTemplate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RequestSerializerGetTemplate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RequestSerializerGetTemplate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSerializer6'
+          description: Passenger template get successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                example:
+                  responseCode: 1
+                  response:
+                    Message: Invalid input
+                    errors:
+                      pnr: Invalid PNR or request id given
+          description: Response format for error messages
+  /grmapi/passengerinfo/:
+    post:
+      summary: Create Passenger Info
+      operationId: grmapi_passengerinfo_create
+      description: Inserts passenger information.
+      tags:
+      - Add Guest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PassengerInfoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PassengerInfoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PassengerInfoRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSerializer3'
+          description: Passenger details inserted  successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                example:
+                  responseCode: 1
+                  response:
+                    Message: Invalid input
+                    errors:
+                      pnr: Invalid PNR or request id given
+          description: Response format for error messages
+    put:
+      summary: Update Passenger Info
+      operationId: grmapi_passengerinfo_update
+      description: Updates passenger information.
+      tags:
+      - Add Guest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PassengerInfoRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PassengerInfoRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PassengerInfoRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSerializer4'
+          description: Passenger details updated successfully
+        '400':
+          content:
+            application/json:
+              schema:
+                example:
+                  responseCode: 1
+                  response:
+                    Message: Invalid input
+                    errors:
+                      pnr: Invalid PNR or request id given
+          description: Response format for error messages
+  /grmapi/ancillary/:
+    get:
+      summary: Get Ancillary Info
+      operationId: grmapi_ancillary_retrieve
+      description: Retrieves information about SSR and seat options for a trip.
+      parameters:
+      - in: query
+        name: pnr
+        schema:
+          type: string
+        description: used to get the trip flights
+        required: true
+      - in: query
+        name: requestMasterId
+        schema:
+          type: string
+        description: used to get request
+        required: true
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - SSR
+          - Seat
+        description: Requesting SSR or Seat
+        required: true
+      tags:
+      - SSR
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+    post:
+      summary: Create Ancillary Request
+      operationId: grmapi_ancillary_create
+      description: Inserts travel agency's desired seat and SSR for passengers.
+      tags:
+      - SSR
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AncillaryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AncillaryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AncillaryRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/dashboard/:
+    get:
+      summary: Get Dashboard Stats
+      operationId: grmapi_dashboard_retrieve
+      description: Retrieves dashboard statistics for the requested user.
+      tags:
+      - Reports
+      responses:
+        '200':
+          description: No response body
+  /grmapi/faq/:
+    get:
+      summary: List FAQs
+      operationId: grmapi_faq_retrieve
+      description: Lists frequently asked questions.
+      tags:
+      - FAQ
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/userguide/:
+    get:
+      summary: Get User Guide
+      operationId: get_userguide
+      description: Fetches user guides for the application.
+      parameters:
+      - in: query
+        name: guide
+        schema:
+          enum:
+          - downloadUserGuide
+          type: string
+          default: downloadUserGuide
+          minLength: 1
+      tags:
+      - User guide
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/helpdesk/:
+    post:
+      summary: Add Helpdesk Reply
+      operationId: helpdesk_add_reply
+      description: Responds to help desk issues.
+      tags:
+      - Help desk
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HelpDeskProcessIssue'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/HelpDeskProcessIssue'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/HelpDeskProcessIssue'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/issues/:
+    get:
+      summary: List Issues
+      operationId: list_issues
+      description: Lists all issues with optional filters.
+      parameters:
+      - in: query
+        name: HelpDeskEmailId
+        schema:
+          type: string
+          format: email
+          minLength: 1
+      - in: query
+        name: categoryIdQuery
+        schema:
+          type: integer
+          minimum: 0
+      - in: query
+        name: endDate
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: issueIdQuery
+        schema:
+          type: integer
+      - in: query
+        name: pageNo
+        schema:
+          type: integer
+          minimum: 1
+      - in: query
+        name: pageSize
+        schema:
+          type: integer
+          minimum: 1
+      - in: query
+        name: severityLevelQuery
+        schema:
+          type: integer
+          minimum: 0
+      - in: query
+        name: startDate
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: startLimit
+        schema:
+          type: integer
+          minimum: 1
+      - in: query
+        name: statusQuery
+        schema:
+          type: integer
+      - in: query
+        name: subcategoryId
+        schema:
+          type: integer
+          minimum: 0
+      tags:
+      - Help desk
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+    post:
+      summary: Create Issue
+      operationId: create_issues
+      description: Creates a new help desk issue.
+      tags:
+      - Help desk
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIssues'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateIssues'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateIssues'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/issues/{issueId}/:
+    get:
+      summary: Retrieve Issue
+      operationId: retrieve_issues
+      description: Retrieves details for a specific help desk issue.
+      parameters:
+      - in: path
+        name: issueId
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Help desk
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericApiSuccessResponse'
+          description: Success response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/fetchpolicy/:
+    post:
+      summary: Fetch Policy
+      operationId: grmapi_fetchpolicy_create
+      description: Fetches the appropriate policy and matrix details for the requested input.
+      tags:
+      - Policy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchPolicyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FetchPolicyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FetchPolicyRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSerializer2'
+          description: Fetch Policy Success Response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericErrorResponse'
+          description: Bad request
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFound'
+          description: Resource not found
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+          description: Forbidden
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericInternalServerError'
+          description: Internal server error
+  /grmapi/mapped-static-fare/:
+    get:
+      summary: List Mapped Static Fares
+      operationId: grmapi_mapped_static_fare_retrieve
+      description: Lists matrix data for mapped static fares.
+      tags:
+      - Policy
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticFareRequest'
+          description: ''
+  /grmapi/static-fare-matrix/:
+    get:
+      summary: List Static Fare Matrix
+      operationId: grmapi_static_fare_matrix_retrieve
+      description: Lists matrix data for static fares.
+      tags:
+      - Policy
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+    post:
+      summary: Create Static Fare Matrix
+      operationId: grmapi_static_fare_matrix_create
+      description: Creates single or multiple static fare matrix resources.
+      tags:
+      - Policy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaticFareCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StaticFareCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StaticFareCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticFareCreate'
+          description: ''
+  /grmapi/static-fare-matrix-policy/:
+    post:
+      summary: Create Static Fare Matrix Policy
+      operationId: grmapi_static_fare_matrix_policy_create
+      description: Creates single or multiple static fare matrix policy resources.
+      tags:
+      - Policy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyMatrixCreationSerialzer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PolicyMatrixCreationSerialzer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PolicyMatrixCreationSerialzer'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyMatrixCreationSerialzer'
+          description: ''
+  /grmapi/static-fare-matrix/{matrix_id}/:
+    get:
+      summary: Retrieve Static Fare Matrix
+      operationId: grmapi_static_fare_matrix_retrieve_2
+      description: Retrieves matrix data for a specific static fare matrix.
+      parameters:
+      - in: path
+        name: matrix_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Policy
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /grmapi/static-fare-policy/:
+    post:
+      summary: Create Static Fare Policy
+      operationId: grmapi_static_fare_policy_create
+      description: Creates single or multiple static fare policy resources.
+      tags:
+      - Policy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaticFarePolicyInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StaticFarePolicyInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StaticFarePolicyInput'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticFarePolicyInput'
+          description: ''
+  /grmapi/static-fare-similar-policy/:
+    post:
+      summary: Create Static Fare Similar Policy
+      operationId: grmapi_static_fare_similar_policy_create
+      description: Creates or retrieves similar static fare policy data.
+      tags:
+      - Policy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaticFareSimilarPolicyInput'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StaticFareSimilarPolicyInput'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StaticFareSimilarPolicyInput'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaticFareSimilarPolicyInput'
+          description: ''
+  /web_app_logout/:
+    post:
+      summary: Web App Logout
+      operationId: web_app_logout_create
+      description: Logs out a user from the web application.
+      tags:
+      - Logout
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                example:
+                  responseCode: 0
+                  response:
+                    Message: Success
+          description: Successful logout Response
+components:
+  schemas:
+    AddUserDetails:
+      type: object
+      properties:
+        corporate_id:
+          type: integer
+        group_id:
+          type: integer
+        title:
+          $ref: '#/components/schemas/TitleEnum'
+        user_name:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email_id:
+          type: string
+          format: email
+        country_number:
+          type: string
+        phone_number:
+          type: integer
+        password:
+          type: string
+        confirm_password:
+          type: string
+        user_address:
+          type: string
+        country_code:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        time_zone_key:
+          $ref: '#/components/schemas/TimeZoneKeyEnum'
+        approved_status:
+          allOf:
+          - $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+          default: Y
+        email_verification_status:
+          allOf:
+          - $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+          default: Y
+        city_id:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        state_code:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        user_zip_code:
+          type: string
+        confirm_code:
+          type: string
+          maxLength: 32
+          minLength: 5
+      required:
+      - city_id
+      - confirm_password
+      - corporate_id
+      - country_code
+      - country_number
+      - email_id
+      - first_name
+      - group_id
+      - last_name
+      - password
+      - phone_number
+      - time_zone_key
+      - title
+      - user_address
+      - user_name
+      - user_zip_code
+    AgentTitleEnum:
+      enum:
+      - Mr
+      - Mrs
+      - Ms
+      type: string
+    AncillaryList:
+      type: object
+      properties:
+        ReferenceId:
+          type: string
+        meals:
+          type: array
+          items:
+            $ref: '#/components/schemas/AncillaryListDetail'
+        baggage:
+          type: array
+          items:
+            $ref: '#/components/schemas/AncillaryListDetail'
+        others:
+          type: array
+          items:
+            $ref: '#/components/schemas/AncillaryListDetail'
+        flightDetails:
+          $ref: '#/components/schemas/FlightDetail'
+      required:
+      - ReferenceId
+      - flightDetails
+    AncillaryListDetail:
+      type: object
+      properties:
+        SSRVendor:
+          type: string
+        SSRName:
+          type: string
+        SSRType:
+          type: string
+        SegmentIndicator:
+          type: string
+        ssr_list_id:
+          type: integer
+        ssr_category_id:
+          type: integer
+        ssr_subcategory_id:
+          type: integer
+        ssr_description:
+          type: string
+        ssr_code:
+          type: string
+        ssr_category_name:
+          type: string
+        displayStatus:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        disabled:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        ssrAmount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        ssrBaseFare:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        ssrTax:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        ssrAvailable:
+          type: integer
+          minimum: 0
+        ssrTaxDisplay:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        ssrAmountDisplay:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        ssrBaseFareDisplay:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        additional_info:
+          $ref: '#/components/schemas/AncillaryListDetailAditionalDetails'
+        GroupDescription:
+          type: string
+        ssrId:
+          type: string
+      required:
+      - SSRName
+      - SSRType
+      - SSRVendor
+      - disabled
+      - displayStatus
+      - ssrAmount
+      - ssrAvailable
+      - ssrBaseFare
+      - ssrId
+      - ssrTax
+      - ssr_category_id
+      - ssr_category_name
+      - ssr_code
+      - ssr_description
+      - ssr_list_id
+      - ssr_subcategory_id
+    AncillaryListDetailAditionalDetails:
+      type: object
+      properties:
+        SSRVendor:
+          type: string
+        SSRName:
+          type: string
+        SSRType:
+          type: string
+        SegmentIndicator:
+          type: string
+      required:
+      - SSRName
+      - SSRType
+      - SSRVendor
+      - SegmentIndicator
+    AncillaryRequest:
+      type: object
+      properties:
+        requestMasterId:
+          type: integer
+        pnr:
+          type: string
+          maxLength: 6
+        action:
+          $ref: '#/components/schemas/AncillaryRequestActionEnum'
+        ssrType:
+          $ref: '#/components/schemas/SsrTypeEnum'
+        ssrTotalAmount:
+          type: integer
+        passengerSSRList:
+          type: array
+          items:
+            $ref: '#/components/schemas/PassengerList'
+        SSRList:
+          $ref: '#/components/schemas/AncillaryList'
+      required:
+      - passengerSSRList
+      - pnr
+      - requestMasterId
+      - ssrTotalAmount
+      - ssrType
+    AncillaryRequestActionEnum:
+      enum:
+      - SUBMIT
+      type: string
+    BlankEnum:
+      enum:
+      - ''
+    CancelledSerilizer:
+      type: object
+      description: request for cancelling package
+      properties:
+        travel_agency_email:
+          type: string
+          format: email
+        request_master_id:
+          type: string
+        pnr:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 6
+          minLength: 6
+        ref_package_id:
+          type: integer
+        adp_pax_reference_id:
+          type: array
+          items:
+            type: integer
+      required:
+      - adp_pax_reference_id
+    CommonInfo:
+      type: object
+      description: serializer for validating the common info of the request data in
+        request rasing request data
+      properties:
+        currencyType:
+          type: string
+        userEmailId:
+          type: string
+          format: email
+        groupCategoryValue:
+          type: string
+        blockSpace:
+          type: string
+          default: N
+        remarks:
+          type: string
+        cloneRequestRaise:
+          type: string
+          default: 'NO'
+        requestType:
+          $ref: '#/components/schemas/RequestTypeEnum'
+        raiseRequest:
+          type: integer
+          default: 1
+        requestGroupName:
+          type: string
+        seriesDay:
+          type: array
+          items:
+            type: string
+      required:
+      - currencyType
+      - groupCategoryValue
+      - requestGroupName
+      - requestType
+      - userEmailId
+    CreateCorporateDetails:
+      type: object
+      description: Serializer for only corporate service creation and updation
+      properties:
+        agent_name:
+          type: string
+          maxLength: 32
+        corporate_name:
+          type: string
+          maxLength: 100
+        corporate_type_id:
+          type: string
+          maxLength: 30
+        corporate_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        pcc_code:
+          type: string
+        iata_code:
+          type: string
+          maxLength: 15
+          minLength: 7
+        office_number:
+          type: integer
+        time_zone_key:
+          $ref: '#/components/schemas/TimeZoneKeyEnum'
+        corporate_address:
+          type: string
+          maxLength: 250
+        pos_code:
+          type: string
+        customer_category_id:
+          type: string
+          default: Medium Revenu
+          maxLength: 30
+      required:
+      - agent_name
+      - corporate_address
+      - corporate_name
+      - corporate_status
+      - corporate_type_id
+      - iata_code
+      - office_number
+      - pcc_code
+      - pos_code
+      - time_zone_key
+    CreateCorporateDetailsSerializerV1:
+      type: object
+      description: Serializer for only corporate service create
+      properties:
+        agent_name:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        corporate_name:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 255
+          minLength: 1
+        corporate_type_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 13
+          minLength: 9
+        corporate_status:
+          allOf:
+          - $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+          default: Y
+        pcc_code:
+          type: string
+          default: ''
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 25
+          minLength: 5
+        iata_code:
+          type: string
+          default: ''
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 25
+          minLength: 5
+        office_number:
+          type: string
+          default: ''
+          maxLength: 40
+        time_zone_key:
+          default: America/Chicago
+          oneOf:
+          - $ref: '#/components/schemas/TimeZoneKeyEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        corporate_address:
+          type: string
+          default: ''
+          maxLength: 319
+          minLength: 1
+        pos_code:
+          type: string
+          default: DAL
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 3
+          minLength: 3
+        customer_category_id:
+          type: integer
+          maximum: 20
+          minimum: 0
+          default: 0
+      required:
+      - agent_name
+      - corporate_name
+      - corporate_type_id
+    CreateCorportateUserMapping:
+      type: object
+      description: Serializer for corporate user mapping service creation
+      properties:
+        user_id:
+          type: integer
+          minimum: 1
+        mapped_corporate_id:
+          type: integer
+          minimum: 1
+        reference_id:
+          type: string
+        is_direct:
+          type: boolean
+          default: false
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          default: New
+        requested_by:
+          type: integer
+          minimum: 1
+        requested_date:
+          type: string
+          format: date-time
+        responded_by:
+          type: integer
+          minimum: 1
+        responded_date:
+          type: string
+          format: date-time
+        remarks:
+          type: string
+      required:
+      - mapped_corporate_id
+      - requested_by
+      - requested_date
+      - responded_by
+      - responded_date
+      - user_id
+    CreateCorportateUserMappingSerializerV1:
+      type: object
+      description: serializer for corporate user mapping creation
+      properties:
+        user_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        reference_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        is_direct:
+          type: boolean
+          default: false
+        corporate_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        active_status:
+          allOf:
+          - $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+          default: Y
+      required:
+      - corporate_id
+      - reference_id
+      - user_id
+    CreateIssues:
+      type: object
+      properties:
+        categoryId:
+          type: integer
+          minimum: 0
+        subcategoryId:
+          type: integer
+          minimum: 0
+        severityLevel:
+          type: integer
+          minimum: 0
+        requestMasterId:
+          type: integer
+          minimum: 0
+        pnrNumber:
+          type: string
+          maxLength: 6
+          minLength: 6
+        messageSubject:
+          type: string
+        messageContent:
+          type: string
+        paxFile:
+          type: string
+          format: uri
+      required:
+      - categoryId
+      - messageContent
+      - messageSubject
+      - pnrNumber
+      - requestMasterId
+      - severityLevel
+      - subcategoryId
+    CreateTravelAgent:
+      type: object
+      properties:
+        travelagencyMapping:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        iataAgent:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        agentTitle:
+          $ref: '#/components/schemas/AgentTitleEnum'
+        agentFirstName:
+          type: string
+          maxLength: 32
+        agentLastName:
+          type: string
+          maxLength: 32
+        agentEmailId:
+          type: string
+          format: email
+        travelIataCode:
+          type: string
+          default: NONIATA
+          maxLength: 15
+          minLength: 7
+        travelPccCode:
+          type: string
+          minLength: 8
+        travelAgencyName:
+          type: string
+        agentAddress:
+          type: string
+        agentCountry:
+          type: string
+        timeZone:
+          type: string
+        posCodeDetail:
+          type: string
+        activeStatusAddAgent:
+          type: string
+        emailVerificationStatus:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        registrationPayment:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        allSetting:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        language:
+          type: array
+          items:
+            type: string
+        settings:
+          type: array
+          items:
+            type: integer
+        salesPersionArray:
+          type: array
+          items:
+            type: integer
+        agencyPaymentIdArray:
+          type: array
+          items:
+            type: integer
+      required:
+      - activeStatusAddAgent
+      - agencyPaymentIdArray
+      - agentAddress
+      - agentCountry
+      - agentEmailId
+      - agentFirstName
+      - agentLastName
+      - agentTitle
+      - allSetting
+      - emailVerificationStatus
+      - iataAgent
+      - language
+      - posCodeDetail
+      - registrationPayment
+      - salesPersionArray
+      - settings
+      - timeZone
+      - travelAgencyName
+      - travelPccCode
+      - travelagencyMapping
+    CreateUserDetailsSerializerV1:
+      type: object
+      description: Serializer for only user service create
+      properties:
+        title:
+          type: string
+          default: ''
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 5
+          minLength: 2
+        user_name:
+          type: string
+          default: ''
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        first_name:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 40
+          minLength: 2
+        last_name:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 80
+          minLength: 2
+        email_id:
+          type: string
+          format: email
+          maxLength: 80
+          minLength: 3
+        phone_number:
+          type: string
+          default: ''
+          maxLength: 40
+        user_address:
+          type: string
+          default: ''
+          maxLength: 255
+          minLength: 1
+        country_code:
+          type: string
+          default: US
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 2
+          minLength: 2
+        approved_status:
+          allOf:
+          - $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+          default: N
+        city_id:
+          type: string
+          default: Dallas
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 40
+          minLength: 2
+        state_code:
+          type: string
+          default: TX
+          pattern: ^[a-zA-Z\s]*$
+        user_zip_code:
+          type: string
+          default: ''
+          maxLength: 20
+          minLength: 1
+        confirm_code:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 5
+        account_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        email_preference:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailPreferenceEnum'
+      required:
+      - account_id
+      - confirm_code
+      - email_id
+      - first_name
+      - last_name
+    DepartureDowEnum:
+      enum:
+      - sun
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+      - sat
+      type: string
+    EmailPreferenceEnum:
+      enum:
+      - OTP
+      type: string
+    EnvelopedFetchPolicyResponse:
+      type: object
+      properties:
+        Message:
+          type: string
+          default: Success
+          description: Indication overall response status
+        data:
+          allOf:
+          - $ref: '#/components/schemas/FetchPolicyResponse'
+          description: Actual data from API
+      required:
+      - data
+    EnvelopedLoginResponse:
+      type: object
+      properties:
+        Message:
+          type: string
+          default: Success
+          description: Indication overall response status
+        data:
+          allOf:
+          - $ref: '#/components/schemas/LoginResponse'
+          description: Actual data from API
+      required:
+      - data
+    EnvelopedPassengerResponseSerilizer:
+      type: object
+      properties:
+        Message:
+          type: string
+          default: Success
+          description: Indication overall response status
+        data:
+          allOf:
+          - $ref: '#/components/schemas/PassengerResponseSerilizer'
+          description: Actual data from API
+      required:
+      - data
+    EnvelopedPassengerResponseSerilizerList:
+      type: object
+      properties:
+        Message:
+          type: string
+          default: Success
+          description: Indication overall response status
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PassengerResponseSerilizer'
+          description: Actual data from API
+      required:
+      - data
+    EnvelopedPassengerTemplate:
+      type: object
+      properties:
+        Message:
+          type: string
+          default: Success
+          description: Indication overall response status
+        data:
+          allOf:
+          - $ref: '#/components/schemas/PassengerTemplate'
+          description: Actual data from API
+      required:
+      - data
+    EnvelopedSectorListResponseList:
+      type: object
+      properties:
+        Message:
+          type: string
+          default: Success
+          description: Indication overall response status
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SectorListResponse'
+          description: Actual data from API
+      required:
+      - data
+    EnvelopedTravelAgencyResponse:
+      type: object
+      properties:
+        Message:
+          type: string
+          default: Success
+          description: Indication overall response status
+        data:
+          allOf:
+          - $ref: '#/components/schemas/TravelAgencyResponse'
+          description: Actual data from API
+      required:
+      - data
+    EnvelopedViewRequestResponse:
+      type: object
+      properties:
+        Message:
+          type: string
+          default: Success
+          description: Indication overall response status
+        data:
+          allOf:
+          - $ref: '#/components/schemas/ViewRequestResponse'
+          description: Actual data from API
+      required:
+      - data
+    FailureResponse:
+      type: object
+      properties:
+        Message:
+          type: string
+        error:
+          type: array
+          items: {}
+      required:
+      - Message
+      - error
+    FetchPolicyRequest:
+      type: object
+      description: serializer for validating the request data of the fetch policy
+        service
+      properties:
+        groupName:
+          type: string
+          maxLength: 20
+        policy:
+          type: string
+          maxLength: 25
+        cabin:
+          type: string
+        tripType:
+          type: string
+          maxLength: 2
+        requestType:
+          type: string
+        requestTypeId:
+          type: integer
+        groupCategory:
+          type: string
+        userEmailId:
+          type: string
+          format: email
+        userDetails:
+          type: integer
+        quoteType:
+          type: string
+        source:
+          type: string
+        destination:
+          type: string
+        departureDate:
+          type: string
+          format: date
+        departureDateTime:
+          type: string
+          format: date-time
+        noOfAdult:
+          type: integer
+          minimum: 1
+        noOfChild:
+          type: integer
+        noOfInfant:
+          type: integer
+        noOfPax:
+          type: integer
+        currencyType:
+          type: string
+        flightDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlightDetails'
+        countryCode:
+          type: string
+        userId:
+          type: integer
+        userType:
+          type: integer
+        travelAgency:
+          type: integer
+        pointOfSale:
+          type: string
+        skyAgentId:
+          type: string
+        policyType:
+          type: string
+        policyRequestedDate:
+          type: string
+          format: date-time
+        tripCategory:
+          type: integer
+        requestTypeName:
+          type: integer
+        pointOfOrigin:
+          type: string
+        pointOfDestination:
+          type: string
+        countryOfOrigin:
+          type: string
+        countryOfDestination:
+          type: string
+        pointOfTripOrigin:
+          type: string
+        pointOfTripDestination:
+          type: string
+        returnAllPolicyDetails:
+          allOf:
+          - $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+          default: N
+        stops:
+          type: integer
+        loginId:
+          type: string
+          format: email
+        daysToDeparture:
+          type: integer
+        departureDOW:
+          type: string
+        bookedLoadFactor:
+          type: integer
+        futureLoadFactor:
+          type: integer
+        ForecastLoadFactor:
+          type: integer
+      required:
+      - ForecastLoadFactor
+      - bookedLoadFactor
+      - cabin
+      - countryCode
+      - countryOfDestination
+      - countryOfOrigin
+      - currencyType
+      - daysToDeparture
+      - departureDOW
+      - departureDate
+      - departureDateTime
+      - destination
+      - flightDetails
+      - futureLoadFactor
+      - groupCategory
+      - groupName
+      - loginId
+      - noOfAdult
+      - noOfChild
+      - noOfInfant
+      - noOfPax
+      - pointOfDestination
+      - pointOfOrigin
+      - pointOfTripDestination
+      - pointOfTripOrigin
+      - policy
+      - policyRequestedDate
+      - policyType
+      - requestType
+      - requestTypeId
+      - requestTypeName
+      - skyAgentId
+      - source
+      - stops
+      - travelAgency
+      - tripCategory
+      - tripType
+      - userDetails
+      - userEmailId
+      - userId
+      - userType
+    FetchPolicyResponse:
+      type: object
+      description: Response serializer for serilaizing the data from fetch policy
+      properties:
+        policyId:
+          type: integer
+        policyName:
+          type: string
+          maxLength: 100
+        policyType:
+          type: string
+          maxLength: 50
+        matrixId:
+          type: integer
+        matrixName:
+          type: string
+          maxLength: 100
+        matrixType:
+          type: string
+          maxLength: 5
+        fareType:
+          type: string
+        daysToDeparture:
+          type: integer
+        bookedLoadFactor:
+          type: integer
+        futureLoadFactor:
+          type: integer
+        policyCurrencyType:
+          type: string
+        loadFactorType:
+          type: string
+        discountFare:
+          type: integer
+        forecastLoadFactor:
+          type: integer
+        displayDiscount:
+          type: string
+        displaySurcharge:
+          type: string
+        surcharge:
+          type: number
+          format: double
+        booking_profile_id:
+          type: integer
+        booking_profile_name:
+          type: string
+          maxLength: 100
+        booking_profile_type:
+          type: string
+          maxLength: 2
+        departureDate:
+          type: string
+          format: date
+        departureDateTime:
+          type: string
+          format: date-time
+        priority:
+          type: string
+        created_date:
+          type: string
+          format: date-time
+        policy_dow:
+          type: string
+          maxLength: 100
+        policyForecastLoadFactor:
+          type: string
+      required:
+      - bookedLoadFactor
+      - created_date
+      - daysToDeparture
+      - fareType
+      - futureLoadFactor
+      - matrixId
+      - matrixName
+      - matrixType
+      - policyCurrencyType
+      - policyForecastLoadFactor
+      - policyId
+      - policyName
+      - policyType
+      - policy_dow
+      - priority
+    FlightDetail:
+      type: object
+      properties:
+        origin:
+          type: string
+        originCode:
+          type: string
+        pnrBlockingId:
+          type: integer
+        requestApprovedFlightId:
+          type: integer
+        viaFlightId:
+          type: integer
+        destination:
+          type: string
+        destinationCode:
+          type: string
+        departureDate:
+          type: string
+          format: date-time
+        flightNumber:
+          type: string
+        mealsDisplayStatus:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        baggageDisplayStatus:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        disableAncillaries:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        baggage_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        meals_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        others_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        othersDisplayStatus:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+      required:
+      - baggageDisplayStatus
+      - baggage_status
+      - departureDate
+      - destination
+      - destinationCode
+      - disableAncillaries
+      - flightNumber
+      - mealsDisplayStatus
+      - meals_status
+      - origin
+      - originCode
+      - othersDisplayStatus
+      - others_status
+      - pnrBlockingId
+      - requestApprovedFlightId
+      - viaFlightId
+    FlightDetails:
+      type: object
+      description: serializer for validating airlineCode and flightNumber
+      properties:
+        airlineCode:
+          type: string
+        flightNumber:
+          type: integer
+      required:
+      - airlineCode
+      - flightNumber
+    ForbiddenError:
+      type: object
+      properties:
+        detail:
+          type: string
+          default: Given token not valid for any token type
+        code:
+          type: string
+          default: token_not_valid
+        messages:
+          type: array
+          items: {}
+      required:
+      - messages
+    GenericApiSuccessDataResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/GenericTravelAgencySuccessResponse'
+      required:
+      - data
+    GenericApiSuccessResponse:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+        response:
+          $ref: '#/components/schemas/GenericApiSuccessDataResponse'
+      required:
+      - response
+      - responseCode
+    GenericErrorResponse:
+      type: object
+      properties:
+        responseCode:
+          allOf:
+          - $ref: '#/components/schemas/ResponseCodeEnum'
+          default: 1
+        response:
+          $ref: '#/components/schemas/FailureResponse'
+      required:
+      - response
+    GenericInternalServerError:
+      type: object
+      properties:
+        responseCode:
+          allOf:
+          - $ref: '#/components/schemas/ResponseCodeEnum'
+          default: 1
+        response:
+          type: string
+          default: A server error occurred
+    GenericTravelAgencySuccessDataResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties: {}
+    GenericTravelAgencySuccessResponse:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+        response:
+          $ref: '#/components/schemas/GenericTravelAgencySuccessDataResponse'
+      required:
+      - response
+      - responseCode
+    HelpDeskProcessIssue:
+      type: object
+      properties:
+        issueId:
+          type: integer
+          minimum: 0
+        messageSubject:
+          type: string
+        messageContent:
+          type: string
+        action:
+          $ref: '#/components/schemas/HelpDeskProcessIssueActionEnum'
+        commentFlag:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+      required:
+      - action
+      - issueId
+      - messageContent
+      - messageSubject
+    HelpDeskProcessIssueActionEnum:
+      enum:
+      - COMMENTS
+      - RESPONSE
+      - REPOST
+      type: string
+    ImmediateActionResponse:
+      type: object
+      description: serializer for listing expiry information
+      properties:
+        request_id:
+          type: integer
+        group_name:
+          type: string
+        request_type:
+          type: string
+        trip_type:
+          type: string
+        status:
+          type: string
+        validity:
+          type: string
+          format: date-time
+        validity_type:
+          type: string
+          readOnly: true
+        sector:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImmediateSectorDetails'
+      required:
+      - group_name
+      - request_id
+      - request_type
+      - sector
+      - status
+      - trip_type
+      - validity
+      - validity_type
+    ImmediateSectorDetails:
+      type: object
+      description: serializer for processing sector information
+      properties:
+        origin:
+          type: string
+        destination:
+          type: string
+      required:
+      - destination
+      - origin
+    ListCorporateDetails:
+      type: object
+      description: serializer for listing of only corporate service
+      properties:
+        corporate_id:
+          type: string
+        corporate_name:
+          type: string
+        corporate_type_id:
+          type: string
+        corporate_status:
+          type: string
+        iata_code:
+          type: string
+        pcc_code:
+          type: string
+        office_number:
+          type: string
+        agent_name:
+          type: string
+        corporate_address:
+          type: string
+        pos_code:
+          type: string
+        time_zone_key:
+          type: string
+        customer_category_id:
+          type: string
+      required:
+      - agent_name
+      - corporate_address
+      - corporate_id
+      - corporate_name
+      - corporate_status
+      - corporate_type_id
+      - customer_category_id
+      - iata_code
+      - office_number
+      - pcc_code
+      - pos_code
+      - time_zone_key
+    Login:
+      type: object
+      description: login service request serializer
+      properties:
+        email_id:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+      - email_id
+      - password
+    LoginResponse:
+      type: object
+      description: Serializer class for login response
+      properties:
+        user_id:
+          type: integer
+        user_type:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email_id:
+          type: string
+          format: email
+        groups:
+          type: string
+          readOnly: true
+      required:
+      - email_id
+      - first_name
+      - groups
+      - last_name
+      - user_id
+      - user_type
+    MenuList:
+      type: object
+      description: Serializer to list the menu
+      properties:
+        menu:
+          type: string
+          readOnly: true
+        route:
+          type: array
+          items:
+            $ref: '#/components/schemas/Route'
+      required:
+      - menu
+      - route
+    PaginatedGenericApiSuccessResponseList:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          example: 0
+        response:
+          type: object
+          properties:
+            Message:
+              type: integer
+              example: Success
+            data:
+              type: object
+              properties:
+                count:
+                  type: integer
+                  example: 123
+                next:
+                  type: string
+                  nullable: true
+                  format: uri
+                  example: http://api.example.org/accounts/?page=4
+                previous:
+                  type: string
+                  nullable: true
+                  format: uri
+                  example: http://api.example.org/accounts/?page=2
+                results:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/GenericApiSuccessResponse'
+    PaginatedImmediateActionResponseList:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          example: 0
+        response:
+          type: object
+          properties:
+            Message:
+              type: integer
+              example: Success
+            data:
+              type: object
+              properties:
+                count:
+                  type: integer
+                  example: 123
+                next:
+                  type: string
+                  nullable: true
+                  format: uri
+                  example: http://api.example.org/accounts/?page=4
+                previous:
+                  type: string
+                  nullable: true
+                  format: uri
+                  example: http://api.example.org/accounts/?page=2
+                results:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ImmediateActionResponse'
+    PaginatedListCorporateDetailsList:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          example: 0
+        response:
+          type: object
+          properties:
+            Message:
+              type: integer
+              example: Success
+            data:
+              type: object
+              properties:
+                count:
+                  type: integer
+                  example: 123
+                next:
+                  type: string
+                  nullable: true
+                  format: uri
+                  example: http://api.example.org/accounts/?page=4
+                previous:
+                  type: string
+                  nullable: true
+                  format: uri
+                  example: http://api.example.org/accounts/?page=2
+                results:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ListCorporateDetails'
+    PaginatedMenuListList:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          example: 0
+        response:
+          type: object
+          properties:
+            Message:
+              type: integer
+              example: Success
+            data:
+              type: object
+              properties:
+                count:
+                  type: integer
+                  example: 123
+                next:
+                  type: string
+                  nullable: true
+                  format: uri
+                  example: http://api.example.org/accounts/?page=4
+                previous:
+                  type: string
+                  nullable: true
+                  format: uri
+                  example: http://api.example.org/accounts/?page=2
+                results:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MenuList'
+    PaginatedViewUserDetailsResponseList:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          example: 0
+        response:
+          type: object
+          properties:
+            Message:
+              type: integer
+              example: Success
+            data:
+              type: object
+              properties:
+                count:
+                  type: integer
+                  example: 123
+                next:
+                  type: string
+                  nullable: true
+                  format: uri
+                  example: http://api.example.org/accounts/?page=4
+                previous:
+                  type: string
+                  nullable: true
+                  format: uri
+                  example: http://api.example.org/accounts/?page=2
+                results:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ViewUserDetailsResponse'
+    PassengerDetailserilizer:
+      type: object
+      description: validating the passenger details
+      properties:
+        adp_pax_reference_id:
+          type: string
+        passenger_id:
+          type: integer
+        passenger_type:
+          type: string
+        title:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        first_name:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        last_name:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        middle_name:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        age:
+          type: integer
+        pax_email_id:
+          type: string
+          format: email
+        pax_mobile_number:
+          type: integer
+        pax_employee_code:
+          type: string
+        pax_employee_id:
+          type: integer
+        id_proof:
+          type: string
+        id_proof_number:
+          type: string
+        sex:
+          type: string
+        dob:
+          type: string
+          format: date
+        citizenship:
+          type: string
+        passport_no:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+        date_of_issue:
+          type: string
+          format: date-time
+        date_of_expiry:
+          type: string
+          format: date-time
+        traveller_number:
+          type: string
+        frequent_flyer_number:
+          type: string
+        passport_issued_place:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+        place_of_birth:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+        address:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+        submitted_date:
+          type: string
+          format: date-time
+        meal_code:
+          type: string
+        additional_details:
+          type: string
+        passenger_status:
+          type: string
+        foc_status:
+          type: string
+      required:
+      - submitted_date
+    PassengerInfoRequest:
+      type: object
+      description: Request for inserting and updating passenger information
+      properties:
+        travel_agency_email:
+          type: string
+          format: email
+        request_master_id:
+          type: string
+        pnr:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 6
+          minLength: 6
+        ref_package_id:
+          type: integer
+        passenger_info:
+          type: array
+          items:
+            $ref: '#/components/schemas/PassengerDetailserilizer'
+      required:
+      - passenger_info
+      - ref_package_id
+      - request_master_id
+      - travel_agency_email
+    PassengerList:
+      type: object
+      properties:
+        ssrExists:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        paxNum:
+          type: integer
+        firstName:
+          type: string
+        lastName:
+          type: string
+        paxType:
+          $ref: '#/components/schemas/PaxTypeEnum'
+        withInfant:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        passengerId:
+          type: integer
+        ReferenceId:
+          type: string
+        ssrInfo:
+          $ref: '#/components/schemas/SSRInfo'
+        totalAmount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        currencyType:
+          type: string
+        _AseatPaymentCompleted:
+          allOf:
+          - $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+          title: ' aseatpaymentcompleted'
+      required:
+      - ReferenceId
+      - firstName
+      - lastName
+      - passengerId
+      - paxNum
+      - paxType
+      - ssrExists
+      - ssrInfo
+      - withInfant
+    PassengerResponseSerilizer:
+      type: object
+      description: Successful response serializer
+      properties:
+        response:
+          $ref: '#/components/schemas/passenger_template'
+      required:
+      - response
+    PassengerTemplate:
+      type: object
+      description: Response serializer for get template
+      properties:
+        response:
+          $ref: '#/components/schemas/passenger_template'
+      required:
+      - response
+    PaxTypeEnum:
+      enum:
+      - Adult
+      - Child
+      - Infant
+      type: string
+    PolicyDowEnum:
+      enum:
+      - sun
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+      - sat
+      type: string
+    PolicyMatrixCreationSerialzer:
+      type: object
+      properties:
+        matrix_details:
+          $ref: '#/components/schemas/StaticFareCreate'
+        policy_details:
+          $ref: '#/components/schemas/StaticFarePolicyInputWithoutMatrix'
+      required:
+      - matrix_details
+      - policy_details
+    ProfileDetails:
+      type: object
+      properties:
+        displayProfileName:
+          type: string
+        discountDaysToDeparture:
+          type: integer
+        hiddenProfileType:
+          type: string
+        currencyType:
+          type: string
+        hiddenLoadFactorType:
+          type: string
+      required:
+      - currencyType
+      - discountDaysToDeparture
+      - displayProfileName
+      - hiddenLoadFactorType
+      - hiddenProfileType
+    RequestInfo:
+      type: object
+      description: RequestInfoSerializer provids fields and its validations for request
+        raising
+      properties:
+        source:
+          type: array
+          items:
+            type: string
+            maxLength: 3
+        destination:
+          type: array
+          items:
+            type: string
+            maxLength: 3
+        noOfRequest:
+          type: integer
+        travelDate:
+          type: array
+          items:
+            type: string
+            format: date
+        hiddenBaggage:
+          type: string
+        noOfAdult:
+          type: integer
+          minimum: 0
+        noOfChild:
+          type: integer
+          minimum: 0
+        noOfInfant:
+          type: integer
+          minimum: 0
+        cabinVal:
+          type: string
+        flightNumber:
+          type: array
+          items:
+            type: string
+        depTime:
+          type: array
+          items:
+            type: string
+            format: date-time
+        horizonStatus:
+          type: array
+          items:
+            type: integer
+        arrivalTime:
+          type: array
+          items:
+            type: string
+            format: date-time
+        passengerFare:
+          type: integer
+          minimum: 10
+      required:
+      - arrivalTime
+      - cabinVal
+      - depTime
+      - destination
+      - flightNumber
+      - hiddenBaggage
+      - horizonStatus
+      - noOfAdult
+      - noOfRequest
+      - passengerFare
+      - source
+      - travelDate
+    RequestSerializerGetTemplate:
+      type: object
+      description: Request serializer for get template from GRM
+      properties:
+        travel_agency_email:
+          type: string
+          format: email
+        request_master_id:
+          type: integer
+        pnr:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 6
+          minLength: 6
+      required:
+      - request_master_id
+      - travel_agency_email
+    RequestTypeEnum:
+      enum:
+      - adhoc
+      - series
+      - conference
+      type: string
+    ResourceNotFound:
+      type: object
+      properties:
+        responseCode:
+          allOf:
+          - $ref: '#/components/schemas/ResponseCodeEnum'
+          default: 1
+        response:
+          $ref: '#/components/schemas/ResourceNotFoundData'
+      required:
+      - response
+    ResourceNotFoundData:
+      type: object
+      properties:
+        Message:
+          type: string
+          default: Resource not found
+    ResponseCodeEnum:
+      enum:
+      - 0
+      - 1
+      type: integer
+    ResponseSerializer1:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          default: 0
+          description: 0-indicates positive,1-indicates negative
+        response:
+          allOf:
+          - $ref: '#/components/schemas/EnvelopedLoginResponse'
+          description: Enveloped API response
+      required:
+      - response
+    ResponseSerializer2:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          default: 0
+          description: 0-indicates positive,1-indicates negative
+        response:
+          allOf:
+          - $ref: '#/components/schemas/EnvelopedFetchPolicyResponse'
+          description: Enveloped API response
+      required:
+      - response
+    ResponseSerializer3:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          default: 0
+          description: 0-indicates positive,1-indicates negative
+        response:
+          allOf:
+          - $ref: '#/components/schemas/EnvelopedPassengerResponseSerilizer'
+          description: Enveloped API response
+      required:
+      - response
+    ResponseSerializer4:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          default: 0
+          description: 0-indicates positive,1-indicates negative
+        response:
+          allOf:
+          - $ref: '#/components/schemas/EnvelopedPassengerResponseSerilizerList'
+          description: Enveloped API response
+      required:
+      - response
+    ResponseSerializer5:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          default: 0
+          description: 0-indicates positive,1-indicates negative
+        response:
+          allOf:
+          - $ref: '#/components/schemas/EnvelopedPassengerResponseSerilizerList'
+          description: Enveloped API response
+      required:
+      - response
+    ResponseSerializer6:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          default: 0
+          description: 0-indicates positive,1-indicates negative
+        response:
+          allOf:
+          - $ref: '#/components/schemas/EnvelopedPassengerTemplate'
+          description: Enveloped API response
+      required:
+      - response
+    ResponseSerializer7:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          default: 0
+          description: 0-indicates positive,1-indicates negative
+        response:
+          allOf:
+          - $ref: '#/components/schemas/EnvelopedTravelAgencyResponse'
+          description: Enveloped API response
+      required:
+      - response
+    ResponseSerializer8:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          default: 0
+          description: 0-indicates positive,1-indicates negative
+        response:
+          allOf:
+          - $ref: '#/components/schemas/EnvelopedViewRequestResponse'
+          description: Enveloped API response
+      required:
+      - response
+    ResponseSerializer9:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+          default: 0
+          description: 0-indicates positive,1-indicates negative
+        response:
+          allOf:
+          - $ref: '#/components/schemas/EnvelopedSectorListResponseList'
+          description: Enveloped API response
+      required:
+      - response
+    Route:
+      type: object
+      properties:
+        route_id:
+          type: integer
+        path:
+          type: string
+        layout:
+          type: string
+        component:
+          type: string
+        default:
+          type: integer
+        permission:
+          type: string
+          readOnly: true
+      required:
+      - component
+      - default
+      - layout
+      - path
+      - permission
+      - route_id
+    SSRInfo:
+      type: object
+      properties:
+        seat:
+          $ref: '#/components/schemas/Seat'
+        baggage:
+          $ref: '#/components/schemas/SSRInfoDetail'
+        meals:
+          $ref: '#/components/schemas/SSRInfoDetail'
+        others:
+          $ref: '#/components/schemas/SSRInfoDetail'
+    SSRInfoDetail:
+      type: object
+      properties:
+        existing:
+          $ref: '#/components/schemas/AncillaryListDetail'
+        newSSR:
+          $ref: '#/components/schemas/AncillaryListDetail'
+      required:
+      - newSSR
+    Seat:
+      type: object
+      properties:
+        existing:
+          $ref: '#/components/schemas/searDetail'
+        newSeat:
+          $ref: '#/components/schemas/searDetail'
+        ssrPaxId:
+          type: integer
+      required:
+      - newSeat
+      - ssrPaxId
+    SectorListResponse:
+      type: object
+      description: validates and provide schema for sector details list
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+      required:
+      - label
+      - value
+    SelectedFlight:
+      type: object
+      description: serializer for selected flight for the user response
+      properties:
+        negotiateFare:
+          type: integer
+        action:
+          $ref: '#/components/schemas/SelectedFlightActionEnum'
+        flightId:
+          type: array
+          items:
+            type: array
+            items:
+              type: integer
+        remarks:
+          type: string
+          maxLength: 150
+      required:
+      - action
+      - flightId
+    SelectedFlightActionEnum:
+      enum:
+      - accept
+      - decline
+      - negotiate
+      type: string
+    SsrTypeEnum:
+      enum:
+      - INSTANT
+      - seatSelection
+      type: string
+    StaticFareCreate:
+      type: object
+      description: Main serializer for static fare grid data
+      properties:
+        gridValues:
+          type: array
+          items: {}
+        profileDetails:
+          $ref: '#/components/schemas/ProfileDetails'
+      required:
+      - gridValues
+      - profileDetails
+    StaticFarePolicyInput:
+      type: object
+      properties:
+        policyName:
+          type: string
+          maxLength: 100
+        matrixId:
+          type: integer
+        priority:
+          type: integer
+        policyStartDate:
+          type: string
+          format: date
+        policyEndDate:
+          type: string
+          format: date
+        policyDow:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyDowEnum'
+        source:
+          type: string
+          nullable: true
+          maxLength: 3
+        destination:
+          type: string
+          nullable: true
+          maxLength: 3
+        departureStartDate:
+          type: string
+          format: date
+        departureEndDate:
+          type: string
+          format: date
+        departureDow:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepartureDowEnum'
+        noOfPax:
+          type: integer
+          nullable: true
+      required:
+      - matrixId
+      - policyEndDate
+      - policyName
+      - policyStartDate
+    StaticFarePolicyInputWithoutMatrix:
+      type: object
+      properties:
+        policyName:
+          type: string
+          maxLength: 100
+        priority:
+          type: integer
+        policyStartDate:
+          type: string
+          format: date
+        policyEndDate:
+          type: string
+          format: date
+        policyDow:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyDowEnum'
+        source:
+          type: string
+          nullable: true
+          maxLength: 3
+        destination:
+          type: string
+          nullable: true
+          maxLength: 3
+        departureStartDate:
+          type: string
+          format: date
+        departureEndDate:
+          type: string
+          format: date
+        departureDow:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepartureDowEnum'
+        noOfPax:
+          type: integer
+          nullable: true
+      required:
+      - policyEndDate
+      - policyName
+      - policyStartDate
+    StaticFareRequest:
+      type: object
+      properties:
+        source:
+          type: string
+          maxLength: 3
+        destination:
+          type: string
+          maxLength: 3
+        noOfPax:
+          type: integer
+          nullable: true
+        departureDate:
+          type: string
+          format: date
+          nullable: true
+    StaticFareSimilarPolicyInput:
+      type: object
+      properties:
+        policyName:
+          type: string
+          maxLength: 100
+        matrixId:
+          type: integer
+        priority:
+          type: integer
+        policyStartDate:
+          type: string
+          format: date
+        policyEndDate:
+          type: string
+          format: date
+        policyDow:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyDowEnum'
+        source:
+          type: string
+          nullable: true
+          maxLength: 3
+        destination:
+          type: string
+          nullable: true
+          maxLength: 3
+        departureStartDate:
+          type: string
+          format: date
+        departureEndDate:
+          type: string
+          format: date
+        departureDow:
+          type: array
+          items:
+            $ref: '#/components/schemas/DepartureDowEnum'
+        noOfPax:
+          type: integer
+          nullable: true
+      required:
+      - matrixId
+      - policyEndDate
+      - policyName
+      - policyStartDate
+    StatusEnum:
+      enum:
+      - New
+      - Approve
+      - Reject
+      - Cancel
+      - Active
+      - In-active
+      type: string
+    TimeZoneKeyEnum:
+      enum:
+      - Africa/Abidjan
+      - Africa/Accra
+      - Africa/Addis_Ababa
+      - Africa/Algiers
+      - Africa/Asmara
+      - Africa/Asmera
+      - Africa/Bamako
+      - Africa/Bangui
+      - Africa/Banjul
+      - Africa/Bissau
+      - Africa/Blantyre
+      - Africa/Brazzaville
+      - Africa/Bujumbura
+      - Africa/Cairo
+      - Africa/Casablanca
+      - Africa/Ceuta
+      - Africa/Conakry
+      - Africa/Dakar
+      - Africa/Dar_es_Salaam
+      - Africa/Djibouti
+      - Africa/Douala
+      - Africa/El_Aaiun
+      - Africa/Freetown
+      - Africa/Gaborone
+      - Africa/Harare
+      - Africa/Johannesburg
+      - Africa/Juba
+      - Africa/Kampala
+      - Africa/Khartoum
+      - Africa/Kigali
+      - Africa/Kinshasa
+      - Africa/Lagos
+      - Africa/Libreville
+      - Africa/Lome
+      - Africa/Luanda
+      - Africa/Lubumbashi
+      - Africa/Lusaka
+      - Africa/Malabo
+      - Africa/Maputo
+      - Africa/Maseru
+      - Africa/Mbabane
+      - Africa/Mogadishu
+      - Africa/Monrovia
+      - Africa/Nairobi
+      - Africa/Ndjamena
+      - Africa/Niamey
+      - Africa/Nouakchott
+      - Africa/Ouagadougou
+      - Africa/Porto-Novo
+      - Africa/Sao_Tome
+      - Africa/Timbuktu
+      - Africa/Tripoli
+      - Africa/Tunis
+      - Africa/Windhoek
+      - America/Adak
+      - America/Anchorage
+      - America/Anguilla
+      - America/Antigua
+      - America/Araguaina
+      - America/Argentina/Buenos_Aires
+      - America/Argentina/Catamarca
+      - America/Argentina/ComodRivadavia
+      - America/Argentina/Cordoba
+      - America/Argentina/Jujuy
+      - America/Argentina/La_Rioja
+      - America/Argentina/Mendoza
+      - America/Argentina/Rio_Gallegos
+      - America/Argentina/Salta
+      - America/Argentina/San_Juan
+      - America/Argentina/San_Luis
+      - America/Argentina/Tucuman
+      - America/Argentina/Ushuaia
+      - America/Aruba
+      - America/Asuncion
+      - America/Atikokan
+      - America/Atka
+      - America/Bahia
+      - America/Bahia_Banderas
+      - America/Barbados
+      - America/Belem
+      - America/Belize
+      - America/Blanc-Sablon
+      - America/Boa_Vista
+      - America/Bogota
+      - America/Boise
+      - America/Buenos_Aires
+      - America/Cambridge_Bay
+      - America/Campo_Grande
+      - America/Cancun
+      - America/Caracas
+      - America/Catamarca
+      - America/Cayenne
+      - America/Cayman
+      - America/Chicago
+      - America/Chihuahua
+      - America/Coral_Harbour
+      - America/Cordoba
+      - America/Costa_Rica
+      - America/Creston
+      - America/Cuiaba
+      - America/Curacao
+      - America/Danmarkshavn
+      - America/Dawson
+      - America/Dawson_Creek
+      - America/Denver
+      - America/Detroit
+      - America/Dominica
+      - America/Edmonton
+      - America/Eirunepe
+      - America/El_Salvador
+      - America/Ensenada
+      - America/Fort_Nelson
+      - America/Fort_Wayne
+      - America/Fortaleza
+      - America/Glace_Bay
+      - America/Godthab
+      - America/Goose_Bay
+      - America/Grand_Turk
+      - America/Grenada
+      - America/Guadeloupe
+      - America/Guatemala
+      - America/Guayaquil
+      - America/Guyana
+      - America/Halifax
+      - America/Havana
+      - America/Hermosillo
+      - America/Indiana/Indianapolis
+      - America/Indiana/Knox
+      - America/Indiana/Marengo
+      - America/Indiana/Petersburg
+      - America/Indiana/Tell_City
+      - America/Indiana/Vevay
+      - America/Indiana/Vincennes
+      - America/Indiana/Winamac
+      - America/Indianapolis
+      - America/Inuvik
+      - America/Iqaluit
+      - America/Jamaica
+      - America/Jujuy
+      - America/Juneau
+      - America/Kentucky/Louisville
+      - America/Kentucky/Monticello
+      - America/Knox_IN
+      - America/Kralendijk
+      - America/La_Paz
+      - America/Lima
+      - America/Los_Angeles
+      - America/Louisville
+      - America/Lower_Princes
+      - America/Maceio
+      - America/Managua
+      - America/Manaus
+      - America/Marigot
+      - America/Martinique
+      - America/Matamoros
+      - America/Mazatlan
+      - America/Mendoza
+      - America/Menominee
+      - America/Merida
+      - America/Metlakatla
+      - America/Mexico_City
+      - America/Miquelon
+      - America/Moncton
+      - America/Monterrey
+      - America/Montevideo
+      - America/Montreal
+      - America/Montserrat
+      - America/Nassau
+      - America/New_York
+      - America/Nipigon
+      - America/Nome
+      - America/Noronha
+      - America/North_Dakota/Beulah
+      - America/North_Dakota/Center
+      - Asia/Baku
+      - Asia/Bangkok
+      - Asia/Barnaul
+      - Asia/Beirut
+      - Asia/Bishkek
+      - Asia/Brunei
+      - Asia/Calcutta
+      - Asia/Chita
+      - Asia/Choibalsan
+      - Asia/Chongqing
+      - Asia/Chungking
+      - Asia/Colombo
+      - Asia/Dacca
+      - Asia/Damascus
+      - Asia/Dhaka
+      - Asia/Dili
+      - Asia/Dubai
+      - Asia/Dushanbe
+      - Asia/Famagusta
+      - Asia/Gaza
+      - Asia/Harbin
+      - Asia/Hebron
+      - Asia/Ho_Chi_Minh
+      - Asia/Hong_Kong
+      - Asia/Hovd
+      - Asia/Irkutsk
+      - Asia/Istanbul
+      - Asia/Jakarta
+      - Asia/Jayapura
+      - Asia/Jerusalem
+      - Asia/Kabul
+      - Asia/Kamchatka
+      - Asia/Karachi
+      - Asia/Kashgar
+      - Asia/Kathmandu
+      - Asia/Katmandu
+      - Asia/Khandyga
+      - Asia/Kolkata
+      - Asia/Krasnoyarsk
+      - Asia/Kuala_Lumpur
+      - Asia/Kuching
+      - Asia/Kuwait
+      - Asia/Macao
+      - Asia/Macau
+      - Asia/Magadan
+      - Asia/Makassar
+      - Asia/Manila
+      - Asia/Muscat
+      - Asia/Nicosia
+      - Asia/Novokuznetsk
+      - Asia/Novosibirsk
+      - Asia/Omsk
+      - Asia/Oral
+      - Asia/Phnom_Penh
+      - Asia/Pontianak
+      - Asia/Pyongyang
+      - Asia/Qatar
+      - Asia/Qostanay
+      - Asia/Qyzylorda
+      - Asia/Rangoon
+      - Asia/Riyadh
+      - Asia/Saigon
+      - Asia/Sakhalin
+      - Asia/Samarkand
+      - Asia/Seoul
+      - Asia/Shanghai
+      - Asia/Singapore
+      - Asia/Srednekolymsk
+      - Asia/Taipei
+      - Asia/Tashkent
+      - Asia/Tbilisi
+      - Asia/Tehran
+      - Asia/Tel_Aviv
+      - Asia/Thimbu
+      - Asia/Thimphu
+      - Asia/Tokyo
+      - Asia/Tomsk
+      - Asia/Ujung_Pandang
+      - Asia/Ulaanbaatar
+      - Asia/Ulan_Bator
+      - Asia/Urumqi
+      - Asia/Ust-Nera
+      - Asia/Vientiane
+      - Asia/Vladivostok
+      - Asia/Yakutsk
+      - Asia/Yangon
+      - Asia/Yekaterinburg
+      - Asia/Yerevan
+      - Atlantic/Azores
+      - Atlantic/Bermuda
+      - Atlantic/Canary
+      - Atlantic/Cape_Verde
+      - Atlantic/Faeroe
+      - Atlantic/Faroe
+      - Atlantic/Jan_Mayen
+      - Atlantic/Madeira
+      - Atlantic/Reykjavik
+      - Atlantic/South_Georgia
+      - Atlantic/St_Helena
+      - Atlantic/Stanley
+      - Australia/ACT
+      - Australia/Adelaide
+      - Australia/Brisbane
+      - Australia/Broken_Hill
+      - Australia/Canberra
+      - Australia/Currie
+      - Australia/Darwin
+      - Australia/Eucla
+      - Australia/Hobart
+      - Australia/LHI
+      - Australia/Lindeman
+      - Australia/Lord_Howe
+      - Australia/Melbourne
+      - Australia/NSW
+      - Australia/North
+      - Australia/Perth
+      - Australia/Queensland
+      - Australia/South
+      - Australia/Sydney
+      - Australia/Tasmania
+      - Australia/Victoria
+      - Australia/West
+      - Australia/Yancowinna
+      - Brazil/Acre
+      - Brazil/DeNoronha
+      - Brazil/East
+      - Brazil/West
+      - CET
+      - CST6CDT
+      - Canada/Atlantic
+      - Canada/Central
+      - Canada/Eastern
+      - Canada/Mountain
+      - Canada/Newfoundland
+      - Canada/Pacific
+      - Canada/Saskatchewan
+      - Canada/Yukon
+      - Chile/Continental
+      - Chile/EasterIsland
+      - Cuba
+      - EET
+      - EST
+      - EST5EDT
+      - Egypt
+      - Eire
+      - Etc/GMT
+      - Etc/GMT+0
+      - Etc/GMT+1
+      - Etc/GMT+10
+      - Etc/GMT+11
+      - Etc/GMT+12
+      - Etc/GMT+2
+      - Etc/GMT+3
+      - Etc/GMT+4
+      - Etc/GMT+5
+      - Etc/GMT+6
+      - Etc/GMT+7
+      - Etc/GMT+8
+      - Etc/GMT+9
+      - Etc/GMT-0
+      - Etc/GMT-1
+      - Etc/GMT-10
+      - Etc/GMT-11
+      - Etc/GMT-12
+      - Etc/GMT-13
+      - Etc/GMT-14
+      - Etc/GMT-2
+      - Etc/GMT-3
+      - Etc/GMT-4
+      - Etc/GMT-5
+      - Etc/GMT-6
+      - Etc/GMT-7
+      - Etc/GMT-8
+      - Etc/GMT-9
+      - Etc/GMT0
+      - Etc/Greenwich
+      - Etc/UCT
+      - Etc/UTC
+      - Etc/Universal
+      - Etc/Zulu
+      - Europe/Amsterdam
+      - Europe/Andorra
+      - Europe/Astrakhan
+      - Europe/Athens
+      - Europe/Belfast
+      - Europe/Belgrade
+      - Europe/Berlin
+      - Europe/Bratislava
+      - Europe/Brussels
+      - Europe/Bucharest
+      - Europe/Budapest
+      - Europe/Busingen
+      - Europe/Chisinau
+      - Europe/Copenhagen
+      - Europe/Dublin
+      - Europe/Gibraltar
+      - Europe/Guernsey
+      - Europe/Helsinki
+      - Europe/Isle_of_Man
+      - Europe/Istanbul
+      - Europe/Jersey
+      - Europe/Kaliningrad
+      - Europe/Kiev
+      - Europe/Kirov
+      - Europe/Kyiv
+      - Europe/Lisbon
+      - Europe/Ljubljana
+      - Europe/London
+      - Europe/Luxembourg
+      - Europe/Madrid
+      - Europe/Malta
+      - Europe/Mariehamn
+      - Europe/Minsk
+      - Europe/Monaco
+      - Europe/Moscow
+      - Europe/Nicosia
+      - Europe/Oslo
+      - Europe/Paris
+      - Europe/Podgorica
+      - Europe/Prague
+      - Europe/Riga
+      - Europe/Rome
+      - Europe/Samara
+      - Europe/San_Marino
+      - Europe/Sarajevo
+      - Europe/Saratov
+      - Europe/Simferopol
+      - Europe/Skopje
+      - Europe/Sofia
+      - Europe/Stockholm
+      - Europe/Tallinn
+      - Europe/Tirane
+      - Europe/Tiraspol
+      - Europe/Ulyanovsk
+      - Europe/Uzhgorod
+      - Europe/Vaduz
+      - Europe/Vatican
+      - Europe/Vienna
+      - Europe/Vilnius
+      - Europe/Volgograd
+      - Europe/Warsaw
+      - Europe/Zagreb
+      - Europe/Zaporozhye
+      - Europe/Zurich
+      - GB
+      - GB-Eire
+      - GMT
+      - GMT+0
+      - GMT-0
+      - GMT0
+      - Greenwich
+      - HST
+      - Hongkong
+      - Iceland
+      - Indian/Antananarivo
+      - Indian/Chagos
+      - Indian/Christmas
+      - Indian/Cocos
+      - Indian/Comoro
+      - Indian/Kerguelen
+      - Indian/Mahe
+      - Indian/Maldives
+      - Indian/Mauritius
+      - Indian/Mayotte
+      - Indian/Reunion
+      - Iran
+      - Israel
+      - Jamaica
+      - Japan
+      - Kwajalein
+      - Libya
+      - MET
+      - MST
+      - MST7MDT
+      - Mexico/BajaNorte
+      - Mexico/BajaSur
+      - Mexico/General
+      - NZ
+      - NZ-CHAT
+      - Navajo
+      - PRC
+      - PST8PDT
+      - Pacific/Apia
+      - Pacific/Auckland
+      - Pacific/Bougainville
+      - Pacific/Chatham
+      - Pacific/Chuuk
+      - Pacific/Easter
+      - Pacific/Efate
+      - Pacific/Enderbury
+      - Pacific/Fakaofo
+      - Pacific/Fiji
+      - Pacific/Funafuti
+      - Pacific/Galapagos
+      - Pacific/Gambier
+      - Pacific/Guadalcanal
+      - Pacific/Guam
+      - Pacific/Honolulu
+      - Pacific/Johnston
+      - Pacific/Kanton
+      - Pacific/Kiritimati
+      - Pacific/Kosrae
+      - Pacific/Kwajalein
+      - Pacific/Majuro
+      - Pacific/Marquesas
+      - Pacific/Midway
+      - Pacific/Nauru
+      - Pacific/Niue
+      - Pacific/Norfolk
+      - Pacific/Noumea
+      - Pacific/Pago_Pago
+      - Pacific/Palau
+      - Pacific/Pitcairn
+      - Pacific/Pohnpei
+      - Pacific/Ponape
+      - Pacific/Port_Moresby
+      - Pacific/Rarotonga
+      - Pacific/Saipan
+      - Pacific/Samoa
+      - Pacific/Tahiti
+      - Pacific/Tarawa
+      - Pacific/Tongatapu
+      - Pacific/Truk
+      - Pacific/Wake
+      - Pacific/Wallis
+      - Pacific/Yap
+      - Poland
+      - Portugal
+      - ROC
+      - ROK
+      - Singapore
+      - Turkey
+      - UCT
+      - US/Alaska
+      - US/Aleutian
+      - US/Arizona
+      - US/Central
+      - US/East-Indiana
+      - US/Eastern
+      - US/Hawaii
+      - US/Indiana-Starke
+      - US/Michigan
+      - US/Mountain
+      - US/Pacific
+      - US/Samoa
+      - UTC
+      - Universal
+      - W-SU
+      - WET
+      - Zulu
+      type: string
+    TitleEnum:
+      enum:
+      - Mr
+      - Mrs
+      - Ms
+      type: string
+    TokenObtainPair:
+      type: object
+      properties:
+        email_id:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - email_id
+      - password
+      - refresh
+    TokenObtainPairSerializerWithWebAppToken:
+      type: object
+      description: |-
+        Serializer class to accept a auth token(default implementation doesn't have expiry) and provide a JWT token as
+        response
+      properties:
+        web_app_token:
+          type: string
+      required:
+      - web_app_token
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TravelAgencyRequest:
+      type: object
+      description: serializer for validating the input data for the request raising
+        service
+      properties:
+        commonInfo:
+          $ref: '#/components/schemas/CommonInfo'
+        requestInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestInfo'
+      required:
+      - commonInfo
+      - requestInfo
+    TravelAgencyResponse:
+      type: object
+      description: serializer for the request raising service Response
+      properties:
+        responseCode:
+          type: integer
+        requestMasterId:
+          type: integer
+        response:
+          type: string
+      required:
+      - response
+      - responseCode
+    UpdateCorporateDetails:
+      type: object
+      description: Serializer for only corporate service updation
+      properties:
+        agent_name:
+          type: string
+          maxLength: 32
+        corporate_name:
+          type: string
+          maxLength: 100
+        corporate_type_id:
+          type: string
+          maxLength: 30
+        corporate_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        pcc_code:
+          type: string
+        iata_code:
+          type: string
+          maxLength: 15
+          minLength: 7
+        office_number:
+          type: string
+          maxLength: 15
+        time_zone_key:
+          $ref: '#/components/schemas/TimeZoneKeyEnum'
+        corporate_address:
+          type: string
+          maxLength: 250
+        pos_code:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        customer_category_id:
+          type: string
+          maxLength: 30
+    UpdateCorporateDetailsSerializerV1:
+      type: object
+      description: Serializer for only corporate service update
+      properties:
+        corporate_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+        corporate_type_id:
+          type: string
+          maxLength: 13
+          minLength: 9
+        corporate_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        pcc_code:
+          type: string
+          maxLength: 25
+          minLength: 5
+        iata_code:
+          type: string
+          maxLength: 25
+          minLength: 5
+        office_number:
+          type: string
+          maxLength: 40
+        time_zone_key:
+          oneOf:
+          - $ref: '#/components/schemas/TimeZoneKeyEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        corporate_address:
+          type: string
+          maxLength: 319
+          minLength: 1
+        pos_code:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 3
+          minLength: 3
+        customer_category_id:
+          type: integer
+          maximum: 20
+          minimum: 0
+    UpdateCorportateUserMappingSerializerV1:
+      type: object
+      description: serializer for corporate user mapping updation
+      properties:
+        user_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        is_direct:
+          type: boolean
+        corporate_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        active_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+    UpdateTravelAgent:
+      type: object
+      properties:
+        travelagencyMapping:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        iataAgent:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        agentTitle:
+          $ref: '#/components/schemas/AgentTitleEnum'
+        agentFirstName:
+          type: string
+          maxLength: 32
+        agentLastName:
+          type: string
+          maxLength: 32
+        agentEmailId:
+          type: string
+          format: email
+        travelIataCode:
+          type: string
+          default: NONIATA
+          maxLength: 15
+          minLength: 7
+        travelPccCode:
+          type: string
+          minLength: 8
+        travelAgencyName:
+          type: string
+        agentAddress:
+          type: string
+        agentCountry:
+          type: string
+        timeZone:
+          type: string
+        posCodeDetail:
+          type: string
+        activeStatusAddAgent:
+          type: string
+        emailVerificationStatus:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        registrationPayment:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        allSetting:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        language:
+          type: array
+          items:
+            type: string
+        settings:
+          type: array
+          items:
+            type: integer
+        salesPersionArray:
+          type: array
+          items:
+            type: integer
+        agencyPaymentIdArray:
+          type: array
+          items:
+            type: integer
+        userEmailMappingId:
+          type: array
+          items:
+            type: integer
+      required:
+      - activeStatusAddAgent
+      - agencyPaymentIdArray
+      - agentAddress
+      - agentCountry
+      - agentEmailId
+      - agentFirstName
+      - agentLastName
+      - agentTitle
+      - allSetting
+      - emailVerificationStatus
+      - iataAgent
+      - language
+      - posCodeDetail
+      - registrationPayment
+      - salesPersionArray
+      - settings
+      - timeZone
+      - travelAgencyName
+      - travelPccCode
+      - travelagencyMapping
+      - userEmailMappingId
+    UpdateUserDetails:
+      type: object
+      properties:
+        corporate_id:
+          type: integer
+        group_id:
+          type: integer
+        title:
+          $ref: '#/components/schemas/TitleEnum'
+        user_name:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email_id:
+          type: string
+          format: email
+        country_number:
+          type: string
+        phone_number:
+          type: integer
+        password:
+          type: string
+        confirm_password:
+          type: string
+        user_address:
+          type: string
+        country_code:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        time_zone_key:
+          $ref: '#/components/schemas/TimeZoneKeyEnum'
+        state_code:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        approved_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        email_verification_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        city_id:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        user_zip_code:
+          type: string
+        confirm_code:
+          type: string
+          maxLength: 32
+          minLength: 5
+    UpdateUserDetailsSerializerV1:
+      type: object
+      description: Serializer for only user update service
+      properties:
+        title:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 5
+          minLength: 2
+        user_name:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        first_name:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 40
+          minLength: 2
+        last_name:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 80
+          minLength: 2
+        email_id:
+          type: string
+          format: email
+          maxLength: 80
+          minLength: 3
+        phone_number:
+          type: string
+          maxLength: 40
+        user_address:
+          type: string
+          maxLength: 255
+          minLength: 1
+        country_code:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 2
+          minLength: 2
+        state_code:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+        approved_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        email_verification_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        city_id:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 40
+          minLength: 2
+        user_zip_code:
+          type: string
+          maxLength: 20
+          minLength: 1
+        account_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        email_preference:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailPreferenceEnum'
+    UploadFile:
+      type: object
+      description: serialize the input file object
+      properties:
+        upload_file:
+          type: string
+          format: uri
+      required:
+      - upload_file
+    UpsertCorporateDetailsSerializerV1:
+      type: object
+      description: serializer for upsert service for only orporate
+      properties:
+        agent_name:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        corporate_name:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 255
+          minLength: 1
+        corporate_type_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 13
+          minLength: 9
+        corporate_status:
+          allOf:
+          - $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+          default: Y
+        pcc_code:
+          type: string
+          default: ''
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 25
+          minLength: 5
+        iata_code:
+          type: string
+          default: ''
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 25
+          minLength: 5
+        office_number:
+          type: string
+          default: ''
+          maxLength: 40
+        time_zone_key:
+          default: America/Chicago
+          oneOf:
+          - $ref: '#/components/schemas/TimeZoneKeyEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        corporate_address:
+          type: string
+          default: ''
+          maxLength: 319
+          minLength: 1
+        pos_code:
+          type: string
+          default: DAL
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 3
+          minLength: 3
+        customer_category_id:
+          type: integer
+          maximum: 20
+          minimum: 0
+          default: 0
+      required:
+      - agent_name
+      - corporate_name
+      - corporate_type_id
+    UpsertCreateCorportateUserMappingSerializerV1:
+      type: object
+      description: Upsert serializer for updation or creationof resource
+      properties:
+        user_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        reference_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        is_direct:
+          type: boolean
+          default: false
+        corporate_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        active_status:
+          allOf:
+          - $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+          default: Y
+      required:
+      - corporate_id
+      - reference_id
+      - user_id
+    UpsertUserDetailsSerializerV1:
+      type: object
+      description: update or create the given data
+      properties:
+        title:
+          type: string
+          default: ''
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 5
+          minLength: 2
+        user_name:
+          type: string
+          default: ''
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        first_name:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 40
+          minLength: 2
+        last_name:
+          type: string
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 80
+          minLength: 2
+        email_id:
+          type: string
+          format: email
+          maxLength: 80
+          minLength: 3
+        phone_number:
+          type: string
+          default: ''
+          maxLength: 40
+        user_address:
+          type: string
+          default: ''
+          maxLength: 255
+          minLength: 1
+        country_code:
+          type: string
+          default: US
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 2
+          minLength: 2
+        approved_status:
+          $ref: '#/components/schemas/_AseatPaymentCompletedEnum'
+        city_id:
+          type: string
+          default: Dallas
+          pattern: ^[a-zA-Z\s]*$
+          maxLength: 40
+          minLength: 2
+        state_code:
+          type: string
+          default: TX
+          pattern: ^[a-zA-Z\s]*$
+        user_zip_code:
+          type: string
+          default: ''
+          maxLength: 20
+          minLength: 1
+        confirm_code:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 5
+        account_id:
+          type: string
+          pattern: ^[0-9a-zA-Z\s]*$
+          maxLength: 32
+          minLength: 2
+        email_preference:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailPreferenceEnum'
+      required:
+      - account_id
+      - confirm_code
+      - email_id
+      - first_name
+      - last_name
+    UserResponse:
+      type: object
+      description: request serializer for user response serializer
+      properties:
+        requestMasterId:
+          type: integer
+        requestMasterHistoryId:
+          type: integer
+          default: 0
+        selectedFlight:
+          type: array
+          items:
+            $ref: '#/components/schemas/SelectedFlight'
+      required:
+      - requestMasterId
+      - selectedFlight
+    ViewRequestResponse:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+        response:
+          type: object
+          additionalProperties: {}
+      required:
+      - response
+      - responseCode
+    ViewUserDetailsResponse:
+      type: object
+      description: serializer for retrieving of user service
+      properties:
+        user_id:
+          type: integer
+        corporate_id:
+          type: integer
+        group_id:
+          type: integer
+        title:
+          type: string
+        user_name:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email_id:
+          type: string
+        user_address:
+          type: string
+        phone_number:
+          type: string
+        country_code:
+          type: string
+        user_zip_code:
+          type: string
+        city_id:
+          type: string
+        state_code:
+          type: string
+        time_zone_key:
+          type: string
+        approved_status:
+          type: string
+        email_verification_status:
+          type: string
+      required:
+      - approved_status
+      - city_id
+      - corporate_id
+      - country_code
+      - email_id
+      - email_verification_status
+      - first_name
+      - group_id
+      - last_name
+      - phone_number
+      - time_zone_key
+      - title
+      - user_address
+      - user_id
+      - user_name
+      - user_zip_code
+    _AseatPaymentCompletedEnum:
+      enum:
+      - Y
+      - N
+      type: string
+    passenger_template:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          type: string
+      required:
+      - data
+      - message
+    searDetail:
+      type: object
+      properties:
+        gap:
+          type: string
+        seatAvailability:
+          type: boolean
+        seatDesignator:
+          type: string
+        paidSeat:
+          type: boolean
+        seatFee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        seatType:
+          type: string
+        class:
+          type: string
+        displayName:
+          type: string
+        structureDisplayName:
+          type: string
+        currencyCode:
+          type: string
+        NoSeat:
+          type: boolean
+        zone:
+          type: integer
+      required:
+      - NoSeat
+      - class
+      - currencyCode
+      - displayName
+      - paidSeat
+      - seatAvailability
+      - seatDesignator
+      - seatFee
+      - seatType
+      - structureDisplayName
+      - zone
+    PaymentDetailsResponse:
+      type: object
+      properties:
+        responseCode:
+          type: integer
+        response:
+          type: object
+          properties:
+            bankDetails:
+              type: string
+            agencyBalance:
+              type: number
+            pnr:
+              type: string
+          required:
+            - bankDetails
+            - agencyBalance
+            - pnr
+      required:
+        - response
+        - responseCode
+    PaymentRequest:
+      type: object
+      properties:
+        pnr:
+          type: string
+          description: The PNR number for the payment
+        amount:
+          type: number
+          description: The payment amount
+        paymentMethod:
+          type: string
+          enum:
+            - bank_transfer
+            - credit_card
+            - agency_balance
+          description: The method of payment
+        emdDetails:
+          type: string
+          description: Details for EMD creation
+      required:
+        - pnr
+        - amount
+        - paymentMethod
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

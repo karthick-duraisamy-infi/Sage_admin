@@ -1,0 +1,21 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  version: 1.0.0
+  description: A sample API to illustrate OpenAPI concepts.
+paths:
+  /ping:
+    get:
+      summary: Ping
+      description: A simple endpoint to check if the API is responsive.
+      responses:
+        '200':
+          description: API is up and running.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: pong

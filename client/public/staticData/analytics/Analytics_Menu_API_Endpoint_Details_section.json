@@ -1,0 +1,65 @@
+{
+  "api_endpoint_details": [
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/auth/login",
+      "status": "healthy",
+      "last_error_ago": "2 hours ago",
+      "metrics": {
+        "requests": 45000,
+        "avg_response_ms": 89,
+        "success_rate_percent": 99.8,
+        "error_rate_percent": 0.2
+      }
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/users/{id}",
+      "status": "healthy",
+      "last_error_ago": "18 minutes ago",
+      "metrics": {
+        "requests": 34700,
+        "avg_response_ms": 156,
+        "success_rate_percent": 99.5,
+        "error_rate_percent": 0.5
+      }
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/analytics/data",
+      "status": "warning",
+      "last_error_ago": "5 mins ago",
+      "metrics": {
+        "requests": 28900,
+        "avg_response_ms": 234,
+        "success_rate_percent": 98.9,
+        "error_rate_percent": 1.1
+      }
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/payments/process",
+      "status": "healthy",
+      "last_error_ago": "1 day ago",
+      "metrics": {
+        "requests": 15400,
+        "avg_response_ms": 312,
+        "success_rate_percent": 99.9,
+        "error_rate_percent": 0.1
+      }
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/files/upload",
+      "status": "warning",
+      "last_error_ago": "10 mins ago",
+      "metrics": {
+        "requests": 12000,
+        "avg_response_ms": 890,
+        "success_rate_percent": 97.8,
+        "error_rate_percent": 2.2
+      }
+    }
+  ],
+  "overall_status": "All Endpoints"
+}

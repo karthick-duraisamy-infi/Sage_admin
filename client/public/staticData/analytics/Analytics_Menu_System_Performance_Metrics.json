@@ -1,0 +1,48 @@
+{
+  "title": "System Performance Metrics",
+  "time_range": "24H",
+  "unit": "%",
+  "data": [
+    {
+      "time_label": "00:00",
+      "cpu": 25,
+      "memory": 22,
+      "metric_c_orange": 20
+    },
+    {
+      "time_label": "04:00",
+      "metric_a_green": 55,
+      "metric_b_blue": 30,
+      "metric_c_orange": 15
+    },
+    {
+      "time_label": "08:00",
+      "metric_a_green": 38,
+      "metric_b_blue": 32,
+      "metric_c_orange": 28
+    },
+    {
+      "time_label": "12:00",
+      "metric_a_green": 52,
+      "metric_b_blue": 35,
+      "metric_c_orange": 20
+    },
+    {
+      "time_label": "16:00",
+      "metric_a_green": 56,
+      "metric_b_blue": 20,
+      "metric_c_orange": 18
+    },
+    {
+      "time_label": "20:00",
+      "metric_a_green": 40,
+      "metric_b_blue": 25,
+      "metric_c_orange": 24
+    }
+  ],
+  "series_legend": {
+    "metric_a_green": "CPU Utilization",
+    "metric_b_blue": "Memory Usage",
+    "metric_c_orange": "Network Latency"
+  }
+}

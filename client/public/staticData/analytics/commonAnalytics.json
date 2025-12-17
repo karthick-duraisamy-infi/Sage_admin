@@ -1,0 +1,135 @@
+{
+  "Overall_System_Status": {
+    "System_Uptime": "99.9%",
+    "Avg_Response_Time": "45ms",
+    "Storage_Used": "2.3GB",
+    "Overall_Health": "Operational"
+  },
+  "Top_Performing_APIs": [
+    {
+      "API_Endpoint": "/api/v1/auth",
+      "API_Name": "Authentication API",
+      "Requests": 141800,
+      "Avg_Response_ms": 89,
+      "Success_Rate": "99.8%",
+      "Growth": "+12%",
+      "Performance_Status": "excellent",
+      "Performance_Score": "99.8%"
+    },
+    {
+      "API_Endpoint": "/api/v1/users",
+      "API_Name": "User Data API",
+      "Requests": 89600,
+      "Avg_Response_ms": 156,
+      "Success_Rate": "99.5%",
+      "Growth": "+8%",
+      "Performance_Status": "excellent",
+      "Performance_Score": "99.5%"
+    },
+    {
+      "API_Endpoint": "/api/v1/analytics",
+      "API_Name": "Analytics API",
+      "Requests": 67000,
+      "Avg_Response_ms": 234,
+      "Success_Rate": "98.9%",
+      "Growth": "+15%",
+      "Performance_Status": "good",
+      "Performance_Score": "98.9%"
+    },
+    {
+      "API_Endpoint": "/api/v1/payments",
+      "API_Name": "Payment Processing",
+      "Requests": 45200,
+      "Avg_Response_ms": 312,
+      "Success_Rate": "99.3%",
+      "Growth": "+6%",
+      "Performance_Status": "excellent",
+      "Performance_Score": "99.3%"
+    },
+    {
+      "API_Endpoint": "/api/v1/uploads",
+      "API_Name": "File Upload API",
+      "Requests": 34500,
+      "Avg_Response_ms": 890,
+      "Success_Rate": "97.8%",
+      "Growth": "+3%",
+      "Performance_Status": "good",
+      "Performance_Score": "97.8%"
+    }
+  ],
+  "Rate_Limiting_Status": [
+    {
+      "API_Endpoint": "/api/v1/auth",
+      "Usage": "780 / 1000",
+      "Window": "1 hour",
+      "Reset_Time": "25 mins",
+      "Status": "warning"
+    },
+    {
+      "API_Endpoint": "/api/v1/users",
+      "Usage": "2700 / 5000",
+      "Window": "1 hour",
+      "Reset_Time": "35 mins",
+      "Status": "normal"
+    },
+    {
+      "API_Endpoint": "/api/v1/analytics",
+      "Usage": "480 / 500",
+      "Window": "1 hour",
+      "Reset_Time": "5 mins",
+      "Status": "critical"
+    },
+    {
+      "API_Endpoint": "/api/v1/payments",
+      "Usage": "65 / 100",
+      "Window": "1 hour",
+      "Reset_Time": "20 mins",
+      "Status": "normal"
+    }
+  ],
+  "Geographic_Usage_Distribution": {
+    "Total_Global_Requests": 345000,
+    "Countries": [
+      {
+        "Country": "United States",
+        "Region": "North America",
+        "Usage_Percentage": "45.2%",
+        "Requests": 118000,
+        "Avg_Response_ms": 89,
+        "Growth": "+12%"
+      },
+      {
+        "Country": "United Kingdom",
+        "Region": "Europe",
+        "Usage_Percentage": "25.8%",
+        "Requests": 89000,
+        "Avg_Response_ms": 134,
+        "Growth": "+8%"
+      },
+      {
+        "Country": "Germany",
+        "Region": "Europe",
+        "Usage_Percentage": "13%",
+        "Requests": 45000,
+        "Avg_Response_ms": 156,
+        "Growth": "+15%"
+      },
+      {
+        "Country": "Canada",
+        "Region": "North America",
+        "Usage_Percentage": "9.8%",
+        "Requests": 34000,
+        "Avg_Response_ms": 95,
+        "Growth": "+3%"
+      },
+      {
+        "Country": "Australia",
+        "Region": "Asia-Pacific",
+        "Usage_Percentage": "6.1%",
+        "Requests": 21000,
+        "Avg_Response_ms": 245,
+        "Growth": "-2%"
+      }
+    ]
+  }
+}

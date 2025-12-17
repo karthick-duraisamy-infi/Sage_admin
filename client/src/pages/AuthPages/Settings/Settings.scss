@@ -1,0 +1,355 @@
+@use '../../../styles/theme' as *;
+
+.cls-settings-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+// Quick Actions Card
+.cls-quick-actions-card {
+  margin-bottom: 2rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cls-quick-actions-content {
+  padding: 1.25rem !important;
+  background-color: #fff !important;
+  border-radius: 1.25rem;
+}
+
+.cls-quick-actions-header {
+  margin-bottom: 1.25rem;
+}
+
+.cls-quick-actions-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cls-quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.cls-quick-action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 1.25rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &.cls-action-purple {
+    background: #f5f3ff;
+    color: #7c3aed;
+
+    &:hover {
+      background: #ede9fe;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(124, 58, 237, 0.15);
+    }
+  }
+
+  &.cls-action-yellow {
+    background: #fffbeb;
+    color: #d97706;
+
+    &:hover {
+      background: #fef3c7;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(217, 119, 6, 0.15);
+    }
+  }
+
+  &.cls-action-green {
+    background: #dcfce7;
+    color: #16a34a;
+
+    &:hover {
+      background: #bbf7d0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(22, 163, 74, 0.15);
+    }
+  }
+
+  &.cls-action-blue {
+    background: #dbeafe;
+    color: #2563eb;
+
+    &:hover {
+      background: #bfdbfe;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.15);
+    }
+  }
+}
+
+// Settings Layout
+.cls-settings-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+// Sidebar
+.cls-settings-sidebar {
+  position: sticky;
+  top: 1rem;
+}
+
+.cls-settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cls-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+
+  &:hover {
+    background: #f9fafb;
+    color: #111827;
+  }
+
+  &.cls-nav-item-active {
+    background: #7c3aed;
+    color: #ffffff;
+
+    &:hover {
+      background: #6d28d9;
+    }
+  }
+}
+
+// Settings Main Content
+.cls-settings-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cls-settings-card {
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cls-settings-card-content {
+  padding: 1.25rem !important;
+  background-color: #fff !important;
+  border-radius: 1.25rem;
+}
+
+.cls-settings-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+  }
+
+  svg {
+    color: #7c3aed;
+  }
+}
+
+// Settings Fields
+.cls-settings-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cls-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+  }
+}
+
+.cls-select-trigger {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  font-size: 0.875rem;
+
+  &:hover {
+    border-color: #9ca3af;
+  }
+
+  &:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  }
+}
+
+.cls-switch-group {
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.cls-switch-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cls-switch-info {
+  flex: 1;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+    cursor: pointer;
+  }
+}
+
+.cls-switch-description {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.813rem;
+  color: #6b7280;
+}
+
+.cls-input-error {
+  border-color: #ef4444 !important;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  }
+}
+
+.cls-error-message {
+  margin: 0;
+  font-size: 0.813rem;
+  color: #ef4444;
+  font-weight: 500;
+}
+
+// Actions
+.cls-settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.cls-save-button {
+  min-width: 180px;
+  background: #7c3aed;
+  color: #ffffff;
+  font-weight: 600;
+
+  &:hover:not(:disabled) {
+    background: #6d28d9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .cls-settings-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .cls-settings-sidebar {
+    position: static;
+  }
+
+  .cls-settings-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0.75rem;
+  }
+
+  .cls-nav-item {
+    white-space: nowrap;
+  }
+
+  .cls-quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .cls-settings-container {
+    padding: 1rem;
+  }
+
+  .cls-quick-actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cls-settings-card-content {
+    padding: 1.25rem !important;
+  }
+
+  .cls-settings-nav {
+    gap: 0.375rem;
+  }
+
+  .cls-nav-item {
+    font-size: 0.813rem;
+    padding: 0.625rem 0.875rem;
+  }
+
+  .cls-switch-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cls-save-button {
+    width: 100%;
+  }
+}

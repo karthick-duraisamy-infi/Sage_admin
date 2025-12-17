@@ -1,0 +1,222 @@
+
+@use '../../../../styles/theme' as *;
+
+.cls-roles-form-dialog {
+  max-width: 700px !important;
+  max-height: 90vh !important;
+
+  .cls-dialog-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: $text-primary;
+  }
+
+  .cls-dialog-subtitle {
+    font-size: 14px;
+    color: $text-secondary;
+    margin-top: 4px;
+  }
+}
+
+.cls-form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+
+    &:hover {
+      background: hsl(var(--muted-foreground) / 0.5);
+    }
+  }
+}
+
+.cls-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cls-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+  }
+
+  .cls-required {
+    color: #ef4444;
+  }
+}
+
+.cls-permissions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cls-permissions-header {
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+  }
+
+  .cls-permissions-subtitle {
+    font-size: 0.8125rem;
+    color: hsl(var(--muted-foreground));
+    margin: 0.25rem 0 0 0;
+  }
+}
+
+.cls-permissions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: hsl(var(--muted) / 0.2);
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+}
+
+.cls-permission-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.cls-permission-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: hsl(var(--muted) / 0.5);
+  }
+
+  .cls-permission-main {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+
+    .cls-expand-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      color: hsl(var(--muted-foreground));
+      transition: transform $transition-fast;
+
+      &:hover {
+        color: hsl(var(--foreground));
+      }
+    }
+
+    .cls-permission-icon {
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: hsl(var(--background));
+      border: 1px solid hsl(var(--border));
+      border-radius: 0.375rem;
+      color: #667eea;
+    }
+
+    .cls-permission-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: hsl(var(--foreground));
+      cursor: pointer;
+      user-select: none;
+    }
+  }
+}
+
+.cls-permission-children {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-left: 3rem;
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid hsl(var(--border));
+}
+
+.cls-permission-child-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: hsl(var(--muted) / 0.5);
+  }
+
+  .cls-child-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    background: hsl(var(--muted) / 0.5);
+    color: #667eea;
+  }
+
+  .cls-permission-label {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: hsl(var(--muted-foreground));
+  }
+}
+
+.cls-checkbox-indeterminate {
+  background: #667eea;
+  border-color: #667eea;
+}
+
+.cls-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid hsl(var(--border));
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .cls-roles-form-dialog {
+    max-width: 95vw !important;
+  }
+
+  .cls-permission-children {
+    margin-left: 1.5rem;
+  }
+}

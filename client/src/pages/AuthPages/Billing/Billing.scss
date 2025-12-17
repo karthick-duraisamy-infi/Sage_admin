@@ -1,0 +1,804 @@
+@use '../../../styles/theme' as *;
+
+.cls-billing-container {
+  padding: 1.5rem;
+  background-color: #f8fafc;
+  min-height: calc(100vh - 73px);
+}
+
+// Alert Banner
+.cls-alert-banner {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cls-alert-content {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.cls-alert-icon {
+  color: #b45309;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.cls-alert-text {
+  strong {
+    display: block;
+    color: #92400e;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    color: #78350f;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+}
+
+.cls-alert-button {
+  background: #fbbf24;
+  border-color: #f59e0b;
+  color: #78350f;
+  font-weight: 500;
+
+  &:hover {
+    background: #f59e0b;
+    border-color: #d97706;
+  }
+}
+
+// Section Headers
+.cls-section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cls-section-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+// Insights Section
+.cls-insights-section {
+  padding: 1.5rem;
+  border: 1px solid #dedee7;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  background-color: #fff;
+}
+
+.cls-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cls-stat-card {
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  &.cls-stat-primary {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border-left: 4px solid #3b82f6;
+  }
+
+  &.cls-stat-secondary {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    border-left: 4px solid #6b7280;
+  }
+
+  &.cls-stat-tertiary {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border-left: 4px solid #f59e0b;
+  }
+}
+
+.cls-stat-content {
+  padding: 1.5rem;
+}
+
+.cls-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.cls-stat-label {
+  font-size: 0.875rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.cls-performance-text-section {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding: 0 1rem;
+}
+
+.cls-performance-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.cls-performance-description {
+  font-size: 0.9375rem;
+  color: #111827;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+}
+
+// Plan & Billing Grid
+.cls-plan-billing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.cls-current-plan-card,
+.cls-next-billing-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cls-plan-content,
+.cls-billing-content {
+  padding: 0.75rem 1.5rem !important;
+  background-color: #fff;
+  border-radius: 1rem;
+}
+
+.cls-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.cls-plan-title,
+.cls-billing-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cls-plan-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cls-plan-price {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.cls-plan-details {
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cls-detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #e5e7eb;
+  }
+}
+
+.cls-detail-label {
+  color: #6b7280;
+}
+
+.cls-detail-value {
+  color: #111827;
+  font-weight: 500;
+}
+
+.cls-overage-rate {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.cls-usage-section {
+  margin-bottom: 1.5rem;
+}
+
+.cls-usage-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.cls-usage-percent {
+  color: #3b82f6;
+}
+
+.cls-usage-progress {
+  height: 8px;
+
+  &>div {
+    background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+  }
+}
+
+.cls-plan-costs {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+}
+
+.cls-cost-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  padding: 0.5rem 0;
+  color: #6b7280;
+
+  &.cls-cost-total {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+    border-top: 1px solid #e5e7eb;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+  }
+}
+
+// Billing Card
+.cls-billing-date-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.cls-billing-date {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+.cls-billing-details {
+  background: #f9fafb;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.cls-billing-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  font-size: 0.875rem;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #e5e7eb;
+  }
+}
+
+.cls-billing-label {
+  color: #6b7280;
+}
+
+.cls-billing-value {
+  color: #111827;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cls-billing-highlight {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.cls-overage-status {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.cls-default-btn {
+  padding: 0.25rem 0.5rem;
+  height: auto;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.cls-billing-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cls-billing-action-btn {
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+// Overage Card
+.cls-overage-card {
+  margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cls-overage-content {
+  padding: 1.5rem !important;
+  background-color: #fff;
+  border-radius: 1rem;
+}
+
+.cls-overage-header {
+  margin-bottom: 1.5rem;
+}
+
+.cls-overage-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cls-overage-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.cls-overage-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cls-overage-plan {
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+
+  &.cls-overage-starter {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border: 1px solid #fca5a5;
+  }
+
+  &.cls-overage-professional {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #86efac;
+  }
+
+  &.cls-overage-enterprise {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #93c5fd;
+  }
+}
+
+.cls-overage-plan-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.cls-overage-plan-rate {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cls-overage-plan-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.cls-overage-plan-sublabel {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.cls-overage-note {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+
+  svg {
+    color: #3b82f6;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: #1e40af;
+    margin: 0;
+
+    strong {
+      font-weight: 600;
+    }
+  }
+}
+
+// Plans Section
+.cls-plans-section {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 1rem
+}
+
+.cls-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.cls-plan-card {
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+
+  &:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    border-color: #e5e7eb;
+  }
+
+  &.cls-plan-highlighted {
+    border: 2px solid #6366f1;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  }
+
+  &.cls-plan-selected {
+    border: 2px solid #1d2f7e;
+    box-shadow: 0 4px 12px rgba(29, 47, 126, 0.3);
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+  }
+}
+
+.cls-current-plan-badge {
+  position: absolute;
+  top: -10px;
+  right: 1rem;
+  background: #3b82f6;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+}
+
+.cls-selected-plan-badge {
+  position: absolute;
+  top: -10px;
+  right: 1rem;
+  background: #10b981;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.cls-plan-card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.cls-plan-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cls-plan-card-header {
+  margin-bottom: 1rem;
+}
+
+.cls-plan-card-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.cls-plan-card-price {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cls-plan-card-period {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.cls-plan-card-calls {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cls-plan-card-overage {
+  font-size: 0.875rem;
+  color: #ef4444;
+  margin-bottom: 1.5rem;
+}
+
+.cls-plan-card-features {
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.cls-feature-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+  color: #4b5563;
+
+  svg {
+    color: #10b981;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}
+
+.cls-plan-select-btn {
+  width: 100%;
+  margin-top: auto;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Invoices
+.cls-invoices-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.cls-invoices-content {
+  padding: 1.5rem !important;
+  background-color: #fff !important;
+  border-radius: 1.25rem !important;
+}
+
+.cls-invoices-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+}
+
+.cls-invoices-header-left {
+  flex: 0 0 auto;
+}
+
+.cls-invoices-header-right {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.cls-invoices-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cls-invoices-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.cls-search-wrapper {
+  position: relative;
+  width: 280px;
+}
+
+.cls-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  width: 16px;
+  height: 16px;
+}
+
+.cls-search-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: #1d2f7e;
+  }
+}
+
+.cls-filter-select {
+  min-width: 150px;
+}
+
+.cls-customize-button {
+  gap: 0.5rem;
+}
+
+.cls-customize-popover {
+  width: 280px;
+}
+
+.cls-customize-header {
+  margin-bottom: 1rem;
+
+  h4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+}
+
+.cls-customize-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cls-customize-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cls-invoice-id {
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.cls-invoice-amount {
+  font-weight: 600;
+  color: #111827;
+}
+
+.cls-badge-paid {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border: 1px solid #059669 !important;
+  font-weight: 500;
+}
+
+.cls-badge-pending {
+  background: #fbbf24 !important;
+  color: #78350f !important;
+  border: 1px solid #f59e0b !important;
+  font-weight: 500;
+}
+
+.cls-badge-overdue {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  border: 1px solid #dc2626 !important;
+  font-weight: 500;
+}
+
+.cls-download-pdf-btn {
+  background: #1d2f7e;
+  color: white;
+  gap: 0.5rem;
+  font-weight: 500;
+
+  &:hover {
+    background: #152461;
+  }
+}
+
+.cls-no-data {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .cls-billing-container {
+    padding: 1rem;
+  }
+
+  .cls-alert-banner {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .cls-plan-billing-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cls-stats-grid,
+  .cls-overage-grid,
+  .cls-plans-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cls-invoices-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cls-invoices-header-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cls-search-wrapper {
+    width: 100%;
+  }
+}

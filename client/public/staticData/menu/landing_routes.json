@@ -1,0 +1,15 @@
+[
+  { "id": 1, "path": "/login", "component": "Login", "default": true },
+  {
+    "id": 2,
+    "path": "/forgot-password",
+    "component": "ForgotPassword",
+    "default": false
+  },
+  {
+    "id": 3,
+    "path": "/reset-password",
+    "component": "ResetPassword",
+    "default": false
+  }
+]

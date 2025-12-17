@@ -1,0 +1,39 @@
+{
+  "title": "Response Time Analytics",
+  "filter": "All APIs",
+  "metrics": [
+    {
+      "api": "Payments",
+      "color": "red",
+      "unit": "ms",
+      "values": [310, 315, 320, 318, 322, 325, 330]
+    },
+    {
+      "api": "Analytics",
+      "color": "orange",
+      "unit": "ms",
+      "values": [220, 225, 230, 228, 229, 232, 235]
+    },
+    {
+      "api": "User Data",
+      "color": "green",
+      "unit": "ms",
+      "values": [150, 152, 155, 154, 156, 158, 160]
+    },
+    {
+      "api": "Authentication",
+      "color": "blue",
+      "unit": "ms",
+      "values": [90, 92, 95, 94, 96, 97, 99]
+    }
+  ],
+  "dates": [
+    "Oct 01",
+    "Oct 10",
+    "Oct 20",
+    "Nov 01",
+    "Nov 10",
+    "Nov 20",
+    "Nov 30"
+  ]
+}

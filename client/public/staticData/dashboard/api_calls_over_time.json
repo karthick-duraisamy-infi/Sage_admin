@@ -1,0 +1,38 @@
+{
+  "status": "success",
+  "data": {
+    "chartTitle": "API Calls Over Time",
+    "selectedEndpoint": "All Endpoints",
+    "selectedRange": "Last 30 days",
+    "points": [
+      {
+        "date": "2025-10-01",
+        "count": 1200
+      },
+      {
+        "date": "2025-10-10",
+        "count": 1800
+      },
+      {
+        "date": "2025-10-20",
+        "count": 1500
+      },
+      {
+        "date": "2025-11-01",
+        "count": 2100
+      },
+      {
+        "date": "2025-11-10",
+        "count": 1950
+      },
+      {
+        "date": "2025-11-20",
+        "count": 1700
+      },
+      {
+        "date": "2025-11-30",
+        "count": 1850
+      }
+    ]
+  }
+}

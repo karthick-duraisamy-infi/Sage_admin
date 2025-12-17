@@ -1,0 +1,108 @@
+{
+  "summaryCards": {
+    "totalApiCalls": 1200000,
+    "avgResponseTimeMs": 120,
+    "currentUsagePercent": 84,
+    "errorRatePercent": 0.8
+  },
+  "performanceSummary": [
+    {
+      "service": "Authentication",
+      "responseTimeMs": 89,
+      "status": "Improved",
+      "change": "+5.3%",
+      "previousResponseTimeMs": 93
+    },
+    {
+      "service": "User Data",
+      "responseTimeMs": 156,
+      "status": "Improved",
+      "change": "+3.7%",
+      "previousResponseTimeMs": 93
+    },
+    {
+      "service": "Analytics",
+      "responseTimeMs": 234,
+      "status": "Improved",
+      "change": "+2.5%",
+      "previousResponseTimeMs": 93
+    },
+    {
+      "service": "Payments",
+      "responseTimeMs": 312,
+      "status": "Slower",
+      "change": "-5.4%",
+      "previousResponseTimeMs": 93
+    }
+  ],
+  "systemServicesStatus": [
+    {
+      "name": "API Gateway",
+      "responseTimeMs": 50,
+      "uptime": "99.9%",
+      "status": "Healthy",
+      "lastCheck": "30s"
+    },
+    {
+      "name": "Database Cluster",
+      "responseTimeMs": 80,
+      "uptime": "99.9%",
+      "status": "Healthy",
+      "lastCheck": "30s"
+    },
+    {
+      "name": "Load Balancer",
+      "responseTimeMs": 42,
+      "uptime": "99.9%",
+      "status": "Healthy",
+      "lastCheck": "30s"
+    },
+    {
+      "name": "Cache Layer",
+      "responseTimeMs": 300,
+      "uptime": "99.5%",
+      "status": "Warning",
+      "lastCheck": "30s"
+    },
+    {
+      "name": "Auth Service",
+      "responseTimeMs": 600,
+      "uptime": "99.2%",
+      "status": "Critical",
+      "lastCheck": "30s"
+    }
+  ],
+  "resourceUsage": {
+    "cpuPercent": 45,
+    "memoryPercent": 62,
+    "diskPercent": 78,
+    "networkPercent": 34,
+    "overallHealth": "Operational"
+  },
+  "recentIncidents": [
+    {
+      "title": "Cache Layer Latency Spike",
+      "subtitle": "Cache Layer Latency Spike",
+      "status": "warning",
+      "daysAgo": 3
+    },
+    {
+      "title": "Database Connection Pool Full",
+      "subtitle": "Cache Layer Latency Spike",
+      "status": "resolved",
+      "daysAgo": 7
+    },
+    {
+      "title": "API Rate Limit Exceeded",
+      "subtitle": "Cache Layer Latency Spike",
+      "status": "info",
+      "daysAgo": 7
+    },
+    {
+      "title": "No Active Incidents",
+      "subtitle": "Cache Layer Latency Spike",
+      "status": "resolved",
+      "daysAgo": 0
+    }
+  ]
+}

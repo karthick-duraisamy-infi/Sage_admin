@@ -1,0 +1,231 @@
+
+@use '../../../styles/theme' as *;
+
+.cls-roles-container {
+  padding: 2rem;
+  background-color: #f8fafc;
+  min-height: calc(100vh - 73px);
+}
+
+.cls-roles-card {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.cls-roles-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid hsl(var(--border));
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  .cls-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .cls-header-icon {
+      width: 1.75rem;
+      height: 1.75rem;
+      color: #667eea;
+    }
+
+    .cls-header-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: $text-primary;
+      margin: 0;
+    }
+  }
+
+  .cls-header-right {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+
+    .cls-search-wrapper {
+      position: relative;
+
+      .cls-search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1rem;
+        height: 1rem;
+        color: hsl(var(--muted-foreground));
+        pointer-events: none;
+      }
+
+      .cls-search-input {
+        padding-left: 2.5rem;
+        min-width: 250px;
+      }
+    }
+
+    .cls-create-btn {
+      background: $primary-color;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+
+      &:hover {
+        background: $primary-hover;
+      }
+    }
+  }
+}
+
+.cls-table-wrapper {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+
+    .cls-th-sno {
+      width: 80px;
+    }
+
+    .cls-th-name {
+      width: 180px;
+    }
+
+    .cls-th-desc {
+      width: auto;
+      min-width: 250px;
+    }
+
+    .cls-th-permissions {
+      width: 150px;
+    }
+
+    .cls-th-status {
+      width: 140px;
+    }
+
+    .cls-th-actions {
+      width: 80px;
+      text-align: center;
+    }
+
+    .cls-table-row {
+      &:hover {
+        background: hsl(var(--muted) / 0.3);
+      }
+    }
+
+    .cls-td-sno {
+      font-weight: 500;
+      color: $text-secondary;
+    }
+
+    .cls-td-name {
+      .cls-role-name {
+        font-weight: 600;
+        color: $text-primary;
+      }
+    }
+
+    .cls-td-desc {
+      color: $text-secondary;
+      font-size: 0.875rem;
+    }
+
+    .cls-td-permissions {
+      .cls-permissions-badge {
+        background: #f3f4ff;
+        color: #667eea;
+        font-weight: 500;
+        border: none;
+      }
+    }
+
+    .cls-td-status {
+      .cls-status-switch {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+
+        .cls-status-label {
+          font-size: 0.875rem;
+          font-weight: 500;
+
+          &.cls-active {
+            color: #10b981;
+          }
+
+          &.cls-inactive {
+            color: #6b7280;
+          }
+        }
+      }
+    }
+
+    .cls-td-actions {
+      text-align: center;
+
+      .cls-actions-btn {
+        padding: 0.25rem 0.5rem;
+
+        &:hover {
+          background: hsl(var(--muted));
+        }
+      }
+    }
+
+    .cls-no-results {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: $text-secondary;
+    }
+  }
+}
+
+.cls-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+.cls-delete-item {
+  color: #ef4444;
+
+  &:hover {
+    background: #fef2f2;
+  }
+
+  svg {
+    color: #ef4444;
+  }
+}
+
+@media (max-width: 768px) {
+  .cls-roles-header {
+    flex-direction: column;
+    align-items: stretch;
+
+    .cls-header-right {
+      flex-direction: column;
+
+      .cls-search-wrapper {
+        width: 100%;
+
+        .cls-search-input {
+          width: 100%;
+          min-width: unset;
+        }
+      }
+    }
+  }
+}

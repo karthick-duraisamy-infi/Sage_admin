@@ -1,0 +1,81 @@
+
+.cls-table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 2rem;
+  width: 100%;
+  margin-top: 2rem;
+  // padding-top: 1.5rem;
+}
+
+.cls-pagination-info {
+  flex-shrink: 0;
+
+  .cls-pagination-text {
+    font-size: 0.875rem;
+    color: #6b7280;
+    white-space: nowrap;
+  }
+}
+
+.cls-items-per-page,
+.cls-go-to-page {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+
+  label {
+    font-size: 0.875rem;
+    color: #374151;
+    white-space: nowrap;
+    margin: 0;
+  }
+}
+
+.cls-items-select {
+  width: 80px;
+  height: 36px;
+}
+
+.cls-page-input {
+  width: 80px;
+}
+
+.cls-go-to-page {
+  button {
+    height: 36px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .cls-table-pagination {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cls-table-pagination {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .cls-pagination-info {
+    text-align: center;
+  }
+
+  .cls-items-per-page,
+  .cls-go-to-page {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .cls-items-select,
+  .cls-page-input {
+    width: 120px;
+  }
+}

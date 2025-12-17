@@ -1,0 +1,660 @@
+
+import { useState } from "react";
+import AppLayout from "@/components/layout/AppLayout";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import {
+  Settings as SettingsIcon,
+  Shield,
+  Activity,
+  Bell,
+  RefreshCw,
+  Trash2,
+  Save,
+  Wifi,
+} from "lucide-react";
+import "./Settings.scss";
+
+export default function Settings() {
+  // Active section state
+  const [activeSection, setActiveSection] = useState<string>("api");
+
+  // Quick Actions handlers
+  const handleRestartServices = () => {
+    console.log("Restarting services...");
+  };
+
+  const handleClearCache = () => {
+    console.log("Clearing cache...");
+  };
+
+  const handleBackupNow = () => {
+    console.log("Starting backup...");
+  };
+
+  const handleTestConnectivity = () => {
+    console.log("Testing connectivity...");
+  };
+
+  // API Settings State
+  const [apiSettings, setApiSettings] = useState({
+    rateLimit: "1000",
+    apiVersion: "V1",
+    keyRotation: false,
+    requestLogging: true,
+  });
+
+  const [initialApiSettings] = useState(apiSettings);
+
+  const apiSettingsChanged =
+    JSON.stringify(apiSettings) !== JSON.stringify(initialApiSettings);
+
+  const handleSaveApiSettings = () => {
+    console.log("Saving API settings:", apiSettings);
+    // Reset initial state after save
+  };
+
+  // Security Settings State
+  const [securitySettings, setSecuritySettings] = useState({
+    sessionTimeout: "30",
+    twoFactor: false,
+    ipWhitelisting: false,
+    failedLoginProtection: true,
+  });
+
+  const [initialSecuritySettings] = useState(securitySettings);
+
+  const securitySettingsChanged =
+    JSON.stringify(securitySettings) !== JSON.stringify(initialSecuritySettings);
+
+  const handleSaveSecuritySettings = () => {
+    console.log("Saving security settings:", securitySettings);
+  };
+
+  // Monitoring Settings State
+  const [monitoringSettings, setMonitoringSettings] = useState({
+    healthCheckInterval: "5",
+    alertThreshold: "90",
+    realTimeMonitoring: true,
+    performanceAnalytics: false,
+  });
+
+  const [initialMonitoringSettings] = useState(monitoringSettings);
+
+  const monitoringSettingsChanged =
+    JSON.stringify(monitoringSettings) !== JSON.stringify(initialMonitoringSettings);
+
+  const handleSaveMonitoringSettings = () => {
+    console.log("Saving monitoring settings:", monitoringSettings);
+  };
+
+  // Notification Settings State
+  const [notificationSettings, setNotificationSettings] = useState({
+    alertEmail: "admin@sage.co",
+    systemHealthAlerts: true,
+    errorRateAlerts: true,
+    performanceAlerts: false,
+    usageThresholdAlerts: true,
+  });
+
+  const [initialNotificationSettings] = useState(notificationSettings);
+
+  const notificationSettingsChanged =
+    JSON.stringify(notificationSettings) !== JSON.stringify(initialNotificationSettings);
+
+  const [emailError, setEmailError] = useState("");
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      setEmailError("Email is required");
+      return false;
+    }
+    if (!emailRegex.test(email)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
+    setEmailError("");
+    return true;
+  };
+
+  const handleSaveNotificationSettings = () => {
+    if (validateEmail(notificationSettings.alertEmail)) {
+      console.log("Saving notification settings:", notificationSettings);
+    }
+  };
+
+  return (
+    <AppLayout
+      title="Settings"
+      subtitle="Configure system settings, security, monitoring, and preferences"
+    >
+      <div className="cls-settings-container">
+        {/* Quick Actions */}
+        <Card className="cls-quick-actions-card">
+          <CardContent className="cls-quick-actions-content">
+            <div className="cls-quick-actions-header">
+              <h3 className="cls-quick-actions-title">Quick Actions</h3>
+            </div>
+            <div className="cls-quick-actions-grid">
+              <button
+                className="cls-quick-action-btn cls-action-purple"
+                onClick={handleRestartServices}
+              >
+                <RefreshCw size={18} />
+                <span>Restart Services</span>
+              </button>
+              <button
+                className="cls-quick-action-btn cls-action-yellow"
+                onClick={handleClearCache}
+              >
+                <Trash2 size={18} />
+                <span>Clear Cache</span>
+              </button>
+              <button
+                className="cls-quick-action-btn cls-action-green"
+                onClick={handleBackupNow}
+              >
+                <Save size={18} />
+                <span>Backup Now</span>
+              </button>
+              <button
+                className="cls-quick-action-btn cls-action-blue"
+                onClick={handleTestConnectivity}
+              >
+                <Wifi size={18} />
+                <span>Test Connectivity</span>
+              </button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="cls-settings-layout">
+          {/* Left Sidebar */}
+          <div className="cls-settings-sidebar">
+            <nav className="cls-settings-nav">
+              <button 
+                className={`cls-nav-item ${activeSection === "api" ? "cls-nav-item-active" : ""}`}
+                onClick={() => setActiveSection("api")}
+              >
+                <SettingsIcon size={16} />
+                <span>API</span>
+              </button>
+              <button 
+                className={`cls-nav-item ${activeSection === "security" ? "cls-nav-item-active" : ""}`}
+                onClick={() => setActiveSection("security")}
+              >
+                <Shield size={16} />
+                <span>Security</span>
+              </button>
+              <button 
+                className={`cls-nav-item ${activeSection === "monitoring" ? "cls-nav-item-active" : ""}`}
+                onClick={() => setActiveSection("monitoring")}
+              >
+                <Activity size={16} />
+                <span>Monitoring</span>
+              </button>
+              <button 
+                className={`cls-nav-item ${activeSection === "notifications" ? "cls-nav-item-active" : ""}`}
+                onClick={() => setActiveSection("notifications")}
+              >
+                <Bell size={16} />
+                <span>Notifications</span>
+              </button>
+            </nav>
+          </div>
+
+          {/* Main Content */}
+          <div className="cls-settings-main">
+            {/* API Configuration */}
+            {activeSection === "api" && (
+            <Card className="cls-settings-card">
+              <CardContent className="cls-settings-card-content">
+                <div className="cls-settings-card-header">
+                  <SettingsIcon size={18} />
+                  <h3>API Configuration</h3>
+                </div>
+
+                <div className="cls-settings-fields">
+                  <div className="cls-field-group">
+                    <Label htmlFor="rateLimit">Default Rate Limit</Label>
+                    <Select
+                      value={apiSettings.rateLimit}
+                      onValueChange={(value) =>
+                        setApiSettings({ ...apiSettings, rateLimit: value })
+                      }
+                    >
+                      <SelectTrigger id="rateLimit" className="cls-select-trigger">
+                        <SelectValue placeholder="Select rate limit" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1000">1000 requests/min</SelectItem>
+                        <SelectItem value="5000">5000 requests/min</SelectItem>
+                        <SelectItem value="10000">10000 requests/min</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="cls-field-group">
+                    <Label htmlFor="apiVersion">API Version</Label>
+                    <Select
+                      value={apiSettings.apiVersion}
+                      onValueChange={(value) =>
+                        setApiSettings({ ...apiSettings, apiVersion: value })
+                      }
+                    >
+                      <SelectTrigger id="apiVersion" className="cls-select-trigger">
+                        <SelectValue placeholder="Select API version" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="V1">V1</SelectItem>
+                        <SelectItem value="V2">V2 (beta)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="keyRotation">API Key Rotation</Label>
+                        <p className="cls-switch-description">
+                          Automatically rotate API keys every 90 days
+                        </p>
+                      </div>
+                      <Switch
+                        id="keyRotation"
+                        checked={apiSettings.keyRotation}
+                        onCheckedChange={(checked) =>
+                          setApiSettings({ ...apiSettings, keyRotation: checked })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="requestLogging">Request Logging</Label>
+                        <p className="cls-switch-description">
+                          Log all API requests for monitoring
+                        </p>
+                      </div>
+                      <Switch
+                        id="requestLogging"
+                        checked={apiSettings.requestLogging}
+                        onCheckedChange={(checked) =>
+                          setApiSettings({ ...apiSettings, requestLogging: checked })
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="cls-settings-actions">
+                  <Button
+                    className="cls-save-button"
+                    disabled={!apiSettingsChanged}
+                    onClick={handleSaveApiSettings}
+                  >
+                    Save API Settings
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            )}
+
+            {/* Security Settings */}
+            {activeSection === "security" && (
+            <Card className="cls-settings-card">
+              <CardContent className="cls-settings-card-content">
+                <div className="cls-settings-card-header">
+                  <Shield size={18} />
+                  <h3>Security Settings</h3>
+                </div>
+
+                <div className="cls-settings-fields">
+                  <div className="cls-field-group">
+                    <Label htmlFor="sessionTimeout">Session Timeout</Label>
+                    <Select
+                      value={securitySettings.sessionTimeout}
+                      onValueChange={(value) =>
+                        setSecuritySettings({ ...securitySettings, sessionTimeout: value })
+                      }
+                    >
+                      <SelectTrigger id="sessionTimeout" className="cls-select-trigger">
+                        <SelectValue placeholder="Select timeout" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="15">15 minutes</SelectItem>
+                        <SelectItem value="30">30 minutes</SelectItem>
+                        <SelectItem value="60">1 hour</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="twoFactor">Two-Factor Authentication</Label>
+                        <p className="cls-switch-description">
+                          Require 2FA for all admin accounts
+                        </p>
+                      </div>
+                      <Switch
+                        id="twoFactor"
+                        checked={securitySettings.twoFactor}
+                        onCheckedChange={(checked) =>
+                          setSecuritySettings({ ...securitySettings, twoFactor: checked })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="ipWhitelisting">IP Whitelisting</Label>
+                        <p className="cls-switch-description">
+                          Restrict access to specific IP addresses
+                        </p>
+                      </div>
+                      <Switch
+                        id="ipWhitelisting"
+                        checked={securitySettings.ipWhitelisting}
+                        onCheckedChange={(checked) =>
+                          setSecuritySettings({ ...securitySettings, ipWhitelisting: checked })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="failedLoginProtection">Failed Login Protection</Label>
+                        <p className="cls-switch-description">
+                          Lock account after 5 failed attempts
+                        </p>
+                      </div>
+                      <Switch
+                        id="failedLoginProtection"
+                        checked={securitySettings.failedLoginProtection}
+                        onCheckedChange={(checked) =>
+                          setSecuritySettings({
+                            ...securitySettings,
+                            failedLoginProtection: checked,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="cls-settings-actions">
+                  <Button
+                    className="cls-save-button"
+                    disabled={!securitySettingsChanged}
+                    onClick={handleSaveSecuritySettings}
+                  >
+                    Update Security Settings
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            )}
+
+            {/* Monitoring Configuration */}
+            {activeSection === "monitoring" && (
+            <Card className="cls-settings-card">
+              <CardContent className="cls-settings-card-content">
+                <div className="cls-settings-card-header">
+                  <Activity size={18} />
+                  <h3>Monitoring Configuration</h3>
+                </div>
+
+                <div className="cls-settings-fields">
+                  <div className="cls-field-group">
+                    <Label htmlFor="healthCheckInterval">Health Check Interval</Label>
+                    <Select
+                      value={monitoringSettings.healthCheckInterval}
+                      onValueChange={(value) =>
+                        setMonitoringSettings({
+                          ...monitoringSettings,
+                          healthCheckInterval: value,
+                        })
+                      }
+                    >
+                      <SelectTrigger id="healthCheckInterval" className="cls-select-trigger">
+                        <SelectValue placeholder="Select interval" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">1 minute</SelectItem>
+                        <SelectItem value="5">5 minutes</SelectItem>
+                        <SelectItem value="15">15 minutes</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="cls-field-group">
+                    <Label htmlFor="alertThreshold">Alert Threshold</Label>
+                    <Select
+                      value={monitoringSettings.alertThreshold}
+                      onValueChange={(value) =>
+                        setMonitoringSettings({
+                          ...monitoringSettings,
+                          alertThreshold: value,
+                        })
+                      }
+                    >
+                      <SelectTrigger id="alertThreshold" className="cls-select-trigger">
+                        <SelectValue placeholder="Select threshold" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="90">90%</SelectItem>
+                        <SelectItem value="95">95%</SelectItem>
+                        <SelectItem value="98">98%</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="realTimeMonitoring">Real-time Monitoring</Label>
+                        <p className="cls-switch-description">
+                          Enable real-time system monitoring
+                        </p>
+                      </div>
+                      <Switch
+                        id="realTimeMonitoring"
+                        checked={monitoringSettings.realTimeMonitoring}
+                        onCheckedChange={(checked) =>
+                          setMonitoringSettings({
+                            ...monitoringSettings,
+                            realTimeMonitoring: checked,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="performanceAnalytics">Performance Analytics</Label>
+                        <p className="cls-switch-description">
+                          Collect detailed performance metrics
+                        </p>
+                      </div>
+                      <Switch
+                        id="performanceAnalytics"
+                        checked={monitoringSettings.performanceAnalytics}
+                        onCheckedChange={(checked) =>
+                          setMonitoringSettings({
+                            ...monitoringSettings,
+                            performanceAnalytics: checked,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="cls-settings-actions">
+                  <Button
+                    className="cls-save-button"
+                    disabled={!monitoringSettingsChanged}
+                    onClick={handleSaveMonitoringSettings}
+                  >
+                    Save Monitoring Settings
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            )}
+
+            {/* Notification Settings */}
+            {activeSection === "notifications" && (
+            <Card className="cls-settings-card">
+              <CardContent className="cls-settings-card-content">
+                <div className="cls-settings-card-header">
+                  <Bell size={18} />
+                  <h3>Notification Settings</h3>
+                </div>
+
+                <div className="cls-settings-fields">
+                  <div className="cls-field-group">
+                    <Label htmlFor="alertEmail">Alert Email</Label>
+                    <Input
+                      id="alertEmail"
+                      type="email"
+                      placeholder="admin@sage.co"
+                      value={notificationSettings.alertEmail}
+                      onChange={(e) => {
+                        setNotificationSettings({
+                          ...notificationSettings,
+                          alertEmail: e.target.value,
+                        });
+                        if (emailError) {
+                          validateEmail(e.target.value);
+                        }
+                      }}
+                      onBlur={(e) => validateEmail(e.target.value)}
+                      className={emailError ? "cls-input-error" : ""}
+                    />
+                    {emailError && <p className="cls-error-message">{emailError}</p>}
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="systemHealthAlerts">System Health Alerts</Label>
+                        <p className="cls-switch-description">
+                          Alerts when system health degrades
+                        </p>
+                      </div>
+                      <Switch
+                        id="systemHealthAlerts"
+                        checked={notificationSettings.systemHealthAlerts}
+                        onCheckedChange={(checked) =>
+                          setNotificationSettings({
+                            ...notificationSettings,
+                            systemHealthAlerts: checked,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="errorRateAlerts">Error Rate Alerts</Label>
+                        <p className="cls-switch-description">
+                          Alerts when error rate exceeds 5%
+                        </p>
+                      </div>
+                      <Switch
+                        id="errorRateAlerts"
+                        checked={notificationSettings.errorRateAlerts}
+                        onCheckedChange={(checked) =>
+                          setNotificationSettings({
+                            ...notificationSettings,
+                            errorRateAlerts: checked,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="performanceAlerts">Performance Alerts</Label>
+                        <p className="cls-switch-description">
+                          Alerts when response time increases
+                        </p>
+                      </div>
+                      <Switch
+                        id="performanceAlerts"
+                        checked={notificationSettings.performanceAlerts}
+                        onCheckedChange={(checked) =>
+                          setNotificationSettings({
+                            ...notificationSettings,
+                            performanceAlerts: checked,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="cls-switch-group">
+                    <div className="cls-switch-content">
+                      <div className="cls-switch-info">
+                        <Label htmlFor="usageThresholdAlerts">Usage Threshold Alerts</Label>
+                        <p className="cls-switch-description">
+                          Alert at 80% of usage quota
+                        </p>
+                      </div>
+                      <Switch
+                        id="usageThresholdAlerts"
+                        checked={notificationSettings.usageThresholdAlerts}
+                        onCheckedChange={(checked) =>
+                          setNotificationSettings({
+                            ...notificationSettings,
+                            usageThresholdAlerts: checked,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="cls-settings-actions">
+                  <Button
+                    className="cls-save-button"
+                    disabled={!notificationSettingsChanged || !!emailError}
+                    onClick={handleSaveNotificationSettings}
+                  >
+                    Save Notification Settings
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+            )}
+          </div>
+        </div>
+      </div>
+    </AppLayout>
+  );
+}

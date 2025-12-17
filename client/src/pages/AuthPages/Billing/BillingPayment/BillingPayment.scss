@@ -1,0 +1,496 @@
+
+.cls-billing-payment-dialog {
+  max-width: 500px;
+  padding: 1.25rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.cls-dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cls-dialog-subtitle {
+  font-size: 0.813rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.cls-payment-content {
+  margin-top: 1rem;
+}
+
+.cls-payment-accordion {
+  width: 100%;
+}
+
+.cls-accordion-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.cls-accordion-trigger {
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  color: #111827;
+  background: #f9fafb;
+  transition: all 0.2s;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+
+  &[data-state="open"] {
+    background: #7c3aed;
+    color: #ffffff;
+    font-weight: 600;
+
+    .cls-trigger-content {
+      color: #ffffff;
+    }
+  }
+}
+
+.cls-trigger-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #111827;
+  font-size: 0.875rem;
+}
+
+.cls-accordion-content {
+  padding: 1rem !important;
+  background: #ffffff;
+}
+
+.cls-card-form,
+.cls-upi-form,
+.cls-netbanking-form,
+.cls-wallets-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cls-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+
+  label {
+    font-size: 0.813rem;
+    font-weight: 500;
+    color: #374151;
+  }
+
+  input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #7c3aed;
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    }
+
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+}
+
+.cls-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.cls-save-card-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem;
+  background: #f9fafb;
+  border-radius: 6px;
+}
+
+.cls-checkbox-label {
+  font-size: 0.813rem;
+  color: #374151;
+  cursor: pointer;
+  margin: 0;
+}
+
+.cls-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 0.25rem 0;
+  
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  span {
+    padding: 0 0.75rem;
+    color: #9ca3af;
+    font-size: 0.813rem;
+    font-weight: 500;
+  }
+}
+
+.cls-upi-apps-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cls-upi-apps-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.625rem;
+}
+
+.cls-upi-app-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.75rem 0.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 80px;
+
+  &:hover {
+    border-color: #7c3aed;
+    background: #f5f3ff;
+  }
+
+  &.cls-selected {
+    border-color: #7c3aed;
+    background: #7c3aed;
+
+    .cls-app-name {
+      color: #ffffff;
+    }
+  }
+}
+
+.cls-app-logo-container {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cls-app-logo {
+  max-width: 80%;
+  max-height: 36px;
+  object-fit: contain;
+}
+
+.cls-app-name {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #374151;
+  text-align: center;
+}
+
+.cls-wallets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.625rem;
+}
+
+.cls-wallet-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.75rem 0.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 80px;
+
+  &:hover {
+    border-color: #7c3aed;
+    background: #f5f3ff;
+  }
+
+  &.cls-selected {
+    border-color: #7c3aed;
+    background: #7c3aed;
+
+    .cls-wallet-name {
+      color: #ffffff;
+    }
+  }
+}
+
+.cls-wallet-logo-container {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cls-wallet-logo {
+  max-width: 80%;
+  max-height: 36px;
+  object-fit: contain;
+}
+
+.cls-wallet-name {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #374151;
+  text-align: center;
+}
+
+.cls-banks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.625rem;
+  margin-top: 0.25rem;
+}
+
+.cls-bank-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 0.375rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 85px;
+
+  &:hover {
+    border-color: #7c3aed;
+    background: #f5f3ff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);
+  }
+
+  &.cls-selected {
+    border-color: #7c3aed;
+    background: #f5f3ff;
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.1);
+  }
+}
+
+.cls-bank-logo-container {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cls-bank-logo {
+  max-width: 90%;
+  max-height: 32px;
+  object-fit: contain;
+}
+
+.cls-bank-name {
+  font-size: 0.688rem;
+  font-weight: 500;
+  color: #374151;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.cls-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.625rem;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+// Payment Status Screens
+.cls-payment-status-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  min-height: 320px;
+}
+
+.cls-status-icon {
+  margin-bottom: 1.25rem;
+  
+  &.cls-processing-icon {
+    color: #7c3aed;
+    animation: spin 1s linear infinite;
+  }
+  
+  &.cls-success-icon {
+    color: #10b981;
+  }
+  
+  &.cls-failure-icon {
+    color: #ef4444;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cls-status-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.cls-status-message {
+  font-size: 0.938rem;
+  color: #6b7280;
+  margin-bottom: 1.25rem;
+  max-width: 380px;
+}
+
+.cls-processing-details,
+.cls-failure-details {
+  padding: 0.875rem;
+  background: #f9fafb;
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  
+  p {
+    font-size: 0.813rem;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+.cls-payment-details {
+  width: 100%;
+  max-width: 340px;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+}
+
+.cls-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  font-size: 0.813rem;
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  span:first-child {
+    color: #6b7280;
+  }
+}
+
+.cls-detail-value {
+  font-weight: 600;
+  color: #111827;
+}
+
+.cls-status-button {
+  min-width: 140px;
+}
+
+.cls-status-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 340px;
+}
+
+@media (max-width: 640px) {
+  .cls-billing-payment-dialog {
+    max-width: 95vw;
+    padding: 1rem;
+  }
+
+  .cls-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .cls-upi-apps-grid,
+  .cls-wallets-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cls-banks-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cls-bank-option {
+    padding: 0.625rem 0.375rem;
+    min-height: 80px;
+  }
+
+  .cls-payment-status-screen {
+    padding: 2rem 1rem;
+    min-height: 280px;
+  }
+
+  .cls-status-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .cls-status-title {
+    font-size: 1.125rem;
+  }
+
+  .cls-status-actions {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+}
