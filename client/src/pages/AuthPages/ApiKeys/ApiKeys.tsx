@@ -100,8 +100,6 @@ const apiKeysDataStatic: ApiKey[] = [
 
 export default function ApiKeys() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(6);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingKey, setEditingKey] = useState<ApiKey | null>(null);
   const [formData, setFormData] = useState({
@@ -282,10 +280,9 @@ export default function ApiKeys() {
   ).length;
 
   // Pagination
-  const totalPages = Math.ceil(filteredKeys.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedKeys = filteredKeys.slice(startIndex, endIndex);
+  const startIndex = (filterData.page - 1) * filterData.page_size;
+  const endIndex = startIndex + filterData.page_size;
+  const paginatedKeys = filteredKeys;
 
   const handleCopyKey = (apiKey: string) => {
     navigator.clipboard.writeText(apiKey);
@@ -668,16 +665,18 @@ export default function ApiKeys() {
         </Card>
 
         {/* Pagination */}
-        <TablePagination
-          currentPage={filterData?.page}
-          totalPages={Math.ceil(apiKeysCount / filterData?.page_size||6)}
-          totalItems={apiKeysCount}
-          itemsPerPage={filterData?.page_size}
-          onPageChange={(page: any) => { setFilterData({ ...filterData, page }); }}
-          onItemsPerPageChange={(page_size: any) => { setFilterData({ ...filterData, page_size }); }}
-          startIndex={startIndex}
-          endIndex={endIndex}
-        />
+        {getApiKeysListStatus.isSuccess && apiKeysCount > 0 && (
+          <TablePagination
+            currentPage={filterData?.page}
+            totalPages={Math.ceil(apiKeysCount / filterData?.page_size)}
+            totalItems={apiKeysCount}
+            itemsPerPage={filterData?.page_size}
+            onPageChange={(page: any) => { setFilterData({ ...filterData, page }); }}
+            onItemsPerPageChange={(page_size: any) => { setFilterData({ ...filterData, page_size }); }}
+            startIndex={startIndex}
+            endIndex={Math.min(endIndex, apiKeysCount)}
+          />
+        )}
 
         {/* Create API Key Dialog */}
         <Dialog
