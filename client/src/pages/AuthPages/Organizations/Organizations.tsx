@@ -51,7 +51,11 @@ import {
 } from "lucide-react";
 import OrganizationForm from "./OrganizationForm/OrganizationForm";
 import "./Organizations.scss";
-import { useLazyGetOrganisationDataQuery } from "@/service/organisation/organisation";
+import { 
+  useLazyGetOrganisationDataQuery,
+  useCreateOrganizationsMutation,
+  useUpdateOrganizationsMutation
+} from "@/service/organisation/organisation";
 
 interface Organization {
   id: number;
@@ -83,6 +87,10 @@ export default function Organizations() {
   // The following line is used to define the service for getting the list of organisation
   const [organisationList, organisationListResponse] =
     useLazyGetOrganisationDataQuery();
+
+  // Mutation hooks for create and update
+  const [createOrganization, createOrganizationResponse] = useCreateOrganizationsMutation();
+  const [updateOrganization, updateOrganizationResponse] = useUpdateOrganizationsMutation();
 
   // State to hold organization data from API
   const [organizationData, setOrganizationData] = useState<any>(null);
@@ -173,9 +181,36 @@ export default function Organizations() {
     setIsCreateDialogOpen(true);
   };
 
-  const handleFormSubmit = (data: any) => {
-    console.log("Form submitted:", data);
-    // Handle create/update logic here
+  const handleFormSubmit = async (data: any) => {
+    try {
+      if (editingOrganization) {
+        // Update existing organization
+        const payload = {
+          id: editingOrganization.id,
+          name: data.organizationName,
+          // Add other fields as needed based on API requirements
+        };
+        await updateOrganization(payload).unwrap();
+        console.log("Organization updated successfully");
+      } else {
+        // Create new organization
+        const payload = {
+          name: data.organizationName,
+          // Add other fields as needed based on API requirements
+        };
+        await createOrganization(payload).unwrap();
+        console.log("Organization created successfully");
+      }
+      
+      // Refresh the organization list
+      organisationList({ page: currentPage, page_size: itemsPerPage });
+      
+      // Close the dialog
+      setIsCreateDialogOpen(false);
+      setEditingOrganization(null);
+    } catch (error) {
+      console.error("Error saving organization:", error);
+    }
   };
 
   return (
