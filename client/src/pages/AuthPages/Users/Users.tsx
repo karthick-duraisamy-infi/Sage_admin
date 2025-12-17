@@ -534,7 +534,23 @@ export default function UsersPage() {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={
+                        2 +
+                        (columnVisibility.organization ? 1 : 0) +
+                        (columnVisibility.role ? 1 : 0) +
+                        (columnVisibility.status ? 1 : 0) +
+                        1
+                      }
+                      className="cls-no-results"
+                    >
+                      No users found matching your search.
+                    </TableCell>
+                  </TableRow>
+                )}
                 </TableBody>
               </Table>
             </div>
