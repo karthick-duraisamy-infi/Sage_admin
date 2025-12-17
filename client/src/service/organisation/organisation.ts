@@ -8,8 +8,28 @@ const organisationService = CommonService.injectEndpoints({
         return `api/management/organizations/?page=${page}`;
       },
     }),
+    createOrganizations: build.mutation<any, any>({
+      query: (body) => ({
+        url: `api/management/organizations/`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["organizations"],
+    }),
+    updateOrganizations: build.mutation<any, { id: number } & Partial<any>>({
+      query: ({ id, ...body }) => ({
+        url: `api/management/organizations/${id}/`,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["organizations"],
+    }),
   }),
   overrideExisting: true,
 });
 
-export const { useLazyGetOrganisationDataQuery } = organisationService;
+export const {
+  useLazyGetOrganisationDataQuery,
+  useCreateOrganizationsMutation,
+  useUpdateOrganizationsMutation,
+} = organisationService;

@@ -8,7 +8,7 @@ const CommonService = createApi({
     baseUrl: import.meta.env.VITE_API_URL,
     credentials: "include",
   }),
-  tagTypes: ["users", "roles", "api-keys"],
+  tagTypes: ["users", "roles", "api-keys", "organizations"],
   endpoints: () => ({}),
 });
 
