@@ -1,6 +1,8 @@
 
 import { lazy, Suspense, useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
+import { Skeleton } from "@/components/ui/skeleton";
+import AppLayout from "@/components/layout/AppLayout";
 
 // Lazy load all components
 const componentsMap: Record<string, any> = {
@@ -19,6 +21,32 @@ const componentsMap: Record<string, any> = {
   Analytics: lazy(() => import("@/pages/AuthPages/Analytics/Analytics")),
   Settings: lazy(() => import("@/pages/AuthPages/Settings/Settings")),
 };
+
+// Skeleton loader for authenticated pages
+function AuthPageSkeleton() {
+  return (
+    <AppLayout title="Loading..." subtitle="">
+      <div style={{ padding: "1.5rem" }}>
+        <div style={{ display: "grid", gap: "1.5rem", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", marginBottom: "1.5rem" }}>
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-32 w-full" />
+          <Skeleton className="h-32 w-full" />
+        </div>
+        <Skeleton className="h-96 w-full" />
+      </div>
+    </AppLayout>
+  );
+}
+
+// Skeleton loader for unauthenticated pages
+function UnauthPageSkeleton() {
+  return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+      <Skeleton className="h-96 w-96" />
+    </div>
+  );
+}
 
 interface RouteConfig {
   id: number;
@@ -45,9 +73,10 @@ function RedirectToDefault({ defaultRoute }: { defaultRoute: string }) {
 
 export default function DynamicRoutes({ routes, isAuthenticated = false }: DynamicRoutesProps) {
   const defaultRoute = routes?.find((route) => route.default)?.path || "/";
+  const LoadingFallback = isAuthenticated ? AuthPageSkeleton : UnauthPageSkeleton;
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<LoadingFallback />}>
       <Switch>
         {routes?.map((route) => {
           const Component = componentsMap[route.component];
