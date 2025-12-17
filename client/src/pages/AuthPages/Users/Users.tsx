@@ -453,104 +453,105 @@ export default function UsersPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paginatedUsers.map((user: any, index: any) => (
-                    <TableRow key={user?.id}>
-                      <TableCell className="cls-sno-cell">
-                        {startIndex + index + 1}
-                      </TableCell>
-                      <TableCell>
-                        <div className="cls-user-cell">
-                          {/* <img
-                            src={user.avatar}
-                            alt={user.name}
-                            className="cls-user-avatar"
-                          /> */}
-                          <div className="cls-user-info">
-                            <p className="cls-user-name">{user?.first_name}</p>
-                            <p className="cls-user-email">{user?.email_id}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      {/* {columnVisibility.organization && ( */}
-                      <TableCell>
-                        {user?.organization_details?.name ? <span className="cls-organization">
-                          {user?.organization_details?.name}
-                        </span> : "-"}
-                      </TableCell>
-                      {/* )} */}
-                      {/* {columnVisibility.role && ( */}
-                      <TableCell>
-                        {user?.role_details?.name ? <Badge
-                          className={`${user?.role_details?.name !== null && "cls-role-badge"} cls-role-${user?.role_details?.name?.toLowerCase()}`}
-                        >
-                          {user?.role_details?.name}
-                        </Badge> : "-"}
-                      </TableCell>
-                      {/* )} */}
-                      {/* {columnVisibility.status && ( */}
-                      <TableCell>
-                        <Badge
-                          className={`cls-status-badge cls-status-${user?.r_status === 1 ? "active" : "in-active"}`}
-                        >
-                          {user?.r_status === 1 ? "Active" : "In-Active"}
-                          {/* {user?.r_status?.toUpperCase()} */}
-                        </Badge>
-                      </TableCell>
-                      {/* )} */}
-                      {/* {columnVisibility.lastActive && (
-                        <TableCell>
-                          <span className="cls-last-active">
-                            {user.lastActive}
-                          </span>
+                  {paginatedUsers.length > 0 ? (
+                    paginatedUsers.map((user: any, index: any) => (
+                      <TableRow key={user?.id}>
+                        <TableCell className="cls-sno-cell">
+                          {startIndex + index + 1}
                         </TableCell>
-                      )} */}
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="cls-actions-button"
-                            >
-                              <MoreVertical size={16} />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() => handleEdit(user)}
-                              className="cls-menu-item"
-                            >
-                              <Edit size={16} />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDelete(user.id)}
-                              className="cls-delete-item"
-                            >
-                              <Trash2 size={16} />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <TableCell>
+                          <div className="cls-user-cell">
+                            {/* <img
+                              src={user.avatar}
+                              alt={user.name}
+                              className="cls-user-avatar"
+                            /> */}
+                            <div className="cls-user-info">
+                              <p className="cls-user-name">{user?.first_name}</p>
+                              <p className="cls-user-email">{user?.email_id}</p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        {/* {columnVisibility.organization && ( */}
+                        <TableCell>
+                          {user?.organization_details?.name ? <span className="cls-organization">
+                            {user?.organization_details?.name}
+                          </span> : "-"}
+                        </TableCell>
+                        {/* )} */}
+                        {/* {columnVisibility.role && ( */}
+                        <TableCell>
+                          {user?.role_details?.name ? <Badge
+                            className={`${user?.role_details?.name !== null && "cls-role-badge"} cls-role-${user?.role_details?.name?.toLowerCase()}`}
+                          >
+                            {user?.role_details?.name}
+                          </Badge> : "-"}
+                        </TableCell>
+                        {/* )} */}
+                        {/* {columnVisibility.status && ( */}
+                        <TableCell>
+                          <Badge
+                            className={`cls-status-badge cls-status-${user?.r_status === 1 ? "active" : "in-active"}`}
+                          >
+                            {user?.r_status === 1 ? "Active" : "In-Active"}
+                            {/* {user?.r_status?.toUpperCase()} */}
+                          </Badge>
+                        </TableCell>
+                        {/* )} */}
+                        {/* {columnVisibility.lastActive && (
+                          <TableCell>
+                            <span className="cls-last-active">
+                              {user.lastActive}
+                            </span>
+                          </TableCell>
+                        )} */}
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="cls-actions-button"
+                              >
+                                <MoreVertical size={16} />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => handleEdit(user)}
+                                className="cls-menu-item"
+                              >
+                                <Edit size={16} />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDelete(user.id)}
+                                className="cls-delete-item"
+                              >
+                                <Trash2 size={16} />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={
+                          2 +
+                          (columnVisibility.organization ? 1 : 0) +
+                          (columnVisibility.role ? 1 : 0) +
+                          (columnVisibility.status ? 1 : 0) +
+                          1
+                        }
+                        className="cls-no-results"
+                      >
+                        No users found matching your search.
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={
-                        2 +
-                        (columnVisibility.organization ? 1 : 0) +
-                        (columnVisibility.role ? 1 : 0) +
-                        (columnVisibility.status ? 1 : 0) +
-                        1
-                      }
-                      className="cls-no-results"
-                    >
-                      No users found matching your search.
-                    </TableCell>
-                  </TableRow>
-                )}
+                  )}
                 </TableBody>
               </Table>
             </div>
