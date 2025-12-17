@@ -62,8 +62,6 @@ interface Role {
 
 export default function Roles() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(6);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -101,12 +99,9 @@ export default function Roles() {
     role.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredRoles.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedRoles = filteredRoles.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const startIndex = (filterData.page - 1) * filterData.page_size;
+  const endIndex = startIndex + filterData.page_size;
+  const paginatedRoles = filteredRoles;
 
   const handleCreateRole = () => {
     setEditingRole(null);
@@ -191,7 +186,7 @@ export default function Roles() {
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
-                    setCurrentPage(1);
+                    setFilterData({ ...filterData, page: 1 });
                   }}
                   className="cls-search-input"
                 />
@@ -359,16 +354,18 @@ export default function Roles() {
             </Table>
           </div>
 
-          <TablePagination
-            currentPage={filterData?.page}
-            totalPages={Math.ceil(rolesCount / filterData?.page_size || 6)}
-            itemsPerPage={filterData?.page_size}
-            totalItems={rolesCount}
-            startIndex={startIndex}
-            endIndex={startIndex + filterData?.page_size}
-            onPageChange={(page: any) => { setFilterData({ ...filterData, page }); }}
-            onItemsPerPageChange={(page_size: any) => { setFilterData({ ...filterData, page_size }); }}
-          />
+          {getRolesListStatus.isSuccess && rolesCount > 0 && (
+            <TablePagination
+              currentPage={filterData?.page}
+              totalPages={Math.ceil(rolesCount / filterData?.page_size)}
+              itemsPerPage={filterData?.page_size}
+              totalItems={rolesCount}
+              startIndex={startIndex}
+              endIndex={Math.min(endIndex, rolesCount)}
+              onPageChange={(page: any) => { setFilterData({ ...filterData, page }); }}
+              onItemsPerPageChange={(page_size: any) => { setFilterData({ ...filterData, page_size }); }}
+            />
+          )}
         </Card>
       </div>
 
