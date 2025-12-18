@@ -57,7 +57,7 @@ const apiCollectionsData: ApiCollection[] = [
     version: "1.0.0",
     status: "active",
     description:
-      "GRM API provides endpoints for authentication, user management, ancillary services, policy management, help desk, and more.",
+      "ClearTrip API provides endpoints for authentication, user management, ancillary services, policy management, help desk, and more.",
     createdBy: "admin@sage.co",
     createdDate: "July 20th, 2024",
   },
@@ -70,46 +70,6 @@ const apiCollectionsData: ApiCollection[] = [
     createdBy: "admin@sage.co",
     createdDate: "July 22nd, 2024",
   },
-  // {
-  //   id: "4",
-  //   name: "Analytics API",
-  //   version: "1.5.2",
-  //   status: "active",
-  //   description:
-  //     "Real-time analytics and reporting API for tracking user behavior and system metrics.",
-  //   createdBy: "admin@sage.co",
-  //   createdDate: "September 12th, 2024",
-  // },
-  // {
-  //   id: "5",
-  //   name: "Notification Service API",
-  //   version: "1.2.0",
-  //   status: "inactive",
-  //   description:
-  //     "Multi-channel notification service supporting email, SMS, and push notifications.",
-  //   createdBy: "admin@sage.co",
-  //   createdDate: "October 3rd, 2024",
-  // },
-  // {
-  //   id: "6",
-  //   name: "User Management API",
-  //   version: "3.0.0",
-  //   status: "active",
-  //   description:
-  //     "Comprehensive user management system with role-based access control and audit logging.",
-  //   createdBy: "admin@sage.co",
-  //   createdDate: "November 8th, 2024",
-  // },
-  // {
-  //   id: "7",
-  //   name: "File Storage API",
-  //   version: "2.0.1",
-  //   status: "active",
-  //   description:
-  //     "Scalable file storage and retrieval service with CDN integration and versioning support.",
-  //   createdBy: "admin@sage.co",
-  //   createdDate: "December 1st, 2024",
-  // },
 ];
 
 export default function ApiDocs() {

@@ -1,7 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useLocation } from "wouter";
 import yaml from "js-yaml";
+import SwaggerUI from "swagger-ui-react";
+import { RedocStandalone } from "redoc";
+import "swagger-ui-react/swagger-ui.css";
 import AppLayout from "@/components/layout/AppLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -52,6 +54,12 @@ export default function ApiDocDetail() {
   const [expandedGroups, setExpandedGroups] = useState<string[]>([]);
   const [expandedResponses, setExpandedResponses] = useState<Record<string, boolean>>({});
 
+  // New state for Swagger/Redoc integration
+  const [yamlUrl, setYamlUrl] = useState<string>("");
+  const [apiMetadata, setApiMetadata] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("swagger");
+
+
   useEffect(() => {
     const loadApiDoc = async () => {
       setIsLoading(true);
@@ -59,6 +67,13 @@ export default function ApiDocDetail() {
 
       if (metadata?.yamlPath) {
         try {
+          // Construct the full URL for the YAML file
+          const fullUrl = window.location.origin + metadata.yamlPath;
+          setYamlUrl(fullUrl);
+          setApiMetadata(metadata);
+          
+          // Existing logic to parse YAML for the old view is no longer needed
+          // Keep it here for now in case of fallback, but ideally should be removed if integration is perfect
           const response = await fetch(metadata.yamlPath);
           if (!response.ok) {
             throw new Error(`Failed to fetch YAML file: ${response.statusText}`);
@@ -182,10 +197,14 @@ export default function ApiDocDetail() {
         } catch (error) {
           console.error("Error loading YAML:", error);
           setApiDoc(null);
+          setApiMetadata(null); // Also clear metadata if YAML loading fails
+          setYamlUrl(""); // Clear URL as well
         }
       } else {
         console.error("No YAML path configured for this API");
         setApiDoc(null);
+        setApiMetadata(null);
+        setYamlUrl("");
       }
 
       setIsLoading(false);
@@ -214,6 +233,14 @@ export default function ApiDocDetail() {
       [responseCode]: !prev[responseCode]
     }));
   };
+  
+  // New handler for downloading the YAML file
+  const handleDownload = () => {
+    if (yamlUrl) {
+      window.open(yamlUrl, '_blank');
+    }
+  };
+
 
   if (isLoading) {
     return (
@@ -229,7 +256,7 @@ export default function ApiDocDetail() {
     );
   }
 
-  if (!apiDoc && !isLoading) {
+  if (!apiMetadata && !isLoading) { // Changed condition to check apiMetadata
     return (
       <AppLayout title="API Documentation" subtitle="API document not found">
         <div className="cls-apidoc-detail-container">
@@ -252,6 +279,9 @@ export default function ApiDocDetail() {
     );
   }
 
+  // The following code for rendering the old UI is now commented out or removed
+  // as the new Swagger UI and Redoc components will be used.
+
   // Get all endpoints flattened
   const allEndpoints = Object.values(apiDoc.groupedEndpoints).flat();
   const currentEndpoint: any = allEndpoints.find((e: any) => e.id === selectedEndpoint) || allEndpoints[0];
@@ -268,8 +298,9 @@ export default function ApiDocDetail() {
     return acc;
   }, {} as Record<string, any[]>);
 
+
   return (
-    <AppLayout title={apiDoc.name} subtitle={apiDoc.description}>
+    <AppLayout title={apiMetadata.name} subtitle={apiMetadata.description}>
       <div className="cls-apidoc-detail-container">
         {/* Header with Back Button */}
         <div className="cls-doc-header-nav">
@@ -289,250 +320,97 @@ export default function ApiDocDetail() {
           <CardContent className="cls-basic-info-content">
             <div className="cls-basic-info-header">
               <div className="cls-basic-info-title-row">
-                <h1 className="cls-basic-info-title">{apiDoc.name}</h1>
+                <h1 className="cls-basic-info-title">{apiMetadata.name}</h1>
                 <div className="cls-basic-info-badges">
-                  <Badge className="cls-version-badge">v{apiDoc.version}</Badge>
-                  <Badge className="cls-status-badge-active">{apiDoc.status}</Badge>
+                  <Badge className="cls-version-badge">v{apiMetadata.version}</Badge>
+                  <Badge className="cls-status-badge-active">active</Badge>
                 </div>
               </div>
-              <Button variant="outline" size="sm" className="cls-download-button">
+              <Button variant="outline" size="sm" className="cls-download-button" onClick={handleDownload}>
                 <Download size={16} />
                 Download
               </Button>
             </div>
             
-            <p className="cls-basic-info-description">{apiDoc.description}</p>
+            <p className="cls-basic-info-description">{apiMetadata.description}</p>
             
             <div className="cls-basic-info-meta">
               <div className="cls-meta-item">
                 <span className="cls-meta-label">Created by</span>
-                <span className="cls-meta-value">{apiDoc.createdBy}</span>
+                <span className="cls-meta-value">admin@sage.co</span> {/* Hardcoded as per example, original had 'administrator' */}
               </div>
               <div className="cls-meta-item">
                 <span className="cls-meta-label">Created</span>
-                <span className="cls-meta-value">{apiDoc.createdDate}</span>
+                {/* Dynamically set to current date as per example, original had static date */}
+                <span className="cls-meta-value">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span> 
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Three Column Documentation Layout */}
-        <div className="cls-three-column-layout">
-          {/* First Column - API/Endpoint List */}
-          <div className="cls-endpoints-column">
-            <Card className="cls-endpoints-card">
-              <CardContent className="cls-endpoints-content">
-                <div className="cls-endpoints-header">
-                  <div className="cls-search-wrapper">
-                    <Search className="cls-search-icon" size={16} />
-                    <Input
-                      type="text"
-                      placeholder="Search..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="cls-search-input"
+        {/* API Documentation Viewer */}
+        <Card className="cls-api-viewer-card">
+          <CardContent className="cls-api-viewer-content">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="cls-viewer-tabs">
+              <TabsList className="cls-viewer-tabs-list">
+                <TabsTrigger value="swagger" className="cls-viewer-tab">
+                  Swagger UI
+                </TabsTrigger>
+                <TabsTrigger value="redoc" className="cls-viewer-tab">
+                  Redoc
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="swagger" className="cls-viewer-tab-content">
+                <div className="cls-swagger-container">
+                  {yamlUrl && (
+                    <SwaggerUI
+                      url={yamlUrl}
+                      docExpansion="list"
+                      defaultModelsExpandDepth={1}
+                      defaultModelExpandDepth={1}
+                      displayRequestDuration={true}
+                      filter={true}
+                      showExtensions={true}
+                      showCommonExtensions={true}
+                      tryItOutEnabled={true}
                     />
-                  </div>
+                  )}
                 </div>
+              </TabsContent>
 
-                <div className="cls-endpoints-list">
-                  {Object.entries(filteredGroups).map(([groupName, endpoints]) => (
-                    <Collapsible
-                      key={groupName}
-                      open={expandedGroups.includes(groupName)}
-                      onOpenChange={() => toggleGroup(groupName)}
-                    >
-                      <CollapsibleTrigger className="cls-group-trigger">
-                        {expandedGroups.includes(groupName) ? (
-                          <ChevronDown size={16} />
-                        ) : (
-                          <ChevronRight size={16} />
-                        )}
-                        <span className="cls-group-name">{groupName}</span>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="cls-group-content">
-                        {endpoints.map((endpoint: any) => (
-                          <button
-                            key={endpoint.id}
-                            onClick={() => setSelectedEndpoint(endpoint.id)}
-                            className={`cls-endpoint-item ${selectedEndpoint === endpoint.id ? 'cls-active' : ''}`}
-                          >
-                            <Badge className={`cls-method-badge cls-method-${endpoint.method.toLowerCase()}`}>
-                              {endpoint.method}
-                            </Badge>
-                            <span className="cls-endpoint-name">{endpoint.name}</span>
-                          </button>
-                        ))}
-                      </CollapsibleContent>
-                    </Collapsible>
-                  ))}
+              <TabsContent value="redoc" className="cls-viewer-tab-content">
+                <div className="cls-redoc-container">
+                  {yamlUrl && (
+                    <RedocStandalone
+                      specUrl={yamlUrl}
+                      options={{
+                        nativeScrollbars: true,
+                        theme: {
+                          colors: {
+                            primary: {
+                              main: '#7c3aed' // Example color
+                            }
+                          },
+                          typography: {
+                            fontSize: '14px',
+                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                          }
+                        },
+                        hideDownloadButton: false,
+                        expandResponses: "200,201",
+                        jsonSampleExpandLevel: 2,
+                        menuToggle: true,
+                        sortPropsAlphabetically: true,
+                        hideLoading: false
+                      }}
+                    />
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Second Column - API Details */}
-          <div className="cls-details-column">
-            <Card className="cls-details-card">
-              <CardContent className="cls-details-content">
-                <div className="cls-api-header">
-                  <h2 className="cls-api-title">{currentEndpoint.name}</h2>
-                  <p className="cls-api-description">{currentEndpoint.description}</p>
-                </div>
-
-                <div className="cls-api-endpoint-info">
-                  <div className="cls-endpoint-row">
-                    <Badge className={`cls-method-badge-large cls-method-${currentEndpoint.method.toLowerCase()}`}>
-                      {currentEndpoint.method}
-                    </Badge>
-                    <code className="cls-endpoint-path">{currentEndpoint.path}</code>
-                  </div>
-                </div>
-
-                {/* Parameters Section */}
-                {currentEndpoint.parameters && currentEndpoint.parameters.length > 0 && (
-                  <div className="cls-section">
-                    <h3 className="cls-section-title">Parameters</h3>
-                    <div className="cls-params-table">
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>In</th>
-                            <th>Required</th>
-                            <th>Description</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {currentEndpoint.parameters.map((param: any, idx: number) => (
-                            <tr key={idx}>
-                              <td><code>{param.name}</code></td>
-                              <td><span className="cls-param-type">{param.type}</span></td>
-                              <td><Badge variant="outline">{param.in}</Badge></td>
-                              <td>
-                                {param.required ? (
-                                  <Badge className="cls-required-badge">Required</Badge>
-                                ) : (
-                                  <Badge variant="outline">Optional</Badge>
-                                )}
-                              </td>
-                              <td>{param.description || '-'}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )}
-
-                {/* Request Body Section */}
-                {currentEndpoint.requestBody && (
-                  <div className="cls-section">
-                    <h3 className="cls-section-title">Request Body</h3>
-                    <div className="cls-code-block-wrapper">
-                      <div className="cls-code-header">
-                        <span className="cls-code-type">application/json</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleCopyCode(currentEndpoint.requestBody, 'request')}
-                        >
-                          {copiedCode === 'request' ? (
-                            <CheckCircle2 size={14} className="text-green-600" />
-                          ) : (
-                            <Copy size={14} />
-                          )}
-                        </Button>
-                      </div>
-                      <pre className="cls-code-block">
-                        <code>{currentEndpoint.requestBody}</code>
-                      </pre>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Third Column - Response Samples */}
-          <div className="cls-response-column">
-            <Card className="cls-response-card">
-              <CardContent className="cls-response-content">
-                <h3 className="cls-response-title">Response Samples</h3>
-                
-                <Tabs defaultValue={Object.keys(currentEndpoint.responses)[0]} className="cls-response-tabs">
-                  <TabsList className="cls-response-tabs-list">
-                    {Object.keys(currentEndpoint.responses).map((code) => (
-                      <TabsTrigger 
-                        key={code} 
-                        value={code}
-                        className={`cls-response-tab ${code.startsWith('2') ? 'cls-success' : 'cls-error'}`}
-                      >
-                        {code}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
-
-                  {Object.entries(currentEndpoint.responses).map(([code, response]: [string, any]) => (
-                    <TabsContent key={code} value={code} className="cls-response-tab-content">
-                      <div className="cls-response-description">
-                        <p>{response.description}</p>
-                      </div>
-
-                      {response.example && (
-                        <div className="cls-code-block-wrapper">
-                          <div className="cls-code-header">
-                            <span className="cls-code-type">Content type: application/json</span>
-                            <div className="cls-code-actions">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleCopyCode(response.example, `response-${code}`)}
-                              >
-                                {copiedCode === `response-${code}` ? (
-                                  <>
-                                    <CheckCircle2 size={14} className="text-green-600" />
-                                    <span>Copied</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Copy size={14} />
-                                    <span>Copy</span>
-                                  </>
-                                )}
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => toggleExpandAll(code)}
-                              >
-                                {expandedResponses[code] ? (
-                                  <>
-                                    <Minimize2 size={14} />
-                                    <span>Collapse all</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Maximize2 size={14} />
-                                    <span>Expand all</span>
-                                  </>
-                                )}
-                              </Button>
-                            </div>
-                          </div>
-                          <pre className="cls-code-block">
-                            <code>{response.example}</code>
-                          </pre>
-                        </div>
-                      )}
-                    </TabsContent>
-                  ))}
-                </Tabs>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       </div>
     </AppLayout>
   );
