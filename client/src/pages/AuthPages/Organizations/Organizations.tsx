@@ -48,14 +48,16 @@ import {
   Pencil,
   Trash2,
   Settings2,
+  Copy,
 } from "lucide-react";
 import OrganizationForm from "./OrganizationForm/OrganizationForm";
 import "./Organizations.scss";
-import { 
+import {
   useLazyGetOrganisationDataQuery,
   useCreateOrganizationsMutation,
-  useUpdateOrganizationsMutation
+  useUpdateOrganizationsMutation,
 } from "@/service/organisation/organisation";
+import { truncateString } from "@/Utils/commonFunction";
 
 interface Organization {
   id: number;
@@ -89,8 +91,10 @@ export default function Organizations() {
     useLazyGetOrganisationDataQuery();
 
   // Mutation hooks for create and update
-  const [createOrganization, createOrganizationResponse] = useCreateOrganizationsMutation();
-  const [updateOrganization, updateOrganizationResponse] = useUpdateOrganizationsMutation();
+  const [createOrganization, createOrganizationResponse] =
+    useCreateOrganizationsMutation();
+  const [updateOrganization, updateOrganizationResponse] =
+    useUpdateOrganizationsMutation();
 
   // State to hold organization data from API
   const [organizationData, setOrganizationData] = useState<any>(null);
@@ -128,18 +132,19 @@ export default function Organizations() {
   };
 
   // Map API response to match the Organization interface
-  const mappedOrganizations: any[] = organizationData?.results?.map((org: any) => ({
-    id: org.id,
-    name: org.name,
-    apiKey: org.api_keys[0]?.key || "N/A",
-    environment: org.api_keys[0]?.environment || "N/A",
-    createdAt: new Date(org.created_at).toLocaleDateString(),
-    // subscriptionPlan: "Enterprise",
-    // userCount: 1,
-    // apiUsage: { percentage: 0, used: 0, total: 1000000 },
-    // status: "Active" as const,
-    // billingStatus: "Pending" as const,
-  })) || [];
+  const mappedOrganizations: any[] =
+    organizationData?.results?.map((org: any) => ({
+      id: org.id,
+      name: org.name,
+      apiKey: org.api_keys[0]?.key || "N/A",
+      environment: org.api_keys[0]?.environment || "N/A",
+      createdAt: new Date(org.created_at).toLocaleDateString(),
+      // subscriptionPlan: "Enterprise",
+      // userCount: 1,
+      // apiUsage: { percentage: 0, used: 0, total: 1000000 },
+      // status: "Active" as const,
+      // billingStatus: "Pending" as const,
+    })) || [];
 
   const totalOrganizations = organizationData?.count || 0;
   const activeOrganizations = mappedOrganizations.length;
@@ -154,7 +159,7 @@ export default function Organizations() {
   // Calculate total pages based on API count and items per page
   const totalPages = Math.ceil(totalOrganizations / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  
+
   // Use filtered organizations for display (already paginated from API)
   const paginatedOrganizations = filteredOrganizations;
 
@@ -181,6 +186,10 @@ export default function Organizations() {
     setIsCreateDialogOpen(true);
   };
 
+  const handleCopyKey = (apiKey: string) => {
+    navigator.clipboard.writeText(apiKey);
+  };
+
   const handleFormSubmit = async (data: any) => {
     try {
       // Prepare common payload fields
@@ -194,26 +203,32 @@ export default function Organizations() {
         billing_status: data.billingStatus,
         send_invitation: data.sendInvitation,
         require_password_reset: data.requirePasswordReset,
-        notes: data.notes || '',
+        notes: data.notes || "",
+      };
+
+      let payload = {
+        name: basePayload?.name,
+        limit_month: basePayload?.api_limit,
+        is_active: (basePayload?.status as string)?.toLowerCase() === "active",
       };
 
       if (editingOrganization) {
         // Update existing organization
-        const payload = {
-          id: editingOrganization.id,
-          ...basePayload,
+        const updatePayload = {
+          id: editingOrganization ? editingOrganization.id : undefined,
+          ...payload,
         };
-        await updateOrganization(payload).unwrap();
+        await updateOrganization(updatePayload).unwrap();
         console.log("Organization updated successfully");
       } else {
         // Create new organization
-        await createOrganization(basePayload).unwrap();
+        await createOrganization(payload).unwrap();
         console.log("Organization created successfully");
       }
-      
+
       // Refresh the organization list
       organisationList({ page: currentPage, page_size: itemsPerPage });
-      
+
       // Close the dialog
       setIsCreateDialogOpen(false);
       setEditingOrganization(null);
@@ -303,13 +318,40 @@ export default function Organizations() {
             </div>
             <div className="cls-header-right">
               <div className="cls-search-wrapper">
-                <Search className="cls-search-icon" />
+                <Search
+                  className="cls-search-icon cursor-pointer"
+                  onClick={() => {
+                    organisationList({
+                      page: 1,
+                      page_size: itemsPerPage,
+                      search: searchQuery,
+                    });
+                    setCurrentPage(1);
+                  }}
+                />
                 <Input
-                  placeholder="Search organizations..."
+                  placeholder="Enter to search overall Organizations..."
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
-                    setCurrentPage(1);
+                    if (e.target.value?.length === 0) {
+                      organisationList({
+                        page: 1,
+                        page_size: itemsPerPage,
+                        search: undefined,
+                      });
+                      setCurrentPage(1);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      organisationList({
+                        page: 1,
+                        page_size: itemsPerPage,
+                        search: searchQuery,
+                      });
+                      setCurrentPage(1);
+                    }
                   }}
                   className="cls-search-input"
                 />
@@ -400,19 +442,37 @@ export default function Organizations() {
                       <TableCell className="cls-td-name">
                         <div className="cls-org-info">
                           <span className="cls-org-name">{org.name}</span>
-                          <span className="cls-org-id">ID: {org.id}</span>
+                          {/* <span className="cls-org-id">ID: {org.id}</span> */}
                         </div>
                       </TableCell>
                       {columnVisibility.apiKey && (
                         <TableCell className="cls-td-apikey">
-                          <code className="cls-api-key-code">
-                            {org.apiKey}
-                          </code>
+                          <div className="cls-api-key-cell">
+                            <code className="cls-api-key-code">
+                              {truncateString(org?.apiKey, 20)}
+                            </code>
+                            <button
+                              onClick={() => handleCopyKey(org?.apiKey)}
+                              className="cls-copy-button"
+                              title="Copy API Key"
+                            >
+                              <Copy size={14} />
+                            </button>
+                          </div>
                         </TableCell>
                       )}
-                      {columnVisibility.environment && (
+                      {/* {columnVisibility.environment && (
                         <TableCell className="cls-td-environment">
                           <Badge variant="outline">{org.environment}</Badge>
+                        </TableCell>
+                      )} */}
+                      {columnVisibility.environment && (
+                        <TableCell>
+                          <Badge
+                            className={`cls-env-badge cls-env-${org.environment.toLowerCase()}`}
+                          >
+                            {org.environment}
+                          </Badge>
                         </TableCell>
                       )}
                       {columnVisibility.createdAt && (

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -189,20 +188,20 @@ export default function OrganizationForm({
   const handleSubmit = () => {
     // Extract numeric API limit from selected plan
     let apiLimitToSubmit = formData.customApiLimit;
-    
+
     if (formData.useDefaultLimit && selectedPlan) {
       // Extract numeric value from plan's apiCalls string (e.g., "20,000 SAGE API calls" -> 20000)
       const numericMatch = selectedPlan.apiCalls.match(/[\d,]+/);
       if (numericMatch) {
-        apiLimitToSubmit = numericMatch[0].replace(/,/g, '');
+        apiLimitToSubmit = numericMatch[0].replace(/,/g, "");
       }
     }
-    
+
     const submissionData = {
       ...formData,
-      customApiLimit: apiLimitToSubmit || '0'
+      customApiLimit: apiLimitToSubmit || "0",
     };
-    
+
     console.log("Creating organization:", submissionData);
     if (onSubmit) {
       onSubmit(submissionData);
@@ -236,7 +235,7 @@ export default function OrganizationForm({
   const progressPercentage = (currentStep / totalSteps) * 100;
 
   const selectedPlan = subscriptionPlans.find(
-    (plan) => plan.id === formData.subscriptionPlan
+    (plan) => plan.id === formData.subscriptionPlan,
   );
 
   const getApiLimit = () => {
@@ -257,8 +256,7 @@ export default function OrganizationForm({
             {isEdit ? "Edit Organization" : "Create Organization"}
           </DialogTitle>
           <p className="cls-dialog-subtitle">
-            {currentStep === 1 &&
-              "Enter the organization and owner details."}
+            {currentStep === 1 && "Enter the organization and owner details."}
             {currentStep === 2 &&
               "Set the subscription plan for the organization."}
             {currentStep === 3 &&
@@ -354,7 +352,9 @@ export default function OrganizationForm({
                     <div className="cls-plan-price">{plan.price}</div>
                     <div className="cls-plan-billing">per month</div>
                     <div className="cls-plan-api-calls">{plan.apiCalls}</div>
-                    <div className="cls-plan-overage">Overage: {plan.overage}</div>
+                    <div className="cls-plan-overage">
+                      Overage: {plan.overage}
+                    </div>
                     <div className="cls-plan-features">
                       {plan.features.map((feature, index) => (
                         <div key={index} className="cls-feature-item">
@@ -381,7 +381,9 @@ export default function OrganizationForm({
                     Use Plan Default Limit
                   </Label>
                   <p className="cls-setting-description">
-                    Use the default API limit for {selectedPlan?.name || "selected"} plan: {selectedPlan?.apiCalls || "N/A"}
+                    Use the default API limit for{" "}
+                    {selectedPlan?.name || "selected"} plan:{" "}
+                    {selectedPlan?.apiCalls || "N/A"}
                   </p>
                 </div>
                 <Switch
@@ -402,7 +404,10 @@ export default function OrganizationForm({
                     placeholder="Enter custom limit (calls/month)"
                     value={formData.customApiLimit}
                     onChange={(e) =>
-                      setFormData({ ...formData, customApiLimit: e.target.value })
+                      setFormData({
+                        ...formData,
+                        customApiLimit: e.target.value,
+                      })
                     }
                   />
                 </div>
@@ -411,7 +416,12 @@ export default function OrganizationForm({
               <div className="cls-current-limit">
                 <Info size={16} />
                 <span>
-                  Current Limit: {formData.useDefaultLimit ? (selectedPlan?.apiCalls || "Select a plan") : (formData.customApiLimit ? `${formData.customApiLimit} calls/month` : "Not set")}
+                  Current Limit:{" "}
+                  {formData.useDefaultLimit
+                    ? selectedPlan?.apiCalls || "Select a plan"
+                    : formData.customApiLimit
+                      ? `${formData.customApiLimit} calls/month`
+                      : "Not set"}
                 </span>
               </div>
             </div>
@@ -421,7 +431,8 @@ export default function OrganizationForm({
               <div className="cls-setting-info">
                 <Label htmlFor="sendInvitation">Send Invitation Email</Label>
                 <p className="cls-setting-description">
-                  Send an email invitation to the user with account setup instructions
+                  Send an email invitation to the user with account setup
+                  instructions
                 </p>
               </div>
               <Switch
@@ -469,7 +480,7 @@ export default function OrganizationForm({
         {/* Step 4: Review */}
         {currentStep === 4 && (
           <div className="cls-step-content">
-            <div className="cls-form-row">
+            {/* <div className="cls-form-row">
               <div className="cls-form-field">
                 <Label htmlFor="numberOfUsers">
                   Number of Users <span className="cls-required">*</span>
@@ -497,7 +508,7 @@ export default function OrganizationForm({
                   }
                 />
               </div>
-            </div>
+            </div> */}
 
             <div className="cls-form-row">
               <div className="cls-form-field">
@@ -549,7 +560,9 @@ export default function OrganizationForm({
               <div className="cls-review-grid">
                 <div className="cls-review-item">
                   <p className="cls-review-label">Name</p>
-                  <p className="cls-review-value">{formData.organizationName}</p>
+                  <p className="cls-review-value">
+                    {formData.organizationName}
+                  </p>
                 </div>
                 <div className="cls-review-item">
                   <p className="cls-review-label">Owner Email</p>
@@ -559,14 +572,18 @@ export default function OrganizationForm({
             </div>
 
             <div className="cls-review-section">
-              <h4 className="cls-subsection-title">Subscription & API Limits</h4>
+              <h4 className="cls-subsection-title">
+                Subscription & API Limits
+              </h4>
               <div className="cls-review-grid">
                 <div className="cls-review-item">
                   <p className="cls-review-label">Plan</p>
                   <div className="cls-plan-badge">
                     {selectedPlan && (
                       <>
-                        <span className="cls-badge-text">{selectedPlan.name}</span>
+                        <span className="cls-badge-text">
+                          {selectedPlan.name}
+                        </span>
                       </>
                     )}
                   </div>

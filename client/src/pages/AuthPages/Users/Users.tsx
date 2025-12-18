@@ -63,7 +63,13 @@ import {
 } from "lucide-react";
 import { TablePagination } from "@/components/ui/table-pagination";
 import "./Users.scss";
-import { useLazyGetUsersListQuery } from "@/service/users/users";
+import {
+  useCreateUserMutation,
+  useLazyGetUsersListQuery,
+  useUpdateUserMutation,
+} from "@/service/users/users";
+import PaginatedSelect from "@/components/PaginatedSelect/PaginatedSelect";
+import { useLazyGetRolesListQuery } from "@/service/roles/roles";
 
 interface User {
   id: string;
@@ -93,12 +99,15 @@ export default function UsersPage() {
   const defaultFilterData = {
     page: 1,
     page_size: 6,
+    api_profile__role: "all",
   };
 
   // The following line is used to set the filter option for the group list
   const [filterData, setFilterData] = useState<any>(defaultFilterData);
 
   const [getUsersList, getUsersListStatus] = useLazyGetUsersListQuery();
+  const [createUser, createUserStatus] = useCreateUserMutation();
+  const [updateUser, updateUserStatus] = useUpdateUserMutation();
 
   // Column visibility state
   const [columnVisibility, setColumnVisibility] = useState({
@@ -130,9 +139,7 @@ export default function UsersPage() {
   const totalUsers = usersCount;
   const activeUsers = usersData.filter((u: any) => u.r_status === 1).length;
   const pendingUsers = usersData.filter((u: any) => u.r_status === 2).length;
-  const suspendedUsers = usersData.filter(
-    (u: any) => u.r_status === 3,
-  ).length;
+  const suspendedUsers = usersData.filter((u: any) => u.r_status === 3).length;
 
   // Pagination
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
@@ -147,28 +154,30 @@ export default function UsersPage() {
   };
 
   const handleCreateUser = (userData: any) => {
-    console.log(isEditMode ? "User updated:" : "User created:", userData);
     const data = {
-      "email_id": userData?.email_id,
-      "password": userData?.password,
-      "first_name": userData?.first_name,
-      "last_name": userData?.last_name,
-      "phone_number": userData?.phone_number || "",
-      "is_active": userData?.is_active,
-      "organization_id": userData?.organization_id,
-      "role_id": userData?.role_id,
-      "address": userData?.address,
-      "enforce_rate_limits": false,
-      "allow_emails": false,
-      "allow_api_access": false,
-      "r_user_type": null,
-      "r_status": null
+      email_id: userData?.email_id,
+      password: userData?.password,
+      first_name: userData?.first_name,
+      last_name: userData?.last_name,
+      phone_number: userData?.phone_number || "",
+      is_active: true,
+      organization_id: userData?.organization_id,
+      role_id: userData?.role_id,
+      address: userData?.address,
+      enforce_rate_limits: false,
+      allow_emails: false,
+      allow_api_access: false,
+      r_user_type: 3,
+      r_status: 1,
+      status: userData?.r_status?.toLowerCase() || "active",
     };
     if (isEditMode) {
       // TODO: Update user in list
       console.log("Updating user:", editUser?.id);
+      updateUser({ id: editUser?.id, ...data });
     } else {
       // TODO: Add user to list
+      createUser(data);
     }
     setIsEditMode(false);
     setEditUser(null);
@@ -206,11 +215,11 @@ export default function UsersPage() {
     // Prepare data for export
     const exportData = filteredUsers.map((user: any, index: any) => ({
       "S.No.": index + 1,
-      "Name": user?.first_name,
-      "Email": user.email,
-      "Organization": user.organization,
-      "Role": user.role,
-      "Status": user.status,
+      Name: user?.first_name,
+      Email: user.email,
+      Organization: user.organization,
+      Role: user.role,
+      Status: user.status,
       "Last Active": user.lastActive,
     }));
 
@@ -220,18 +229,27 @@ export default function UsersPage() {
     XLSX.utils.book_append_sheet(wb, ws, "Users");
 
     // Generate Excel file and download
-    XLSX.writeFile(wb, `users-export-${new Date().toISOString().split('T')[0]}.xlsx`);
+    XLSX.writeFile(
+      wb,
+      `users-export-${new Date().toISOString().split("T")[0]}.xlsx`,
+    );
   };
 
   useEffect(() => {
-    getUsersList(filterData);
+    getUsersList({
+      ...filterData,
+      api_profile__role:
+        filterData?.api_profile__role === "all"
+          ? undefined
+          : filterData?.api_profile__role,
+    });
   }, [filterData]);
 
   useEffect(() => {
     if (getUsersListStatus.isSuccess) {
       // Handle successful data fetching
       setUsersData((getUsersListStatus as any)?.data?.results || []);
-      setUsersCount((getUsersListStatus as any)?.data?.count)
+      setUsersCount((getUsersListStatus as any)?.data?.count);
     }
   }, [getUsersListStatus]);
 
@@ -315,44 +333,63 @@ export default function UsersPage() {
               </div>
               <div className="cls-header-actions">
                 <div className="cls-search-container">
+                  <Search
+                    className="cls-search-icon cursor-pointer"
+                    onClick={() => {
+                      setFilterData({
+                        ...filterData,
+                        search: searchQuery,
+                        page: 1,
+                      });
+                    }}
+                  />
                   <Input
-                    type="text"
-                    placeholder="Search users..."
+                    placeholder="Enter to search overall Organizations..."
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchQuery(e.target.value);
-                      setCurrentPage(1);
+                      if (e.target.value?.length === 0) {
+                        setFilterData({
+                          ...filterData,
+                          search: undefined,
+                          page: 1,
+                        });
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setFilterData({
+                          ...filterData,
+                          search: searchQuery,
+                          page: 1,
+                        });
+                      }
                     }}
                     className="cls-search-input"
                   />
                 </div>
 
-                <Select
-                  value={roleFilter}
-                  onValueChange={(value) => {
-                    setRoleFilter(value);
-                    setCurrentPage(1);
+                <PaginatedSelect
+                  value={filterData?.api_profile__role}
+                  placeholder="Select role"
+                  useLazyQuery={useLazyGetRolesListQuery}
+                  getLabel={(org) => org.name}
+                  getValue={(org) => org.id.toString()}
+                  onChange={(value) =>
+                    setFilterData({ ...filterData, api_profile__role: value })
+                  }
+                  prependOption={{
+                    label: "All roles",
+                    value: "all",
                   }}
-                >
-                  <SelectTrigger className="cls-filter-select">
-                    <SelectValue placeholder="All Roles" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Roles</SelectItem>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="Developer">Developer</SelectItem>
-                    <SelectItem value="Billing Manager">
-                      Billing Manager
-                    </SelectItem>
-                    <SelectItem value="Viewer">Viewer</SelectItem>
-                  </SelectContent>
-                </Select>
+                />
 
                 <Select
                   value={statusFilter}
                   onValueChange={(value) => {
                     setStatusFilter(value);
                     setCurrentPage(1);
+                    console.log(value);
                   }}
                 >
                   <SelectTrigger className="cls-filter-select">
@@ -424,10 +461,7 @@ export default function UsersPage() {
                   Export Users
                 </Button>
 
-                <Button
-                  onClick={handleAddUser}
-                  className="cls-add-user-button"
-                >
+                <Button onClick={handleAddUser} className="cls-add-user-button">
                   <Plus size={16} />
                   Add User
                 </Button>
@@ -467,25 +501,35 @@ export default function UsersPage() {
                               className="cls-user-avatar"
                             /> */}
                             <div className="cls-user-info">
-                              <p className="cls-user-name">{user?.first_name}</p>
+                              <p className="cls-user-name">
+                                {user?.first_name}
+                              </p>
                               <p className="cls-user-email">{user?.email_id}</p>
                             </div>
                           </div>
                         </TableCell>
                         {/* {columnVisibility.organization && ( */}
                         <TableCell>
-                          {user?.organization_details?.name ? <span className="cls-organization">
-                            {user?.organization_details?.name}
-                          </span> : "-"}
+                          {user?.organization_details?.name ? (
+                            <span className="cls-organization">
+                              {user?.organization_details?.name}
+                            </span>
+                          ) : (
+                            "-"
+                          )}
                         </TableCell>
                         {/* )} */}
                         {/* {columnVisibility.role && ( */}
                         <TableCell>
-                          {user?.role_details?.name ? <Badge
-                            className={`${user?.role_details?.name !== null && "cls-role-badge"} cls-role-${user?.role_details?.name?.toLowerCase()}`}
-                          >
-                            {user?.role_details?.name}
-                          </Badge> : "-"}
+                          {user?.role_details?.name ? (
+                            <Badge
+                              className={`${user?.role_details?.name !== null && "cls-role-badge"} cls-role-${user?.role_details?.name?.toLowerCase()}`}
+                            >
+                              {user?.role_details?.name}
+                            </Badge>
+                          ) : (
+                            "-"
+                          )}
                         </TableCell>
                         {/* )} */}
                         {/* {columnVisibility.status && ( */}
@@ -564,8 +608,12 @@ export default function UsersPage() {
           totalPages={Math.ceil(usersCount / (filterData?.page_size || 1))}
           totalItems={filteredUsers.length}
           itemsPerPage={filterData?.page_size || 6}
-          onPageChange={(page: any) => { setFilterData({ ...filterData, page }); }}
-          onItemsPerPageChange={(page_size: any) => { setFilterData({ ...filterData, page_size }); }}
+          onPageChange={(page: any) => {
+            setFilterData({ ...filterData, page });
+          }}
+          onItemsPerPageChange={(page_size: any) => {
+            setFilterData({ ...filterData, page_size });
+          }}
           startIndex={startIndex}
           endIndex={endIndex}
         />
@@ -588,7 +636,9 @@ export default function UsersPage() {
               </div>
             </div>
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-center">Warning!</AlertDialogTitle>
+              <AlertDialogTitle className="text-center">
+                Warning!
+              </AlertDialogTitle>
               <AlertDialogDescription className="text-center">
                 Do you want to delete this user? This action cannot be undone.
               </AlertDialogDescription>

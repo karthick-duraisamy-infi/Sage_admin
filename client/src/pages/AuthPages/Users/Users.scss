@@ -299,6 +299,16 @@
   }
 }
 
+.cls-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: #9ca3af;
+}
+
 .cls-status-badge {
   font-size: 0.75rem;
   padding: 0.25rem 0.625rem;
