@@ -108,8 +108,6 @@ interface AppLayoutProps {
 function SidebarHeaderComponent() {
   const { state, toggleSidebar } = useSidebar();
 
-  const { menuItems } = useAppSelector((state) => state.MenuDataReducer);
-
   return (
     <SidebarHeader className="cls-sidebar-header">
       <div
@@ -142,17 +140,37 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
   const { state: sidebarState, toggleSidebar } = useSidebar();
   const dispatch = useDispatch();
   const [_, setLocation] = useLocation();
+  
+  // Get menu items from Redux store
+  const { menuItems: userMenuItems } = useAppSelector((state) => state.MenuDataReducer);
+  const menuItemsToRender = userMenuItems || menuItems;
 
+  // Map icon strings to actual icon components
+  const iconMap: Record<string, any> = {
+    LayoutDashboard,
+    Code,
+    Users,
+    CreditCard,
+    Package,
+    Activity,
+    Settings,
+  };
+
+  // Convert menu items with icon strings to icon components
+  const processedMenuItems = menuItemsToRender.map((item: any) => ({
+    ...item,
+    icon: typeof item.icon === 'string' ? iconMap[item.icon] || LayoutDashboard : item.icon,
+  }));
 
   // Initialize open menu based on current location
   React.useEffect(() => {
-    const currentMenu = menuItems.find((item) =>
-      item.items?.some((subItem) => subItem.href === location),
+    const currentMenu = processedMenuItems.find((item: any) =>
+      item.items?.some((subItem: any) => subItem.href === location),
     );
     if (currentMenu && !openMenus.includes(currentMenu.title)) {
       setOpenMenus([currentMenu.title]);
     }
-  }, [location]);
+  }, [location, processedMenuItems]);
 
   const toggleMenu = (title: string) => {
     // debugger
@@ -171,6 +189,7 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
     // Clear localStorage
     localStorage.removeItem('authToken');
     localStorage.removeItem('user');
+    localStorage.removeItem('userId');
 
     // Update Redux state
     dispatch(logout());
@@ -186,7 +205,7 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
 
         <SidebarContent className="cls-sidebar-content">
           <SidebarMenu>
-            {menuItems.map((item) => (
+            {processedMenuItems.map((item: any) => (
               <SidebarMenuItem key={item.title}>
                 {item.items ? (
                   <Collapsible

@@ -41,7 +41,8 @@ function AppContent() {
   // Load routes based on authentication status
   useEffect(() => {
     if (isAuthenticated) {
-      getMenuData();
+      const userId = localStorage.getItem('userId');
+      getMenuData(userId || undefined);
     } else {
       getLandingRoute();
     }

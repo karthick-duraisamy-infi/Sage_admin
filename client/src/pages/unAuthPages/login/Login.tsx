@@ -53,10 +53,11 @@ export default function Login() {
           description: "Redirecting to dashboard...",
         });
         
-        // Store authentication token and user data
+        // Store authentication token and user data with user ID
         const mockToken = 'mock-auth-token-' + Date.now();
         
         localStorage.setItem('authToken', mockToken);
+        localStorage.setItem('userId', matchedUser.id);
         if (rememberMe) {
           localStorage.setItem('user', JSON.stringify(matchedUser));
         }
