@@ -2,11 +2,227 @@
   "credentials": {
     "c6a0e7c2e78ced7f024313cb92b897a3": {
       "username": "admin@sage.com",
-      "password": "Infi@123"
+      "password": "Infi@123",
+      "menu": [
+        {
+          "title": "Dashboard",
+          "icon": "LayoutDashboard",
+          "href": "/dashboard"
+        },
+        {
+          "title": "API Management",
+          "icon": "Code",
+          "items": [
+            { "title": "API Keys", "href": "/api-keys" },
+            { "title": "API Docs", "href": "/api-docs" },
+            { "title": "Analytics", "href": "/analytics" }
+          ]
+        },
+        {
+          "title": "Settings",
+          "icon": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "route": [
+        {
+          "id": 1,
+          "path": "/dashboard",
+          "component": "Dashboard",
+          "default": true
+        },
+        {
+          "id": 2,
+          "path": "/api-keys",
+          "component": "ApiKeys",
+          "default": false
+        },
+        {
+          "id": 3,
+          "path": "/api-docs",
+          "component": "ApiDocs",
+          "default": false
+        },
+        {
+          "id": 4,
+          "path": "/api-docs/:id",
+          "component": "ApiDocDetail",
+          "default": false
+        },
+        {
+          "id": 9,
+          "path": "/analytics",
+          "component": "Analytics",
+          "default": false
+        },
+        {
+          "id": 10,
+          "path": "/settings",
+          "component": "Settings",
+          "default": false
+        }
+      ]
     },
     "58806e006b14b04a535784a5462d09b0": {
       "username": "user@sage.com",
-      "password": "Infi@123"
+      "password": "Infi@123",
+      "menu": [
+        {
+          "title": "Dashboard",
+          "icon": "LayoutDashboard",
+          "href": "/dashboard"
+        },
+        {
+          "title": "API Management",
+          "icon": "Code",
+          "items": [
+            { "title": "API Docs", "href": "/api-docs" },
+            { "title": "Analytics", "href": "/analytics" }
+          ]
+        }
+      ],
+      "route": [
+        {
+          "id": 1,
+          "path": "/dashboard",
+          "component": "Dashboard",
+          "default": true
+        },
+        {
+          "id": 3,
+          "path": "/api-docs",
+          "component": "ApiDocs",
+          "default": false
+        },
+        {
+          "id": 4,
+          "path": "/api-docs/:id",
+          "component": "ApiDocDetail",
+          "default": false
+        },
+        {
+          "id": 9,
+          "path": "/analytics",
+          "component": "Analytics",
+          "default": false
+        }
+      ]
+    },
+    "8e3eb2c69a184ad1d448afe5985f50b3": {
+      "username": "superadmin@sage.com",
+      "password": "Infi@123",
+      "menu": [
+        {
+          "title": "Dashboard",
+          "icon": "LayoutDashboard",
+          "href": "/dashboard"
+        },
+        {
+          "title": "API Management",
+          "icon": "Code",
+          "items": [
+            { "title": "API Keys", "href": "/api-keys" },
+            { "title": "API Docs", "href": "/api-docs" }
+          ]
+        },
+        {
+          "title": "User Management",
+          "icon": "Users",
+          "items": [
+            { "title": "Users", "href": "/users" },
+            { "title": "Roles & Privileges", "href": "/roles" },
+            { "title": "Organizations", "href": "/organizations" }
+          ]
+        },
+        {
+          "title": "Billing",
+          "icon": "CreditCard",
+          "href": "/billing"
+        },
+        {
+          "title": "Subscription Plans",
+          "icon": "Package",
+          "href": "/subscriptions"
+        },
+        {
+          "title": "Analytics",
+          "icon": "Activity",
+          "href": "/analytics"
+        },
+        {
+          "title": "Settings",
+          "icon": "Settings",
+          "href": "/settings"
+        }
+      ],
+      "route": [
+        {
+          "id": 1,
+          "path": "/dashboard",
+          "component": "Dashboard",
+          "default": true
+        },
+        {
+          "id": 2,
+          "path": "/api-keys",
+          "component": "ApiKeys",
+          "default": false
+        },
+        {
+          "id": 3,
+          "path": "/api-docs",
+          "component": "ApiDocs",
+          "default": false
+        },
+        {
+          "id": 4,
+          "path": "/api-docs/:id",
+          "component": "ApiDocDetail",
+          "default": false
+        },
+        {
+          "id": 5,
+          "path": "/users",
+          "component": "UsersPage",
+          "default": false
+        },
+        {
+          "id": 6,
+          "path": "/roles",
+          "component": "RolesPage",
+          "default": false
+        },
+        {
+          "id": 6,
+          "path": "/organizations",
+          "component": "OrganizationsPage",
+          "default": false
+        },
+        {
+          "id": 7,
+          "path": "/billing",
+          "component": "Billing",
+          "default": false
+        },
+        {
+          "id": 8,
+          "path": "/subscriptions",
+          "component": "Subscriptions",
+          "default": false
+        },
+        {
+          "id": 9,
+          "path": "/analytics",
+          "component": "Analytics",
+          "default": false
+        },
+        {
+          "id": 10,
+          "path": "/settings",
+          "component": "Settings",
+          "default": false
+        }
+      ]
     }
   }
 }
