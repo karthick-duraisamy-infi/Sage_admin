@@ -5,18 +5,20 @@ const menuService = LocalService.injectEndpoints({
     getMenuData: build.query<any, string | void>({
       queryFn: async (userId) => {
         try {
+          console.log('Fetching config.json...');
           const response = await fetch('/staticData/config.json');
+          
           if (!response.ok) {
-            console.error('Failed to fetch config.json:', response.status);
+            console.error('Failed to fetch config.json:', response.status, response.statusText);
             return { error: { status: response.status, data: 'Failed to fetch configuration' } };
           }
           
           const config = await response.json();
+          console.log('Config loaded:', config);
           
           // Get user ID from parameter or localStorage
           const userIdToUse = userId || localStorage.getItem('userId');
-          
-          console.log('Loading menu for user ID:', userIdToUse);
+          console.log('User ID to use:', userIdToUse);
           
           if (!userIdToUse) {
             console.error('No user ID provided');
@@ -30,6 +32,7 @@ const menuService = LocalService.injectEndpoints({
           }
           
           const userConfig = config.credentials[userIdToUse];
+          console.log('User config:', userConfig);
           
           if (!userConfig.menu || !userConfig.route) {
             console.error('Invalid user configuration structure');
@@ -46,7 +49,7 @@ const menuService = LocalService.injectEndpoints({
           };
         } catch (error) {
           console.error('Error loading menu configuration:', error);
-          return { error: { status: 500, data: 'Failed to load configuration' } };
+          return { error: { status: 500, data: String(error) } };
         }
       },
     }),

@@ -42,8 +42,11 @@ function AppContent() {
   useEffect(() => {
     if (isAuthenticated) {
       const userId = localStorage.getItem('userId');
+      console.log('Loading menu data for userId:', userId);
       if (userId) {
         getMenuData(userId);
+      } else {
+        console.error('No userId found in localStorage');
       }
     } else {
       getLandingRoute();
@@ -74,20 +77,41 @@ function AppContent() {
     console.log('Menu response status:', {
       isLoading: getMenuResponseStatus?.isLoading,
       isSuccess: getMenuResponseStatus?.isSuccess,
-      isError: getMenuResponseStatus?.isError
+      isError: getMenuResponseStatus?.isError,
+      error: getMenuResponseStatus?.error
     });
     
     if (authRoutes && authRoutes.length > 0) {
-      console.log('Rendering authenticated routes');
+      console.log('Rendering authenticated routes', authRoutes);
       return <DynamicRoutes routes={authRoutes} isAuthenticated={true} />;
     }
-    // If authenticated but routes are still loading
-    if (getMenuResponseStatus?.isLoading) {
-      return <div>Loading routes...</div>;
-    }
+    
     // If there was an error loading routes
     if (getMenuResponseStatus?.isError) {
-      return <div>Error loading routes. Please try logging in again.</div>;
+      console.error('Menu loading error:', getMenuResponseStatus?.error);
+      return (
+        <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <div>Error loading routes: {JSON.stringify(getMenuResponseStatus?.error)}</div>
+          <button onClick={() => {
+            localStorage.clear();
+            window.location.href = '/sageAdmin/login';
+          }}>
+            Logout and Try Again
+          </button>
+        </div>
+      );
+    }
+    
+    // If authenticated but routes are still loading
+    if (getMenuResponseStatus?.isLoading || getMenuResponseStatus?.isUninitialized) {
+      console.log('Menu is loading or uninitialized');
+      return <div>Loading routes...</div>;
+    }
+    
+    // If we have success but no routes, something is wrong
+    if (getMenuResponseStatus?.isSuccess && (!authRoutes || authRoutes.length === 0)) {
+      console.error('Menu loaded successfully but no routes found');
+      return <div>No routes available. Please contact support.</div>;
     }
   }
 
@@ -102,7 +126,7 @@ function AppContent() {
   }
 
   // Default loading state
-  return <div>Loading routes...</div>;
+  return <div>Loading...</div>;
 }
 
 function App() {
