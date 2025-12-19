@@ -56,8 +56,10 @@ import {
   useLazyGetOrganisationDataQuery,
   useCreateOrganizationsMutation,
   useUpdateOrganizationsMutation,
+  useLazyGetOrganizationStatsQuery
 } from "@/service/organisation/organisation";
 import { truncateString } from "@/Utils/commonFunction";
+import { StatCardSkeleton, TableSkeleton } from "@/components/SkeletonLoaders/SkeletonLoaders";
 
 interface Organization {
   id: number;
@@ -91,13 +93,19 @@ export default function Organizations() {
     useLazyGetOrganisationDataQuery();
 
   // Mutation hooks for create and update
-  const [createOrganization, createOrganizationResponse] =
-    useCreateOrganizationsMutation();
-  const [updateOrganization, updateOrganizationResponse] =
-    useUpdateOrganizationsMutation();
+  const [createOrganization, createOrganizationResponse] = useCreateOrganizationsMutation();
+  const [updateOrganization, updateOrganizationResponse] = useUpdateOrganizationsMutation();
 
   // State to hold organization data from API
   const [organizationData, setOrganizationData] = useState<any>(null);
+
+  const [getOrganizationStats, getOrganizationStatsStatus] = useLazyGetOrganizationStatsQuery();
+  const [statsData, setStatsData] = useState<any>({
+    "total_organizations": 0,
+    "active_organizations": 0,
+    "enterprise_plans": 0,
+    "high_api_usage": 0
+  });
 
   // The following useEffect is used to triggered the list service at initial rendering
   useEffect(() => {
@@ -132,19 +140,18 @@ export default function Organizations() {
   };
 
   // Map API response to match the Organization interface
-  const mappedOrganizations: any[] =
-    organizationData?.results?.map((org: any) => ({
-      id: org.id,
-      name: org.name,
-      apiKey: org.api_keys[0]?.key || "N/A",
-      environment: org.api_keys[0]?.environment || "N/A",
-      createdAt: new Date(org.created_at).toLocaleDateString(),
-      // subscriptionPlan: "Enterprise",
-      // userCount: 1,
-      // apiUsage: { percentage: 0, used: 0, total: 1000000 },
-      // status: "Active" as const,
-      // billingStatus: "Pending" as const,
-    })) || [];
+  const mappedOrganizations: any[] = organizationData?.results?.map((org: any) => ({
+    id: org.id,
+    name: org.name,
+    apiKey: org.api_keys[0]?.key || "N/A",
+    environment: org.api_keys[0]?.environment || "N/A",
+    createdAt: new Date(org.created_at).toLocaleDateString(),
+    // subscriptionPlan: "Enterprise",
+    // userCount: 1,
+    // apiUsage: { percentage: 0, used: 0, total: 1000000 },
+    // status: "Active" as const,
+    // billingStatus: "Pending" as const,
+  })) || [];
 
   const totalOrganizations = organizationData?.count || 0;
   const activeOrganizations = mappedOrganizations.length;
@@ -162,6 +169,44 @@ export default function Organizations() {
 
   // Use filtered organizations for display (already paginated from API)
   const paginatedOrganizations = filteredOrganizations;
+
+  const organizationStatsConfig = [
+    {
+      label: "Total Organizations",
+      value: statsData?.total_organizations,
+      icon: Building2,
+      iconClass: "cls-icon-blue",
+      trendIcon: TrendingUp,
+      trendClass: "cls-stat-positive",
+      trendText: "+2 from last month",
+    },
+    {
+      label: "Active Organizations",
+      value: statsData?.active_organizations,
+      icon: Activity,
+      iconClass: "cls-icon-green",
+      trendIcon: TrendingUp,
+      trendClass: "cls-stat-positive",
+      trendText: "+1 from last month",
+    },
+    {
+      label: "Enterprise Plans",
+      value: statsData?.enterprise_plans,
+      icon: Shield,
+      iconClass: "cls-icon-purple",
+      trendClass: "cls-stat-neutral",
+      trendText: "Stable from last month",
+    },
+    {
+      label: "High API Usage",
+      value: statsData?.high_api_usage,
+      icon: TrendingUp,
+      iconClass: "cls-icon-yellow",
+      trendIcon: TrendingDown,
+      trendClass: "cls-stat-negative",
+      trendText: "-1 from last month",
+    },
+  ];
 
   const handleEditOrganization = (org: Organization) => {
     setEditingOrganization(org);
@@ -203,14 +248,14 @@ export default function Organizations() {
         billing_status: data.billingStatus,
         send_invitation: data.sendInvitation,
         require_password_reset: data.requirePasswordReset,
-        notes: data.notes || "",
+        notes: data.notes || '',
       };
 
       let payload = {
         name: basePayload?.name,
         limit_month: basePayload?.api_limit,
         is_active: (basePayload?.status as string)?.toLowerCase() === "active",
-      };
+      }
 
       if (editingOrganization) {
         // Update existing organization
@@ -237,6 +282,18 @@ export default function Organizations() {
     }
   };
 
+  // To fetch API keys stats
+  useEffect(() => {
+    getOrganizationStats({});
+  }, []);
+
+  // To set API keys stats data
+  useEffect(() => {
+    if (getOrganizationStatsStatus?.isSuccess && getOrganizationStatsStatus?.data) {
+      setStatsData(getOrganizationStatsStatus?.data);
+    }
+  }, [getOrganizationStatsStatus]);
+
   return (
     <AppLayout
       title="Organizations"
@@ -245,68 +302,39 @@ export default function Organizations() {
       <div className="cls-organizations-container">
         {/* Stats Cards */}
         <div className="cls-stats-grid">
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Total Organizations</p>
-                <h3 className="cls-stat-value">{totalOrganizations}</h3>
-                <div className="cls-stat-change cls-stat-positive">
-                  <TrendingUp size={14} />
-                  <span>+2 from last month</span>
-                </div>
-              </div>
-              <div className="cls-stat-icon cls-icon-blue">
-                <Building2 />
-              </div>
-            </CardContent>
-          </Card>
+          {getOrganizationStatsStatus?.isLoading ?
+            Array.from({ length: 4 }).map((_, i) => (
+              <StatCardSkeleton key={i} />
+            )) :
+            organizationStatsConfig.map(
+              ({
+                label,
+                value,
+                icon: Icon,
+                iconClass,
+                trendIcon: TrendIcon,
+                trendClass,
+                trendText,
+              }) => (
+                <Card key={label} className="cls-stat-card">
+                  <CardContent className="cls-stat-content">
+                    <div className="cls-stat-info">
+                      <p className="cls-stat-label">{label}</p>
+                      <h3 className="cls-stat-value">{value ?? 0}</h3>
 
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Active Organizations</p>
-                <h3 className="cls-stat-value">{activeOrganizations}</h3>
-                <div className="cls-stat-change cls-stat-positive">
-                  <TrendingUp size={14} />
-                  <span>+1 from last month</span>
-                </div>
-              </div>
-              <div className="cls-stat-icon cls-icon-green">
-                <Activity />
-              </div>
-            </CardContent>
-          </Card>
+                      <div className={`cls-stat-change ${trendClass}`}>
+                        {TrendIcon && <TrendIcon size={14} />}
+                        <span>{trendText}</span>
+                      </div>
+                    </div>
 
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Enterprise Plans</p>
-                <h3 className="cls-stat-value">{enterprisePlans}</h3>
-                <div className="cls-stat-change cls-stat-neutral">
-                  <span>Stable from last month</span>
-                </div>
-              </div>
-              <div className="cls-stat-icon cls-icon-purple">
-                <Shield />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">High API Usage</p>
-                <h3 className="cls-stat-value">{highApiUsage}</h3>
-                <div className="cls-stat-change cls-stat-negative">
-                  <TrendingDown size={14} />
-                  <span>-1 from last month</span>
-                </div>
-              </div>
-              <div className="cls-stat-icon cls-icon-yellow">
-                <TrendingUp />
-              </div>
-            </CardContent>
-          </Card>
+                    <div className={`cls-stat-icon ${iconClass}`}>
+                      <Icon />
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            )}
         </div>
 
         {/* Organizations Table */}
@@ -318,41 +346,27 @@ export default function Organizations() {
             </div>
             <div className="cls-header-right">
               <div className="cls-search-wrapper">
-                <Search
-                  className="cls-search-icon cursor-pointer"
-                  onClick={() => {
-                    organisationList({
-                      page: 1,
-                      page_size: itemsPerPage,
-                      search: searchQuery,
-                    });
-                    setCurrentPage(1);
-                  }}
-                />
+                <Search className="cls-search-icon cursor-pointer" onClick={() => {
+                  organisationList({ page: 1, page_size: itemsPerPage, search: searchQuery });
+                  setCurrentPage(1);
+                }} />
                 <Input
                   placeholder="Enter to search overall Organizations..."
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
                     if (e.target.value?.length === 0) {
-                      organisationList({
-                        page: 1,
-                        page_size: itemsPerPage,
-                        search: undefined,
-                      });
+                      organisationList({ page: 1, page_size: itemsPerPage, search: undefined });
                       setCurrentPage(1);
                     }
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      organisationList({
-                        page: 1,
-                        page_size: itemsPerPage,
-                        search: searchQuery,
-                      });
+                      organisationList({ page: 1, page_size: itemsPerPage, search: searchQuery });
                       setCurrentPage(1);
                     }
-                  }}
+                  }
+                  }
                   className="cls-search-input"
                 />
               </div>
@@ -409,126 +423,131 @@ export default function Organizations() {
           </div>
 
           <div className="cls-table-wrapper">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="cls-th-sno">S.No.</TableHead>
-                  <TableHead className="cls-th-name">
-                    Organization Name
-                  </TableHead>
-                  {columnVisibility.apiKey && (
-                    <TableHead className="cls-th-apikey">API Key</TableHead>
-                  )}
-                  {columnVisibility.environment && (
-                    <TableHead className="cls-th-environment">
-                      Environment
+            {organisationListResponse?.isLoading ?
+              (<div>
+                <TableSkeleton columns={5} />
+              </div>) :
+
+              (<Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="cls-th-sno">S.No.</TableHead>
+                    <TableHead className="cls-th-name">
+                      Organization Name
                     </TableHead>
-                  )}
-                  {columnVisibility.createdAt && (
-                    <TableHead className="cls-th-created">
-                      Created Date
-                    </TableHead>
-                  )}
-                  <TableHead className="cls-th-actions">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {paginatedOrganizations.length > 0 ? (
-                  paginatedOrganizations.map((org, index) => (
-                    <TableRow key={org.id} className="cls-table-row">
-                      <TableCell className="cls-td-sno">
-                        {startIndex + index + 1}
-                      </TableCell>
-                      <TableCell className="cls-td-name">
-                        <div className="cls-org-info">
-                          <span className="cls-org-name">{org.name}</span>
-                          {/* <span className="cls-org-id">ID: {org.id}</span> */}
-                        </div>
-                      </TableCell>
-                      {columnVisibility.apiKey && (
-                        <TableCell className="cls-td-apikey">
-                          <div className="cls-api-key-cell">
-                            <code className="cls-api-key-code">
-                              {truncateString(org?.apiKey, 20)}
-                            </code>
-                            <button
-                              onClick={() => handleCopyKey(org?.apiKey)}
-                              className="cls-copy-button"
-                              title="Copy API Key"
-                            >
-                              <Copy size={14} />
-                            </button>
+                    {columnVisibility.apiKey && (
+                      <TableHead className="cls-th-apikey">API Key</TableHead>
+                    )}
+                    {columnVisibility.environment && (
+                      <TableHead className="cls-th-environment">
+                        Environment
+                      </TableHead>
+                    )}
+                    {columnVisibility.createdAt && (
+                      <TableHead className="cls-th-created">
+                        Created Date
+                      </TableHead>
+                    )}
+                    <TableHead className="cls-th-actions">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paginatedOrganizations.length > 0 ? (
+                    paginatedOrganizations.map((org, index) => (
+                      <TableRow key={org.id} className="cls-table-row">
+                        <TableCell className="cls-td-sno">
+                          {startIndex + index + 1}
+                        </TableCell>
+                        <TableCell className="cls-td-name">
+                          <div className="cls-org-info">
+                            <span className="cls-org-name">{org.name}</span>
+                            {/* <span className="cls-org-id">ID: {org.id}</span> */}
                           </div>
                         </TableCell>
-                      )}
-                      {/* {columnVisibility.environment && (
+                        {columnVisibility.apiKey && (
+                          <TableCell className="cls-td-apikey">
+                            <div className="cls-api-key-cell">
+                              <code className="cls-api-key-code">
+                                {truncateString(org?.apiKey, 20)}
+                              </code>
+                              <button
+                                onClick={() => handleCopyKey(org?.apiKey)}
+                                className="cls-copy-button"
+                                title="Copy API Key"
+                              >
+                                <Copy size={14} />
+                              </button>
+                            </div>
+                          </TableCell>
+                        )}
+                        {/* {columnVisibility.environment && (
                         <TableCell className="cls-td-environment">
                           <Badge variant="outline">{org.environment}</Badge>
                         </TableCell>
                       )} */}
-                      {columnVisibility.environment && (
-                        <TableCell>
-                          <Badge
-                            className={`cls-env-badge cls-env-${org.environment.toLowerCase()}`}
-                          >
-                            {org.environment}
-                          </Badge>
+                        {columnVisibility.environment && (
+                          <TableCell>
+                            <Badge
+                              className={`cls-env-badge cls-env-${org.environment.toLowerCase()}`}
+                            >
+                              {org.environment}
+                            </Badge>
+                          </TableCell>
+                        )}
+                        {columnVisibility.createdAt && (
+                          <TableCell className="cls-td-created">
+                            {org.createdAt}
+                          </TableCell>
+                        )}
+                        <TableCell className="cls-td-actions">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="cls-actions-btn"
+                              >
+                                <MoreVertical size={16} />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => handleEditOrganization(org)}
+                                className="cls-menu-item"
+                              >
+                                <Pencil size={16} />
+                                Edit Organization
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() => handleDeleteOrganization(org.id)}
+                                className="cls-menu-item cls-delete-item"
+                              >
+                                <Trash2 size={16} />
+                                Delete Organization
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
-                      )}
-                      {columnVisibility.createdAt && (
-                        <TableCell className="cls-td-created">
-                          {org.createdAt}
-                        </TableCell>
-                      )}
-                      <TableCell className="cls-td-actions">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="cls-actions-btn"
-                            >
-                              <MoreVertical size={16} />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() => handleEditOrganization(org)}
-                              className="cls-menu-item"
-                            >
-                              <Pencil size={16} />
-                              Edit Organization
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDeleteOrganization(org.id)}
-                              className="cls-menu-item cls-delete-item"
-                            >
-                              <Trash2 size={16} />
-                              Delete Organization
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={
+                          2 +
+                          (columnVisibility.apiKey ? 1 : 0) +
+                          (columnVisibility.environment ? 1 : 0) +
+                          (columnVisibility.createdAt ? 1 : 0) +
+                          1
+                        }
+                        className="cls-no-results"
+                      >
+                        No organizations found matching your search.
                       </TableCell>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={
-                        2 +
-                        (columnVisibility.apiKey ? 1 : 0) +
-                        (columnVisibility.environment ? 1 : 0) +
-                        (columnVisibility.createdAt ? 1 : 0) +
-                        1
-                      }
-                      className="cls-no-results"
-                    >
-                      No organizations found matching your search.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  )}
+                </TableBody>
+              </Table>)}
           </div>
 
           <TablePagination

@@ -6,7 +6,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Search } from "lucide-react";
+import {
+    Search
+} from "lucide-react";
 
 interface PaginatedSelectProps {
     value?: any;
@@ -38,16 +40,22 @@ export default function PaginatedSelect({
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
 
-    const fetchData = async (pageNo = 1, searchText = "", append = false) => {
+    const fetchData = async (
+        pageNo = 1,
+        searchText = "",
+        append = false
+    ) => {
         if (loading) return;
         setLoading(true);
 
         const res = await trigger(
             { page: pageNo, search: searchText },
-            true,
+            true
         ).unwrap();
 
-        setItems((prev) => (append ? [...prev, ...res.results] : res.results));
+        setItems((prev) =>
+            append ? [...prev, ...res.results] : res.results
+        );
         setHasMore(res.hasMore);
         setLoading(false);
     };
@@ -79,7 +87,10 @@ export default function PaginatedSelect({
                 <SelectValue placeholder={value ? value : placeholder} />
             </SelectTrigger>
 
-            <SelectContent className="p-0" onScroll={handleScroll}>
+            <SelectContent
+                className="p-0"
+                onScroll={handleScroll}
+            >
                 {/* Search */}
                 <div className="sticky top-0 z-10 bg-white p-2 border-b flex gap-2">
                     <input
@@ -107,7 +118,10 @@ export default function PaginatedSelect({
                 )}
                 {/* List */}
                 {items.map((item) => (
-                    <SelectItem key={getValue(item)} value={getValue(item)}>
+                    <SelectItem
+                        key={getValue(item)}
+                        value={getValue(item)}
+                    >
                         {getLabel(item)}
                     </SelectItem>
                 ))}

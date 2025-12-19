@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import "./UsersForm.scss";
 import { useLazyGetRolesListQuery } from "@/service/roles/roles";
+import PaginatedSelect from "@/components/PaginatedSelect/PaginatedSelect";
+import { useLazyGetOrganisationDataQuery } from "@/service/organisation/organisation";
 
 interface RoleOption {
   id: string | any;
@@ -339,7 +341,7 @@ export default function UsersForm({ open, onOpenChange, onSubmit, editData, isEd
               </div>
               <div className="cls-form-field  w-[50%]">
                 <Label htmlFor="last_name" >
-                  Last Name <span className="cls-required">*</span>
+                  Last Name {/* <span className="cls-required">*</span> */}
                 </Label>
                 <Input
                   id="last_name"
@@ -390,34 +392,16 @@ export default function UsersForm({ open, onOpenChange, onSubmit, editData, isEd
               <Label htmlFor="organization">
                 Organization <span className="cls-required">*</span>
               </Label>
-
-              <Select
-                value={formData.organization_id?.toString()}
-                onValueChange={(value: any) =>
-                  setFormData({
-                    ...formData,
-                    organization_id: value, // store ID as number
-                  })
-                }
-              >
-                <SelectTrigger
-                  id="organization"
-                  className={errors.organization_id ? "cls-input-error" : ""}
-                >
-                  <SelectValue placeholder="Select an organization" />
-                </SelectTrigger>
-
-                <SelectContent>
-                  {organization.map((org) => (
-                    <SelectItem
-                      key={org.id}
-                      value={org.id.toString()} // Select expects string
-                    >
-                      {org.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <PaginatedSelect
+                  value={formData?.organization_id}
+                  placeholder="Select organization"
+                  useLazyQuery={useLazyGetOrganisationDataQuery}
+                  getLabel={(org) => org.name}
+                  getValue={(org) => org.id.toString()}
+                  onChange={(value) =>
+                    setFormData({ ...formData, organization_id: value })
+                  }
+                />
 
               {errors.organization_id && (
                 <p className="cls-error-text">Organization is required</p>

@@ -66,12 +66,17 @@ import {
 } from "lucide-react";
 import { TablePagination } from "@/components/ui/table-pagination";
 import "./ApiKeys.scss";
-import { useLazyGetApiKeysListQuery } from "@/service/apiKeys/apiKeys";
+import { useCreateApiKeysMutation, useLazyGetApiKeysListQuery, useLazyGetApiKeysStatsQuery, useUpdateApiKeysMutation } from "@/service/apiKeys/apiKeys";
+import { formatDate, truncateString } from "@/Utils/commonFunction";
+import { useLazyGetOrganisationDataQuery } from "@/service/organisation/organisation";
+import PaginatedSelect from "@/components/PaginatedSelect/PaginatedSelect";
+import { SimpleStatCardSkeleton, TableSkeleton } from "@/components/SkeletonLoaders/SkeletonLoaders";
 
 interface ApiKey {
   id: string;
   name: string;
-  organization: string;
+  organization?: number;
+  organization_id?: number;
   apiKey: string;
   environment: "Production" | "Development" | "Staging";
   status: "active" | "inactive";
@@ -82,47 +87,69 @@ interface ApiKey {
   lastUsed: string;
 }
 
-const apiKeysDataStatic: ApiKey[] = [
-  {
-    id: "1",
-    name: "Production API Key",
-    organization: "ClearTrip Solutions",
-    apiKey: "sk-prod-abc1...d6p4f8",
-    environment: "Production",
-    status: "active",
-    permissions: "GRM-API",
-    endpoints: 50,
-    usageToday: 12450,
-    usageLimit: 100000,
-    lastUsed: "2 hours ago",
-  },
-];
+// const apiKeysDataStatic: ApiKey[] = [
+//   {
+//     id: "1",
+//     name: "Production API Key",
+//     organization_id: "ClearTrip Solutions",
+//     apiKey: "sk-prod-abc1...d6p4f8",
+//     environment: "Production",
+//     status: "active",
+//     permissions: "GRM-API",
+//     endpoints: 50,
+//     usageToday: 12450,
+//     usageLimit: 100000,
+//     lastUsed: "2 hours ago",
+//   },
+// ];
 
 export default function ApiKeys() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingKey, setEditingKey] = useState<ApiKey | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     name: "",
-    organization: "TechCorp Solutions",
+    organization: 1,
     environment: "Development" as "Production" | "Development" | "Staging",
     status: "active" as "active" | "inactive",
   });
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [keyToDelete, setKeyToDelete] = useState<string | null>(null);
+  const [statsData, setStatsData] = useState<any>({
+    "total_keys": 0,
+    "active_keys": 0,
+    "production_keys": 0,
+    "development_keys": 0
+  });
 
-    const defaultFilterData = {
-      page: 1,
-      page_size: 6,
-    };
+  const defaultFilterData = {
+    page: 1,
+    page_size: 6,
+  };
 
-    // The following line is used to set the filter option for the group list
-    const [filterData, setFilterData] = useState<any>(defaultFilterData);
+  // The following line is used to set the filter option for the group list
+  const [filterData, setFilterData] = useState<any>(defaultFilterData);
 
-    const [getApiKeysList, getApiKeysListStatus] = useLazyGetApiKeysListQuery();
+  // State to hold organization data from API
+  const [organizationData, setOrganizationData] = useState<any>([]);
 
-    const [apiKeysData, setApiKeysData] = useState<any[]>([]);
-    const [apiKeysCount, setApiKeysCount] = useState<number>(0);
+  const [organisationList, organisationListResponse] = useLazyGetOrganisationDataQuery();
+
+  const defaultOrganisationFilterData = {
+    page: 1,
+    page_size: 6,
+  };
+
+  // The following line is used to set the filter option for the group list
+  const [organisationFilterData, setOrganisationFilterData] = useState<any>(defaultOrganisationFilterData);
+
+  const [getApiKeysList, getApiKeysListStatus] = useLazyGetApiKeysListQuery();
+  const [createApiKeys, createApiKeysStatus] = useCreateApiKeysMutation();
+  const [updateApiKeys, updateApiKeysStatus] = useUpdateApiKeysMutation();
+  const [getApiKeysStats, getApiKeysStatsStatus] = useLazyGetApiKeysStatsQuery();
+
+  const [apiKeysData, setApiKeysData] = useState<any[]>([]);
+  const [apiKeysCount, setApiKeysCount] = useState<number>(0);
 
   // Available endpoint permissions for each API collection
   const apiCollectionEndpoints: Record<string, any[]> = {
@@ -174,19 +201,19 @@ export default function ApiKeys() {
       prev.map((collection) =>
         collection.id === collectionId
           ? {
-              ...collection,
-              endpoints: collection.endpoints.map((perm, i) =>
-                i === endpointIndex
-                  ? {
-                      ...perm,
-                      methods: {
-                        ...perm.methods,
-                        [method]: !perm.methods[method],
-                      },
-                    }
-                  : perm,
-              ),
-            }
+            ...collection,
+            endpoints: collection.endpoints.map((perm, i) =>
+              i === endpointIndex
+                ? {
+                  ...perm,
+                  methods: {
+                    ...perm.methods,
+                    [method]: !perm.methods[method],
+                  },
+                }
+                : perm,
+            ),
+          }
           : collection,
       ),
     );
@@ -197,12 +224,12 @@ export default function ApiKeys() {
       prev.map((collection) =>
         collection.id === collectionId
           ? {
-              ...collection,
-              endpoints: collection.endpoints.map((perm) => ({
-                ...perm,
-                methods: { GET: true, POST: true, PUT: true },
-              })),
-            }
+            ...collection,
+            endpoints: collection.endpoints.map((perm) => ({
+              ...perm,
+              methods: { GET: true, POST: true, PUT: true },
+            })),
+          }
           : collection,
       ),
     );
@@ -233,13 +260,13 @@ export default function ApiKeys() {
       prev.map((collection) =>
         collection.id === collectionId
           ? {
-              ...collection,
-              collection: collectionName,
-              endpoints:
-                apiCollectionEndpoints[collectionName]?.map((ep) => ({
-                  ...ep,
-                })) || [],
-            }
+            ...collection,
+            collection: collectionName,
+            endpoints:
+              apiCollectionEndpoints[collectionName]?.map((ep) => ({
+                ...ep,
+              })) || [],
+          }
           : collection,
       ),
     );
@@ -264,9 +291,9 @@ export default function ApiKeys() {
   // Filter API keys based on search
   const filteredKeys = apiKeysData.filter(
     (key) =>
-      key.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      key.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      key.apiKey.toLowerCase().includes(searchQuery.toLowerCase()),
+      key?.name?.toLowerCase()?.includes(searchQuery?.toLowerCase()) ||
+      // key.organization.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      key?.apiKey?.toLowerCase()?.includes(searchQuery?.toLowerCase()),
   );
 
   // Calculate stats
@@ -305,7 +332,7 @@ export default function ApiKeys() {
     setEditingKey(apiKey);
     setFormData({
       name: apiKey.name,
-      organization: apiKey.organization,
+      organization: apiKey.organization_id,
       environment: apiKey.environment,
       status: apiKey.status,
     });
@@ -329,40 +356,92 @@ export default function ApiKeys() {
   const handleCreateKey = () => {
     if (editingKey) {
       console.log("Update API key:", editingKey.id, formData, apiCollections);
+      updateApiKeys({ id: editingKey.id, ...formData, api_collections: apiCollections });
     } else {
-      console.log("Create new API key:", formData, apiCollections);
+      createApiKeys({ ...formData, api_collections: apiCollections });
     }
     setIsCreateDialogOpen(false);
     setEditingKey(null);
     setFormData({
       name: "",
-      organization: "TechCorp Solutions",
+      organization: 1,
       environment: "Development",
       status: "active",
     });
     setApiCollections([]);
   };
 
+  const statsConfig = [
+    {
+      label: "Total API Keys",
+      value: statsData?.total_keys,
+      icon: Key,
+      iconClass: "cls-icon-blue",
+    },
+    {
+      label: "Active Keys",
+      value: statsData?.active_keys,
+      icon: CheckCircle2,
+      iconClass: "cls-icon-green",
+    },
+    {
+      label: "Production Keys",
+      value: statsData?.production_keys,
+      icon: Shield,
+      iconClass: "cls-icon-red",
+    },
+    {
+      label: "Development Keys",
+      value: statsData?.development_keys,
+      icon: Code,
+      iconClass: "cls-icon-yellow",
+    },
+  ];
 
-   useEffect(() => {
-      getApiKeysList(filterData);
-    }, [filterData]);
+  // To fetch API keys list based on filter data
+  useEffect(() => {
+    getApiKeysList(filterData);
+  }, [filterData]);
 
-    useEffect(() => {
-      if (getApiKeysListStatus.isSuccess) {
-        // Handle successful data fetching
-        setApiKeysData((getApiKeysListStatus as any)?.data?.results || []);
-        setApiKeysCount((getApiKeysListStatus as any)?.data?.count)
-      } else if (getApiKeysListStatus.isError) {
-        // Handle API call failure
-        setApiKeysData([]);
-        setApiKeysCount(0);
-      }
-    }, [getApiKeysListStatus]);
+  // The following useEffect is used to set the response from the API.
+  useEffect(() => {
+    if (getApiKeysListStatus.isSuccess) {
+      // Handle successful data fetching
+      setApiKeysData((getApiKeysListStatus as any)?.data?.results || []);
+      setApiKeysCount((getApiKeysListStatus as any)?.data?.count)
+    } else if (getApiKeysListStatus.isError) {
+      // Handle API call failure
+      setApiKeysData([]);
+      setApiKeysCount(0);
+    }
+  }, [getApiKeysListStatus]);
 
-    // Determine if the table should show the empty state
-    const showEmptyState = apiKeysData.length === 0 && !getApiKeysListStatus.isLoading;
+  // Determine if the table should show the empty state
+  const showEmptyState = apiKeysData.length === 0 && !getApiKeysListStatus.isLoading;
 
+  // The following useEffect is used to triggered the list service at initial rendering
+  useEffect(() => {
+    organisationList(organisationFilterData);
+  }, [organisationFilterData]);
+
+  // The following useEffect is used to set the response from the API.
+  useEffect(() => {
+    if (organisationListResponse?.isSuccess && organisationListResponse?.data) {
+      setOrganizationData(organisationListResponse?.data?.results || []);
+    }
+  }, [organisationListResponse]);
+
+  // To fetch API keys stats
+  useEffect(() => {
+    getApiKeysStats({});
+  }, []);
+
+  // To set API keys stats data
+  useEffect(() => {
+    if (getApiKeysStatsStatus?.isSuccess && getApiKeysStatsStatus?.data) {
+      setStatsData(getApiKeysStatsStatus?.data);
+    }
+  }, [getApiKeysStatsStatus]);
 
   return (
     <AppLayout
@@ -371,58 +450,30 @@ export default function ApiKeys() {
     >
       <div className="cls-apikeys-page">
         {/* Stats Cards */}
-        <div className="cls-stats-grid my-[0px] mx-[20px]">
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Total API Keys</p>
-                <h3 className="cls-stat-value">{apiKeysCount}</h3>
-              </div>
-              <div className="cls-stat-icon cls-icon-blue">
-                <Key />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Active Keys</p>
-                <h3 className="cls-stat-value">{activeKeys}</h3>
-              </div>
-              <div className="cls-stat-icon cls-icon-green">
-                <CheckCircle2 />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Production Keys</p>
-                <h3 className="cls-stat-value">{productionKeys}</h3>
-              </div>
-              <div className="cls-stat-icon cls-icon-red">
-                <Shield />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Development Keys</p>
-                <h3 className="cls-stat-value">{developmentKeys}</h3>
-              </div>
-              <div className="cls-stat-icon cls-icon-yellow">
-                <Code />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {!getApiKeysStatsStatus?.isLoading ? (<div className="cls-stats-api-grid">
+          {statsConfig.map(({ label, value, icon: Icon, iconClass }) => (
+            <Card key={label} className="cls-stat-card">
+              <CardContent className="cls-stat-content">
+                <div className="cls-stat-info">
+                  <p className="cls-stat-label">{label}</p>
+                  <h3 className="cls-stat-value">{value ?? 0}</h3>
+                </div>
+                <div className={`cls-stat-icon ${iconClass}`}>
+                  <Icon />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>) :
+          (<div className="cls-stats-api-grid">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SimpleStatCardSkeleton key={i} />
+            ))}
+          </div>)
+        }
 
         {/* API Key Management Section */}
-        <Card className="cls-management-card">
+        <Card className="cls-management-card !m-0">
           <CardContent className="cls-management-content">
             <div className="cls-management-header">
               <div className="cls-header-left">
@@ -431,14 +482,24 @@ export default function ApiKeys() {
               </div>
               <div className="cls-header-actions">
                 <div className="cls-search-container">
+                  <Search className="cls-search-icon cursor-pointer" onClick={() => {
+                    setFilterData({ ...filterData, search: searchQuery, page: 1 });
+                  }} />
                   <Input
-                    type="text"
-                    placeholder="Search API keys..."
+                    placeholder="Enter to search overall roles..."
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchQuery(e.target.value);
-                      setFilterData({ ...filterData, page: 1 });
+                      if (e.target.value?.length === 0) {
+                        setFilterData({ ...filterData, search: undefined, page: 1 });
+                      }
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setFilterData({ ...filterData, search: searchQuery, page: 1 });
+                      }
+                    }
+                    }
                     className="cls-search-input"
                   />
                 </div>
@@ -511,7 +572,11 @@ export default function ApiKeys() {
             </div>
 
             {/* Table */}
-            <div className="cls-table-wrapper">
+            {getApiKeysListStatus?.isLoading ?
+            (<div>
+              <TableSkeleton columns={5} />
+            </div>):
+            (<div className="cls-table-wrapper">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -551,17 +616,17 @@ export default function ApiKeys() {
                           <div className="cls-name-cell">
                             <p className="cls-key-name">{apiKey.name}</p>
                             <p className="cls-organization">
-                              {apiKey.organization}
+                              {apiKey.organization_name}
                             </p>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="cls-api-key-cell">
-                            <code className="cls-api-key-code">
-                              {apiKey.key}
+                            <code className="cls-api-key-code w-[100%]">
+                              {truncateString(apiKey?.key, 20)}
                             </code>
                             <button
-                              onClick={() => handleCopyKey(apiKey.key)}
+                              onClick={() => handleCopyKey(apiKey?.key)}
                               className="cls-copy-button"
                               title="Copy API Key"
                             >
@@ -615,7 +680,7 @@ export default function ApiKeys() {
                           <TableCell>
                             <div className="cls-last-used-cell">
                               <Clock size={14} className="cls-clock-icon" />
-                              <span>{apiKey.created_at}</span>
+                              <span>{formatDate(apiKey.created_at)}</span>
                             </div>
                           </TableCell>
                         )}
@@ -660,7 +725,7 @@ export default function ApiKeys() {
                   )}
                 </TableBody>
               </Table>
-            </div>
+            </div>)}
           </CardContent>
         </Card>
 
@@ -687,7 +752,7 @@ export default function ApiKeys() {
               setEditingKey(null);
               setFormData({
                 name: "",
-                organization: "TechCorp Solutions",
+                organization: 1,
                 environment: "Development",
                 status: "active",
               });
@@ -722,28 +787,16 @@ export default function ApiKeys() {
 
               <div className="cls-form-field">
                 <Label htmlFor="organization">Organization</Label>
-                <Select
-                  value={formData.organization}
-                  onValueChange={(value) =>
+                <PaginatedSelect
+                  value={formData?.organization}
+                  placeholder="Select organization"
+                  useLazyQuery={useLazyGetOrganisationDataQuery}
+                  getLabel={(org) => org.name}
+                  getValue={(org) => org.id.toString()}
+                  onChange={(value) =>
                     setFormData({ ...formData, organization: value })
                   }
-                >
-                  <SelectTrigger id="organization">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="TechCorp Solutions">
-                      TechCorp Solutions
-                    </SelectItem>
-                    <SelectItem value="DataFlow Systems">
-                      DataFlow Systems
-                    </SelectItem>
-                    <SelectItem value="Cloudify Inc">Cloudify Inc</SelectItem>
-                    <SelectItem value="Infiniti Software Solutions">
-                      Infiniti Software Solutions
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                />
               </div>
 
               <div className="cls-form-field">
@@ -758,9 +811,10 @@ export default function ApiKeys() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Development">Development</SelectItem>
-                    <SelectItem value="Staging">Staging</SelectItem>
-                    <SelectItem value="Production">Production</SelectItem>
+                    <SelectItem value="DEV">Development</SelectItem>
+                    <SelectItem value="STAGE">Staging</SelectItem>
+                    <SelectItem value="PROD">Production</SelectItem>
+                    <SelectItem value="TEST">Test</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -840,7 +894,7 @@ export default function ApiKeys() {
                     </Button>
                   </div>
 
-                  {collection.collection && collection.endpoints.length > 0 && (
+                  {collection?.collection && collection?.endpoints?.length > 0 && (
                     <div className="cls-endpoint-permissions">
                       <div className="cls-permissions-header">
                         <Label>Endpoint Permissions</Label>
@@ -848,7 +902,7 @@ export default function ApiKeys() {
                           type="button"
                           variant="ghost"
                           size="sm"
-                          onClick={() => selectAllMethods(collection.id)}
+                          onClick={() => selectAllMethods(collection?.id)}
                           className="cls-select-all-btn"
                         >
                           Select All Methods
@@ -934,7 +988,7 @@ export default function ApiKeys() {
                   setEditingKey(null);
                   setFormData({
                     name: "",
-                    organization: "TechCorp Solutions",
+                    organization: 1,
                     environment: "Development",
                     status: "active",
                   });

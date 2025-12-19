@@ -207,16 +207,34 @@ export function TablePagination({
         <Input
           id="go-to-page"
           type="number"
-          min="1"
+          min={1}
           max={totalPages}
           value={goToPage}
-          onChange={(e) => setGoToPage(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+
+            // allow empty (for clearing input)
+            if (value === "") {
+              setGoToPage("");
+              return;
+            }
+
+            const num = Number(value);
+
+            // block invalid values
+            if (num < 1 || num > totalPages) {
+              return;
+            }
+
+            setGoToPage(value);
+          }}
           onKeyDown={(e) => e.key === "Enter" && handleGoToPage()}
           placeholder={`1-${totalPages}`}
           className="cls-page-input"
         />
+
         <Button
-          variant="outline"
+          variant="default"
           size="sm"
           onClick={handleGoToPage}
           disabled={!goToPage}

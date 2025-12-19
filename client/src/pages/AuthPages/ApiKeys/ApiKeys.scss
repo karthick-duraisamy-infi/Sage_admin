@@ -5,11 +5,11 @@
 }
 
 // Stats Grid
-.cls-stats-grid {
+.cls-stats-api-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 20px;
 }
 
 .cls-stat-card {
@@ -85,7 +85,6 @@
 .cls-management-card {
   border: 1px solid #e5e7eb;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1.5rem;
 }
 
 .cls-management-content {
@@ -135,13 +134,14 @@
 
 .cls-search-icon {
   position: absolute;
-  left: 17rem;
+  left: 10px;
   top: 50%;
   transform: translateY(-50%);
   width: 1rem;
   height: 1rem;
   color: #9ca3af;
-  pointer-events: none;
+  // pointer-events: none;
+  cursor: pointer;
 }
 
 .cls-search-input {
@@ -364,7 +364,7 @@
   font-size: 0.875rem;
   color: #6b7280;
   min-width: 120px;
-  max-width: 150px;
+  // max-width: 150px;
 }
 
 .cls-clock-icon {

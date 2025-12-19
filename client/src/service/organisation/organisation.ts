@@ -30,6 +30,13 @@ const organisationService = CommonService.injectEndpoints({
       }),
       invalidatesTags: ["organizations"],
     }),
+    getOrganizationStats: build.query<any,any>({
+          query: () => ({
+            url: `/api/management/organizations/stats/`,
+            method: "GET",
+          }),
+          providesTags: ["organizations"],
+        }),
   }),
   overrideExisting: true,
 });
@@ -38,4 +45,5 @@ export const {
   useLazyGetOrganisationDataQuery,
   useCreateOrganizationsMutation,
   useUpdateOrganizationsMutation,
+  useLazyGetOrganizationStatsQuery,
 } = organisationService;

@@ -59,14 +59,24 @@ const apiKeysService = CommonService.injectEndpoints({
 
     updateApiKeys: build.mutation<
       MailApiResponse<User>,
-      { id: number } & Partial<any>
+      any
     >({
-      query: ({ id, ...body }) => ({
-        url: `api/management/api-keys/${id}/`,
+      query: (body) => ({
+        url: `api/management/api-keys/`,
         method: "POST",
         body,
       }),
       invalidatesTags: ["api-keys"],
+    }),
+    getApiKeysStats: build.query<
+      MailApiResponse<any>,
+      any
+    >({
+      query: () => ({
+        url: `api/management/api-keys/stats/`,
+        method: "GET",
+      }),
+      providesTags: ["api-keys"],
     }),
   }),
   overrideExisting: true,
@@ -77,4 +87,5 @@ export const {
   useLazyGetApiKeysInfoQuery,
   useCreateApiKeysMutation,
   useUpdateApiKeysMutation,
+  useLazyGetApiKeysStatsQuery
 } = apiKeysService;

@@ -13,6 +13,7 @@
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
   // margin: 1rem !important;
+  margin-bottom: 0;
 }
 
 .cls-stat-card {
@@ -100,11 +101,14 @@
   }
 }
 
+.cls-margin-x {
+  margin: 0rem 2rem;
+}
+
 // Management Card
 .cls-management-card {
   border: 1px solid hsl(var(--border));
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  margin: 1rem !important;
   background-color: #fff !important;
 
   .cls-management-content {

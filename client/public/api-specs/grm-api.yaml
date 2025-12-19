@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  title: ClearTrip API
+  title: OTA API
   version: 1.0.0
-  description: 'ClearTrip API provides endpoints for authentication, user management, ancillary services, policy management, help desk, and more.'
+  description: 'OTA API provides endpoints for authentication, user management, ancillary services, policy management, help desk, and more.'
 paths:
   /checksession/:
     post:

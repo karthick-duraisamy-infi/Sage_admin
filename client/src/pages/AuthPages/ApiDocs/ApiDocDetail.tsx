@@ -316,10 +316,11 @@ export default function ApiDocDetail() {
         </div>
 
         {/* Basic Information Section */}
-        <Card className="cls-basic-info-card">
+        {/* <Card className="cls-basic-info-card">
           <CardContent className="cls-basic-info-content">
             <div className="cls-basic-info-header">
               <div className="cls-basic-info-title-row">
+                {JSON.stringify(apiMetadata)}
                 <h1 className="cls-basic-info-title">{apiMetadata.name}</h1>
                 <div className="cls-basic-info-badges">
                   <Badge className="cls-version-badge">v{apiMetadata.version}</Badge>
@@ -337,21 +338,21 @@ export default function ApiDocDetail() {
             <div className="cls-basic-info-meta">
               <div className="cls-meta-item">
                 <span className="cls-meta-label">Created by</span>
-                <span className="cls-meta-value">admin@sage.co</span> {/* Hardcoded as per example, original had 'administrator' */}
+                <span className="cls-meta-value">admin@sage.co</span> 
               </div>
               <div className="cls-meta-item">
                 <span className="cls-meta-label">Created</span>
-                {/* Dynamically set to current date as per example, original had static date */}
                 <span className="cls-meta-value">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span> 
               </div>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         {/* API Documentation Viewer */}
         <Card className="cls-api-viewer-card">
           <CardContent className="cls-api-viewer-content">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="cls-viewer-tabs">
+              <div className="flex p-2">
               <TabsList className="cls-viewer-tabs-list">
                 <TabsTrigger value="swagger" className="cls-viewer-tab">
                   Swagger UI
@@ -360,6 +361,12 @@ export default function ApiDocDetail() {
                   Redoc
                 </TabsTrigger>
               </TabsList>
+              <Button variant="outline" size="sm" className="cls-download-button" onClick={handleDownload}>
+                <Download size={16} />
+                Download
+              </Button>
+              </div>
+
 
               <TabsContent value="swagger" className="cls-viewer-tab-content">
                 <div className="cls-swagger-container">
@@ -409,6 +416,7 @@ export default function ApiDocDetail() {
                 </div>
               </TabsContent>
             </Tabs>
+            
           </CardContent>
         </Card>
       </div>

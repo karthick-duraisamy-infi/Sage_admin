@@ -50,6 +50,7 @@ import {
 import RolesForm from "./RolesForm/RolesForm";
 import "./Roles.scss";
 import { useCreateRolesMutation, useLazyGetRolesListQuery } from "@/service/roles/roles";
+import { TableSkeleton } from "@/components/SkeletonLoaders/SkeletonLoaders";
 
 interface Role {
   id: number;
@@ -73,13 +74,14 @@ export default function Roles() {
   const defaultFilterData = {
     page: 1,
     page_size: 6,
+    serach: undefined,
   };
 
   // The following line is used to set the filter option for the group list
   const [filterData, setFilterData] = useState<any>(defaultFilterData);
 
   const [getRolesList, getRolesListStatus] = useLazyGetRolesListQuery();
-  const [createRoles , createRolesStatus ] = useCreateRolesMutation();
+  const [createRoles, createRolesStatus] = useCreateRolesMutation();
 
   // Column visibility state
   const [columnVisibility, setColumnVisibility] = useState({
@@ -129,7 +131,7 @@ export default function Roles() {
 
   const handleToggleStatus = (roleId: number, currentStatus: boolean) => {
     console.log("Toggle status for role:", roleId, currentStatus);
-    createRoles({id : roleId, is_active: currentStatus})
+    createRoles({ id: roleId, is_active: currentStatus })
     // Add status toggle logic here
   };
 
@@ -180,14 +182,24 @@ export default function Roles() {
             </div>
             <div className="cls-header-right">
               <div className="cls-search-wrapper">
-                <Search className="cls-search-icon" />
+                <Search className="cls-search-icon cursor-pointer" onClick={() => {
+                  setFilterData({ ...filterData, search: searchQuery, page: 1 });
+                }} />
                 <Input
-                  placeholder="Search roles..."
+                  placeholder="Enter to search overall roles..."
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
-                    setFilterData({ ...filterData, page: 1 });
+                    if (e.target.value?.length === 0) {
+                      setFilterData({ ...filterData, search: undefined, page: 1 });
+                    }
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setFilterData({ ...filterData, search: searchQuery, page: 1 });
+                    }
+                  }
+                  }
                   className="cls-search-input"
                 />
               </div>
@@ -241,7 +253,11 @@ export default function Roles() {
           </div>
 
           <div className="cls-table-wrapper">
-            <Table>
+            {getRolesListStatus?.isLoading ?
+              (<div>
+                <TableSkeleton columns={5} />
+              </div>) :
+              (<Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="cls-th-sno">S.No.</TableHead>
@@ -262,7 +278,7 @@ export default function Roles() {
               </TableHeader>
               <TableBody>
                 {paginatedRoles.length > 0 ? (
-                  paginatedRoles.map((role : any, index) => (
+                  paginatedRoles.map((role: any, index) => (
                     <TableRow key={role.id} className="cls-table-row">
                       <TableCell className="cls-td-sno">
                         {startIndex + index + 1}
@@ -351,7 +367,7 @@ export default function Roles() {
                   </TableRow>
                 )}
               </TableBody>
-            </Table>
+            </Table>)}
           </div>
 
           {getRolesListStatus.isSuccess && rolesCount > 0 && (

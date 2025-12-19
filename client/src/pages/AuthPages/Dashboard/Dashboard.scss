@@ -45,13 +45,20 @@
 }
 
 .cls-metric-card {
-  // padding: 1.5rem;
-}
+  border: 1px solid #e5e7eb;
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 
-.cls-metric-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  .cls-metric-content {
+    padding: 1.5rem;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
 }
 
 .cls-metric-label {

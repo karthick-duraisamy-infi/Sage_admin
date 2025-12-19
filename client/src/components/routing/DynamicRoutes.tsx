@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import AppLayout from "@/components/layout/AppLayout";
+import { StatCardSkeleton, TableSkeleton } from "../SkeletonLoaders/SkeletonLoaders";
 
 // Lazy load all components
 const componentsMap: Record<string, any> = {
@@ -28,12 +29,12 @@ function AuthPageSkeleton() {
     <AppLayout title="Loading..." subtitle="">
       <div style={{ padding: "1.5rem" }}>
         <div style={{ display: "grid", gap: "1.5rem", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", marginBottom: "1.5rem" }}>
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-32 w-full" />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
         </div>
-        <Skeleton className="h-96 w-full" />
+        <TableSkeleton columns={4} />
       </div>
     </AppLayout>
   );
@@ -62,12 +63,12 @@ interface DynamicRoutesProps {
 
 function RedirectToDefault({ defaultRoute }: { defaultRoute: string }) {
   const [, setLocation] = useLocation();
-  
+
   // Redirect to default route
   useEffect(() => {
     setLocation(defaultRoute);
   }, [defaultRoute, setLocation]);
-  
+
   return null;
 }
 
@@ -80,7 +81,7 @@ export default function DynamicRoutes({ routes, isAuthenticated = false }: Dynam
       <Switch>
         {routes?.map((route) => {
           const Component = componentsMap[route.component];
-          
+
           if (!Component) {
             console.warn(`Component ${route.component} not found`);
             return null;
@@ -90,12 +91,12 @@ export default function DynamicRoutes({ routes, isAuthenticated = false }: Dynam
             <Route key={route.id} path={route.path} component={Component} />
           );
         })}
-        
+
         {/* Redirect root to default route */}
         <Route path="/">
           <RedirectToDefault defaultRoute={defaultRoute} />
         </Route>
-        
+
         {/* Fallback for non-existent routes */}
         <Route>
           <RedirectToDefault defaultRoute={defaultRoute} />

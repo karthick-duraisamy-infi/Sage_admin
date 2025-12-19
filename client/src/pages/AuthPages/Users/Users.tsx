@@ -63,13 +63,10 @@ import {
 } from "lucide-react";
 import { TablePagination } from "@/components/ui/table-pagination";
 import "./Users.scss";
-import {
-  useCreateUserMutation,
-  useLazyGetUsersListQuery,
-  useUpdateUserMutation,
-} from "@/service/users/users";
+import { useCreateUserMutation, useLazyGetUsersListQuery, useLazyGetUsersStatsQuery, useUpdateUserMutation } from "@/service/users/users";
 import PaginatedSelect from "@/components/PaginatedSelect/PaginatedSelect";
 import { useLazyGetRolesListQuery } from "@/service/roles/roles";
+import { SimpleStatCardSkeleton, TableSkeleton } from "@/components/SkeletonLoaders/SkeletonLoaders";
 
 interface User {
   id: string;
@@ -81,7 +78,6 @@ interface User {
   status: "Active" | "Pending" | "Suspended";
   lastActive: string;
 }
-
 export default function UsersPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -100,6 +96,7 @@ export default function UsersPage() {
     page: 1,
     page_size: 6,
     api_profile__role: "all",
+    api_profile__status: "all",
   };
 
   // The following line is used to set the filter option for the group list
@@ -108,6 +105,13 @@ export default function UsersPage() {
   const [getUsersList, getUsersListStatus] = useLazyGetUsersListQuery();
   const [createUser, createUserStatus] = useCreateUserMutation();
   const [updateUser, updateUserStatus] = useUpdateUserMutation();
+  const [getUsersStats, getUsersStatsStatus] = useLazyGetUsersStatsQuery();
+  const [statsData, setStatsData] = useState<any>({
+    "total_users": 0,
+    "active_users": 0,
+    "pending_users": 0,
+    "suspended_users": 0
+  });
 
   // Column visibility state
   const [columnVisibility, setColumnVisibility] = useState({
@@ -139,13 +143,54 @@ export default function UsersPage() {
   const totalUsers = usersCount;
   const activeUsers = usersData.filter((u: any) => u.r_status === 1).length;
   const pendingUsers = usersData.filter((u: any) => u.r_status === 2).length;
-  const suspendedUsers = usersData.filter((u: any) => u.r_status === 3).length;
+  const suspendedUsers = usersData.filter(
+    (u: any) => u.r_status === 3,
+  ).length;
 
   // Pagination
   const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
+
+  const userStatsConfig = [
+    {
+      label: "Total Users",
+      value: statsData?.total_users,
+      icon: UsersIcon,
+      iconClass: "cls-icon-blue",
+      trendIcon: TrendingUp,
+      trendClass: "cls-stat-positive",
+      trendText: "+12% from last month",
+    },
+    {
+      label: "Active Users",
+      value: statsData?.active_users,
+      icon: UserCheck,
+      iconClass: "cls-icon-green",
+      trendIcon: TrendingDown,
+      trendClass: "cls-stat-negative",
+      trendText: "-4% from last month",
+    },
+    {
+      label: "Pending Users",
+      value: statsData?.pending_users,
+      icon: UserPlus,
+      iconClass: "cls-icon-yellow",
+      trendIcon: TrendingUp,
+      trendClass: "cls-stat-positive",
+      trendText: "+25% from last month",
+    },
+    {
+      label: "Suspended Users",
+      value: statsData?.suspended_users,
+      icon: UserX,
+      iconClass: "cls-icon-red",
+      trendIcon: TrendingUp,
+      trendClass: "cls-stat-positive",
+      trendText: "+2 from last month",
+    },
+  ];
 
   const handleEdit = (user: User) => {
     setEditUser(user);
@@ -155,21 +200,21 @@ export default function UsersPage() {
 
   const handleCreateUser = (userData: any) => {
     const data = {
-      email_id: userData?.email_id,
-      password: userData?.password,
-      first_name: userData?.first_name,
-      last_name: userData?.last_name,
-      phone_number: userData?.phone_number || "",
-      is_active: true,
-      organization_id: userData?.organization_id,
-      role_id: userData?.role_id,
-      address: userData?.address,
-      enforce_rate_limits: false,
-      allow_emails: false,
-      allow_api_access: false,
-      r_user_type: 3,
-      r_status: 1,
-      status: userData?.r_status?.toLowerCase() || "active",
+      "email_id": userData?.email_id,
+      "password": userData?.password,
+      "first_name": userData?.first_name,
+      "last_name": userData?.last_name,
+      "phone_number": userData?.phone_number || "",
+      "is_active": true,
+      "organization_id": userData?.organization_id,
+      "role_id": userData?.role_id,
+      "address": userData?.address,
+      "enforce_rate_limits": false,
+      "allow_emails": false,
+      "allow_api_access": false,
+      "r_user_type": 3,
+      "r_status": 1,
+      "status": userData?.r_status?.toLowerCase() || "active"
     };
     if (isEditMode) {
       // TODO: Update user in list
@@ -215,11 +260,11 @@ export default function UsersPage() {
     // Prepare data for export
     const exportData = filteredUsers.map((user: any, index: any) => ({
       "S.No.": index + 1,
-      Name: user?.first_name,
-      Email: user.email,
-      Organization: user.organization,
-      Role: user.role,
-      Status: user.status,
+      "Name": user?.first_name,
+      "Email": user.email,
+      "Organization": user.organization,
+      "Role": user.role,
+      "Status": user.status,
       "Last Active": user.lastActive,
     }));
 
@@ -229,102 +274,75 @@ export default function UsersPage() {
     XLSX.utils.book_append_sheet(wb, ws, "Users");
 
     // Generate Excel file and download
-    XLSX.writeFile(
-      wb,
-      `users-export-${new Date().toISOString().split("T")[0]}.xlsx`,
-    );
+    XLSX.writeFile(wb, `users-export-${new Date().toISOString().split('T')[0]}.xlsx`);
   };
 
   useEffect(() => {
-    getUsersList({
-      ...filterData,
-      api_profile__role:
-        filterData?.api_profile__role === "all"
-          ? undefined
-          : filterData?.api_profile__role,
-    });
+    getUsersList({ ...filterData, api_profile__role: filterData?.api_profile__role === "all" ? undefined : filterData?.api_profile__role, api_profile__status: filterData?.api_profile__status === "all" ? undefined : filterData?.api_profile__status });
   }, [filterData]);
 
   useEffect(() => {
     if (getUsersListStatus.isSuccess) {
       // Handle successful data fetching
       setUsersData((getUsersListStatus as any)?.data?.results || []);
-      setUsersCount((getUsersListStatus as any)?.data?.count);
+      setUsersCount((getUsersListStatus as any)?.data?.count)
     }
   }, [getUsersListStatus]);
+
+  // To fetch API keys stats
+  useEffect(() => {
+    getUsersStats({});
+  }, []);
+
+  // To set API keys stats data
+  useEffect(() => {
+    if (getUsersStatsStatus?.isSuccess && getUsersStatsStatus?.data) {
+      setStatsData(getUsersStatsStatus?.data);
+    }
+  }, [getUsersStatsStatus]);
 
   return (
     <AppLayout title="Users" subtitle="Manage users and their permissions">
       <div className="cls-users-page">
         {/* Stats Cards */}
-        <div className="cls-stats-grid m-[2rem] mb-0">
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Total Users</p>
-                <h3 className="cls-stat-value">{totalUsers}</h3>
-                <div className="cls-stat-change cls-stat-positive">
-                  <TrendingUp size={14} />
-                  <span>+12% from last month</span>
-                </div>
-              </div>
-              <div className="cls-stat-icon cls-icon-blue">
-                <UsersIcon />
-              </div>
-            </CardContent>
-          </Card>
+        <div className="cls-stats-grid m-[2rem]">
+          {getUsersStatsStatus?.isLoading ?
+            Array.from({ length: 4 }).map((_, i) => (
+              <SimpleStatCardSkeleton key={i} />
+            )) :
+            userStatsConfig.map(
+              ({
+                label,
+                value,
+                icon: Icon,
+                iconClass,
+                trendIcon: TrendIcon,
+                trendClass,
+                trendText,
+              }) => (
+                <Card key={label} className="cls-stat-card">
+                  <CardContent className="cls-stat-content">
+                    <div className="cls-stat-info">
+                      <p className="cls-stat-label">{label}</p>
+                      <h3 className="cls-stat-value">{value ?? 0}</h3>
 
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Active Users</p>
-                <h3 className="cls-stat-value">{activeUsers}</h3>
-                <div className="cls-stat-change cls-stat-negative">
-                  <TrendingDown size={14} />
-                  <span>-4% from last month</span>
-                </div>
-              </div>
-              <div className="cls-stat-icon cls-icon-green">
-                <UserCheck />
-              </div>
-            </CardContent>
-          </Card>
+                      <div className={`cls-stat-change ${trendClass}`}>
+                        <TrendIcon size={14} />
+                        <span>{trendText}</span>
+                      </div>
+                    </div>
 
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Pending Users</p>
-                <h3 className="cls-stat-value">{pendingUsers}</h3>
-                <div className="cls-stat-change cls-stat-positive">
-                  <TrendingUp size={14} />
-                  <span>+25% from last month</span>
-                </div>
-              </div>
-              <div className="cls-stat-icon cls-icon-yellow">
-                <UserPlus />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="cls-stat-card">
-            <CardContent className="cls-stat-content">
-              <div className="cls-stat-info">
-                <p className="cls-stat-label">Suspended Users</p>
-                <h3 className="cls-stat-value">{suspendedUsers}</h3>
-                <div className="cls-stat-change cls-stat-positive">
-                  <TrendingUp size={14} />
-                  <span>+2 from last month</span>
-                </div>
-              </div>
-              <div className="cls-stat-icon cls-icon-red">
-                <UserX />
-              </div>
-            </CardContent>
-          </Card>
+                    <div className={`cls-stat-icon ${iconClass}`}>
+                      <Icon />
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            )}
         </div>
 
         {/* User Management Section */}
-        <Card className="cls-management-card">
+        <Card className="cls-management-card cls-margin-x">
           <CardContent className="cls-management-content">
             <div className="cls-management-header pt-2 pb-4">
               <div className="cls-header-left">
@@ -333,38 +351,24 @@ export default function UsersPage() {
               </div>
               <div className="cls-header-actions">
                 <div className="cls-search-container">
-                  <Search
-                    className="cls-search-icon cursor-pointer"
-                    onClick={() => {
-                      setFilterData({
-                        ...filterData,
-                        search: searchQuery,
-                        page: 1,
-                      });
-                    }}
-                  />
+                  <Search className="cls-search-icon cursor-pointer" onClick={() => {
+                    setFilterData({ ...filterData, search: searchQuery, page: 1 });
+                  }} />
                   <Input
-                    placeholder="Enter to search overall Organizations..."
+                    placeholder="Enter to search overall users..."
                     value={searchQuery}
                     onChange={(e) => {
                       setSearchQuery(e.target.value);
                       if (e.target.value?.length === 0) {
-                        setFilterData({
-                          ...filterData,
-                          search: undefined,
-                          page: 1,
-                        });
+                        setFilterData({ ...filterData, search: undefined, page: 1 });
                       }
                     }}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        setFilterData({
-                          ...filterData,
-                          search: searchQuery,
-                          page: 1,
-                        });
+                        setFilterData({ ...filterData, search: searchQuery, page: 1 });
                       }
-                    }}
+                    }
+                    }
                     className="cls-search-input"
                   />
                 </div>
@@ -385,11 +389,9 @@ export default function UsersPage() {
                 />
 
                 <Select
-                  value={statusFilter}
+                  value={filterData?.api_profile__status}
                   onValueChange={(value) => {
-                    setStatusFilter(value);
-                    setCurrentPage(1);
-                    console.log(value);
+                    setFilterData({ ...filterData, api_profile__status: value })
                   }}
                 >
                   <SelectTrigger className="cls-filter-select">
@@ -397,9 +399,9 @@ export default function UsersPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Pending">Pending</SelectItem>
-                    <SelectItem value="Suspended">Suspended</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="suspended">Suspended</SelectItem>
                   </SelectContent>
                 </Select>
 
@@ -452,16 +454,19 @@ export default function UsersPage() {
                   </PopoverContent>
                 </Popover>
 
-                <Button
+                {/* <Button
                   variant="outline"
                   onClick={handleExport}
                   className="cls-export-button"
                 >
                   <Download size={16} />
                   Export Users
-                </Button>
+                </Button> */}
 
-                <Button onClick={handleAddUser} className="cls-add-user-button">
+                <Button
+                  onClick={handleAddUser}
+                  className="cls-add-user-button"
+                >
                   <Plus size={16} />
                   Add User
                 </Button>
@@ -469,136 +474,130 @@ export default function UsersPage() {
             </div>
 
             {/* Table */}
-            <div className="cls-table-wrapper">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>S.No.</TableHead>
-                    <TableHead>User</TableHead>
-                    {columnVisibility.organization && (
-                      <TableHead>Organization</TableHead>
-                    )}
-                    {columnVisibility.role && <TableHead>Role</TableHead>}
-                    {columnVisibility.status && <TableHead>Status</TableHead>}
-                    {/* {columnVisibility.lastActive && (
+            {getUsersListStatus?.isLoading ?
+              (<div>
+                <TableSkeleton columns={5} />
+              </div>) :
+              (<div className="cls-table-wrapper">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>S.No.</TableHead>
+                      <TableHead>User</TableHead>
+                      {columnVisibility.organization && (
+                        <TableHead>Organization</TableHead>
+                      )}
+                      {columnVisibility.role && <TableHead>Role</TableHead>}
+                      {columnVisibility.status && <TableHead>Status</TableHead>}
+                      {/* {columnVisibility.lastActive && (
                       <TableHead>Last Active</TableHead>
                     )} */}
-                    <TableHead className="cls-actions-head"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {paginatedUsers.length > 0 ? (
-                    paginatedUsers.map((user: any, index: any) => (
-                      <TableRow key={user?.id}>
-                        <TableCell className="cls-sno-cell">
-                          {startIndex + index + 1}
-                        </TableCell>
-                        <TableCell>
-                          <div className="cls-user-cell">
-                            {/* <img
+                      <TableHead className="cls-actions-head"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {paginatedUsers.length > 0 ? (
+                      paginatedUsers.map((user: any, index: any) => (
+                        <TableRow key={user?.id}>
+                          <TableCell className="cls-sno-cell">
+                            {startIndex + index + 1}
+                          </TableCell>
+                          <TableCell>
+                            <div className="cls-user-cell">
+                              {/* <img
                               src={user.avatar}
                               alt={user.name}
                               className="cls-user-avatar"
                             /> */}
-                            <div className="cls-user-info">
-                              <p className="cls-user-name">
-                                {user?.first_name}
-                              </p>
-                              <p className="cls-user-email">{user?.email_id}</p>
+                              <div className="cls-user-info">
+                                <p className="cls-user-name">{user?.first_name}</p>
+                                <p className="cls-user-email">{user?.email_id}</p>
+                              </div>
                             </div>
-                          </div>
-                        </TableCell>
-                        {/* {columnVisibility.organization && ( */}
-                        <TableCell>
-                          {user?.organization_details?.name ? (
-                            <span className="cls-organization">
+                          </TableCell>
+                          {/* {columnVisibility.organization && ( */}
+                          <TableCell>
+                            {user?.organization_details?.name ? <span className="cls-organization">
                               {user?.organization_details?.name}
-                            </span>
-                          ) : (
-                            "-"
-                          )}
-                        </TableCell>
-                        {/* )} */}
-                        {/* {columnVisibility.role && ( */}
-                        <TableCell>
-                          {user?.role_details?.name ? (
-                            <Badge
+                            </span> : "-"}
+                          </TableCell>
+                          {/* )} */}
+                          {/* {columnVisibility.role && ( */}
+                          <TableCell>
+                            {user?.role_details?.name ? <Badge
                               className={`${user?.role_details?.name !== null && "cls-role-badge"} cls-role-${user?.role_details?.name?.toLowerCase()}`}
                             >
                               {user?.role_details?.name}
+                            </Badge> : "-"}
+                          </TableCell>
+                          {/* )} */}
+                          {/* {columnVisibility.status && ( */}
+                          <TableCell>
+                            <Badge
+                              className={`cls-status-badge cls-status-${user?.r_status === 1 ? "active" : "in-active"}`}
+                            >
+                              {user?.r_status === 1 ? "Active" : "In-Active"}
+                              {/* {user?.r_status?.toUpperCase()} */}
                             </Badge>
-                          ) : (
-                            "-"
-                          )}
-                        </TableCell>
-                        {/* )} */}
-                        {/* {columnVisibility.status && ( */}
-                        <TableCell>
-                          <Badge
-                            className={`cls-status-badge cls-status-${user?.r_status === 1 ? "active" : "in-active"}`}
-                          >
-                            {user?.r_status === 1 ? "Active" : "In-Active"}
-                            {/* {user?.r_status?.toUpperCase()} */}
-                          </Badge>
-                        </TableCell>
-                        {/* )} */}
-                        {/* {columnVisibility.lastActive && (
+                          </TableCell>
+                          {/* )} */}
+                          {/* {columnVisibility.lastActive && (
                           <TableCell>
                             <span className="cls-last-active">
                               {user.lastActive}
                             </span>
                           </TableCell>
                         )} */}
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="cls-actions-button"
-                              >
-                                <MoreVertical size={16} />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
-                                onClick={() => handleEdit(user)}
-                                className="cls-menu-item"
-                              >
-                                <Edit size={16} />
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => handleDelete(user.id)}
-                                className="cls-delete-item"
-                              >
-                                <Trash2 size={16} />
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="cls-actions-button"
+                                >
+                                  <MoreVertical size={16} />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() => handleEdit(user)}
+                                  className="cls-menu-item"
+                                >
+                                  <Edit size={16} />
+                                  Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleDelete(user.id)}
+                                  className="cls-delete-item"
+                                >
+                                  <Trash2 size={16} />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell
+                          colSpan={
+                            2 +
+                            (columnVisibility.organization ? 1 : 0) +
+                            (columnVisibility.role ? 1 : 0) +
+                            (columnVisibility.status ? 1 : 0) +
+                            1
+                          }
+                          className="cls-no-results"
+                        >
+                          No users found matching your search.
                         </TableCell>
                       </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell
-                        colSpan={
-                          2 +
-                          (columnVisibility.organization ? 1 : 0) +
-                          (columnVisibility.role ? 1 : 0) +
-                          (columnVisibility.status ? 1 : 0) +
-                          1
-                        }
-                        className="cls-no-results"
-                      >
-                        No users found matching your search.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>)}
           </CardContent>
         </Card>
 
@@ -608,12 +607,8 @@ export default function UsersPage() {
           totalPages={Math.ceil(usersCount / (filterData?.page_size || 1))}
           totalItems={filteredUsers.length}
           itemsPerPage={filterData?.page_size || 6}
-          onPageChange={(page: any) => {
-            setFilterData({ ...filterData, page });
-          }}
-          onItemsPerPageChange={(page_size: any) => {
-            setFilterData({ ...filterData, page_size });
-          }}
+          onPageChange={(page: any) => { setFilterData({ ...filterData, page }); }}
+          onItemsPerPageChange={(page_size: any) => { setFilterData({ ...filterData, page_size }); }}
           startIndex={startIndex}
           endIndex={endIndex}
         />
@@ -636,9 +631,7 @@ export default function UsersPage() {
               </div>
             </div>
             <AlertDialogHeader>
-              <AlertDialogTitle className="text-center">
-                Warning!
-              </AlertDialogTitle>
+              <AlertDialogTitle className="text-center">Warning!</AlertDialogTitle>
               <AlertDialogDescription className="text-center">
                 Do you want to delete this user? This action cannot be undone.
               </AlertDialogDescription>

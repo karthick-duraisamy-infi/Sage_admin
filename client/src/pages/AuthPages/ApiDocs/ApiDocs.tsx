@@ -53,11 +53,11 @@ interface ApiCollection {
 const apiCollectionsData: ApiCollection[] = [
   {
     id: "1",
-    name: "ClearTrip API",
+    name: "OTA API",
     version: "1.0.0",
     status: "active",
     description:
-      "ClearTrip API provides endpoints for authentication, user management, ancillary services, policy management, help desk, and more.",
+      "OTA API provides endpoints for authentication, user management, ancillary services, policy management, help desk, and more.",
     createdBy: "admin@sage.co",
     createdDate: "July 20th, 2024",
   },
