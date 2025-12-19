@@ -25,16 +25,29 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Static credentials
-    const VALID_EMAIL = 'admin@sage.com';
-    const VALID_PASSWORD = 'Infi@123';
-
     // Simulate a small delay for better UX
     await new Promise(resolve => setTimeout(resolve, 500));
 
     try {
-      // Client-side validation
-      if (email === VALID_EMAIL && password === VALID_PASSWORD) {
+      // Import credentials from config
+      const configResponse = await fetch('/src/config/config.json');
+      const config = await configResponse.json();
+      
+      // Find matching credentials
+      let matchedUser = null;
+      for (const [userId, credentials] of Object.entries(config.credentials)) {
+        if (credentials.username === email && credentials.password === password) {
+          matchedUser = {
+            id: userId,
+            email: credentials.username,
+            name: credentials.username === 'admin@sage.com' ? 'Admin User' : 'User',
+            role: credentials.username === 'admin@sage.com' ? 'admin' : 'user'
+          };
+          break;
+        }
+      }
+
+      if (matchedUser) {
         toast({
           title: "Login Successful",
           description: "Redirecting to dashboard...",
@@ -42,19 +55,14 @@ export default function Login() {
         
         // Store authentication token and user data
         const mockToken = 'mock-auth-token-' + Date.now();
-        const mockUser = {
-          email: VALID_EMAIL,
-          name: 'Admin User',
-          role: 'admin'
-        };
         
         localStorage.setItem('authToken', mockToken);
         if (rememberMe) {
-          localStorage.setItem('user', JSON.stringify(mockUser));
+          localStorage.setItem('user', JSON.stringify(matchedUser));
         }
         
         // Update Redux state
-        dispatch(setAuthenticated({ value: true, user: mockUser }));
+        dispatch(setAuthenticated({ value: true, user: matchedUser }));
         
         // Navigate to dashboard
         setTimeout(() => {
