@@ -53,9 +53,13 @@ function AppContent() {
   // Handle menu data response (authenticated routes)
   useEffect(() => {
     if (getMenuResponseStatus?.isSuccess && getMenuResponseStatus?.data) {
+      console.log('Setting menu response in Redux:', getMenuResponseStatus.data);
       dispatch(setMenuReponse({ value: getMenuResponseStatus.data }));
     }
-  }, [getMenuResponseStatus?.isSuccess, getMenuResponseStatus?.data]);
+    if (getMenuResponseStatus?.isError) {
+      console.error('Error loading menu data:', getMenuResponseStatus.error);
+    }
+  }, [getMenuResponseStatus?.isSuccess, getMenuResponseStatus?.data, getMenuResponseStatus?.isError]);
 
   // Handle landing routes response (unauthenticated routes)
   useEffect(() => {
@@ -66,7 +70,15 @@ function AppContent() {
 
   // Render routes based on authentication
   if (isAuthenticated) {
+    console.log('Authenticated - authRoutes:', authRoutes);
+    console.log('Menu response status:', {
+      isLoading: getMenuResponseStatus?.isLoading,
+      isSuccess: getMenuResponseStatus?.isSuccess,
+      isError: getMenuResponseStatus?.isError
+    });
+    
     if (authRoutes && authRoutes.length > 0) {
+      console.log('Rendering authenticated routes');
       return <DynamicRoutes routes={authRoutes} isAuthenticated={true} />;
     }
     // If authenticated but routes are still loading

@@ -16,6 +16,8 @@ const menuService = LocalService.injectEndpoints({
           // Get user ID from parameter or localStorage
           const userIdToUse = userId || localStorage.getItem('userId');
           
+          console.log('Loading menu for user ID:', userIdToUse);
+          
           if (!userIdToUse) {
             console.error('No user ID provided');
             return { error: { status: 401, data: 'User ID not found' } };
@@ -23,6 +25,7 @@ const menuService = LocalService.injectEndpoints({
           
           if (!config.credentials || !config.credentials[userIdToUse]) {
             console.error('User configuration not found for ID:', userIdToUse);
+            console.log('Available user IDs:', Object.keys(config.credentials || {}));
             return { error: { status: 404, data: 'User configuration not found' } };
           }
           
@@ -32,6 +35,8 @@ const menuService = LocalService.injectEndpoints({
             console.error('Invalid user configuration structure');
             return { error: { status: 500, data: 'Invalid configuration structure' } };
           }
+          
+          console.log('Menu data loaded successfully:', { menu: userConfig.menu, route: userConfig.route });
           
           return { 
             data: {
