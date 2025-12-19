@@ -42,7 +42,9 @@ function AppContent() {
   useEffect(() => {
     if (isAuthenticated) {
       const userId = localStorage.getItem('userId');
-      getMenuData(userId || undefined);
+      if (userId) {
+        getMenuData(userId);
+      }
     } else {
       getLandingRoute();
     }
@@ -63,15 +65,31 @@ function AppContent() {
   }, [getLandingRouteResponse?.isSuccess, getLandingRouteResponse?.data]);
 
   // Render routes based on authentication
-  if (isAuthenticated && authRoutes) {
-    return <DynamicRoutes routes={authRoutes} isAuthenticated={true} />;
+  if (isAuthenticated) {
+    if (authRoutes && authRoutes.length > 0) {
+      return <DynamicRoutes routes={authRoutes} isAuthenticated={true} />;
+    }
+    // If authenticated but routes are still loading
+    if (getMenuResponseStatus?.isLoading) {
+      return <div>Loading routes...</div>;
+    }
+    // If there was an error loading routes
+    if (getMenuResponseStatus?.isError) {
+      return <div>Error loading routes. Please try logging in again.</div>;
+    }
   }
 
-  if (!isAuthenticated && landingRoutes) {
-    return <DynamicRoutes routes={landingRoutes} isAuthenticated={false} />;
+  if (!isAuthenticated) {
+    if (landingRoutes && landingRoutes.length > 0) {
+      return <DynamicRoutes routes={landingRoutes} isAuthenticated={false} />;
+    }
+    // If unauthenticated and routes are loading
+    if (getLandingRouteResponse?.isLoading) {
+      return <div>Loading routes...</div>;
+    }
   }
 
-  // Loading state
+  // Default loading state
   return <div>Loading routes...</div>;
 }
 

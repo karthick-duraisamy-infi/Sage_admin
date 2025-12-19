@@ -36,12 +36,13 @@ export default function Login() {
       // Find matching credentials
       let matchedUser = null;
       for (const [userId, credentials] of Object.entries(config.credentials)) {
-        if (credentials.username === email && credentials.password === password) {
+        const creds = credentials as any;
+        if (creds.username === email && creds.password === password) {
           matchedUser = {
             id: userId,
-            email: credentials.username,
-            name: credentials.username === 'admin@sage.com' ? 'Admin User' : 'User',
-            role: credentials.username === 'admin@sage.com' ? 'admin' : 'user'
+            email: creds.username,
+            name: creds.username === 'admin@sage.com' ? 'Admin User' : 'User',
+            role: creds.username === 'admin@sage.com' ? 'admin' : 'user'
           };
           break;
         }
