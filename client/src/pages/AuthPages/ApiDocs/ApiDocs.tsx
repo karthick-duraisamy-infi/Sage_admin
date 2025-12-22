@@ -53,11 +53,11 @@ interface ApiCollection {
 const apiCollectionsData: ApiCollection[] = [
   {
     id: "1",
-    name: "OTA API",
+    name: "OTA Integrated API Services",
     version: "1.0.0",
     status: "active",
     description:
-      "OTA API provides endpoints for authentication, user management, ancillary services, policy management, help desk, and more.",
+      "Unified API definition for Authentication, Flight Search, Fare Check, PNR Blocking, Ancillary management, and Payment services.",
     createdBy: "admin@sage.co",
     createdDate: "July 20th, 2024",
   },
