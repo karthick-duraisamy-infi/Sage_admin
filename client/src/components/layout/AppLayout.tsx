@@ -155,14 +155,14 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
   const menuItemsToRender = userMenuItems || menuItems;
 
   // Format role for display (capitalize first letter)
-  const formatRole = (role: string) => {
+  const formatRole = (role: string | undefined | null) => {
     if (!role) return "User";
     if (role === "superadmin") return "Super Admin";
     return role.charAt(0).toUpperCase() + role.slice(1);
   };
 
-  const displayRole = user?.role ? formatRole(user.role) : "User";
-  const displayName = user?.name || user?.email || "User";
+  const displayRole = user && user.role ? formatRole(user.role) : "User";
+  const displayName = user ? user.name || user.email || "User" : "User";
 
   // Map icon strings to actual icon components
   const iconMap: Record<string, any> = {
@@ -310,7 +310,9 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
               }}
             >
               <AvatarFallback>
-                {displayName.charAt(0).toUpperCase()}
+                {displayName && displayName.length > 0
+                  ? displayName.charAt(0).toUpperCase()
+                  : "U"}
               </AvatarFallback>
             </Avatar>
             <div
