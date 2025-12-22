@@ -62,12 +62,14 @@ interface DynamicRoutesProps {
 }
 
 function RedirectToDefault({ defaultRoute }: { defaultRoute: string }) {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
 
-  // Redirect to default route
+  // Redirect to default route only if we're at the root
   useEffect(() => {
-    setLocation(defaultRoute);
-  }, [defaultRoute, setLocation]);
+    if (location === '/' || location === '') {
+      setLocation(defaultRoute);
+    }
+  }, [defaultRoute, setLocation, location]);
 
   return null;
 }

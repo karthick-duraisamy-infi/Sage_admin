@@ -1,7 +1,6 @@
-
 {
   "credentials": {
-    "c6a0e7c2e78ced7f024313cb92b897a3": {
+    "21232f297a57a5a743894a0e4a801fc3": {
       "username": "admin@sage.com",
       "password": "Infi@123",
       "menu": [
@@ -64,7 +63,7 @@
         }
       ]
     },
-    "58806e006b14b04a535784a5462d09b0": {
+    "ee11cbb19052e40b07aac0ca060c23ee": {
       "username": "user@sage.com",
       "password": "Infi@123",
       "menu": [
@@ -109,7 +108,7 @@
         }
       ]
     },
-    "8e3eb2c69a184ad1d448afe5985f50b3": {
+    "17c4520f6cfd1ab53d8745e84681eb49": {
       "username": "superadmin@sage.com",
       "password": "Infi@123",
       "menu": [

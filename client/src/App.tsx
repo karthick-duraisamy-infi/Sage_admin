@@ -27,16 +27,61 @@ function AppContent() {
   const [getLandingRoute, getLandingRouteResponse] =
     useLazyGetLandingRouteQuery();
 
-  // Check localStorage and set authentication state on initial load
+  // Check for query parameter authentication or localStorage on initial load
   useEffect(() => {
-    const authToken = localStorage.getItem("authToken");
-    const userStr = localStorage.getItem("user");
+    const checkAuthentication = async () => {
+      // Check for query parameter first
+      const fullPath = window.location.search;
+      // Extract the hash/token after the '?' (e.g., ?21232f297a57a5a743894a0e4a801fc3)
+      const queryParamKey = fullPath.startsWith('?') ? fullPath.substring(1) : '';
+      
+      // If there's a query parameter, try to authenticate with it
+      if (queryParamKey && queryParamKey.length > 0) {
+        try {
+          const configResponse = await fetch('./staticData/config.json');
+          const config = await configResponse.json();
+          
+          // Check if the query parameter matches a valid user ID
+          if (config.credentials && config.credentials[queryParamKey]) {
+            const userConfig = config.credentials[queryParamKey];
+            const user = {
+              id: queryParamKey,
+              email: userConfig.username,
+              name: userConfig.username,
+              role: queryParamKey === '17c4520f6cfd1ab53d8745e84681eb49' ? 'superadmin' : 
+                    queryParamKey === '21232f297a57a5a743894a0e4a801fc3' ? 'admin' : 'user'
+            };
+            
+            // Store authentication data
+            const mockToken = 'auto-auth-token-' + Date.now();
+            localStorage.setItem('authToken', mockToken);
+            localStorage.setItem('userId', queryParamKey);
+            localStorage.setItem('user', JSON.stringify(user));
+            
+            // Update Redux state
+            dispatch(setAuthenticated({ value: true, user }));
+            
+            // Clean up URL by removing query parameter
+            window.history.replaceState({}, '', window.location.pathname);
+            return;
+          }
+        } catch (error) {
+          console.error('Error during query parameter authentication:', error);
+        }
+      }
+      
+      // Fall back to localStorage authentication
+      const authToken = localStorage.getItem("authToken");
+      const userStr = localStorage.getItem("user");
 
-    if (authToken && !isAuthenticated) {
-      const user = userStr ? JSON.parse(userStr) : undefined;
-      dispatch(setAuthenticated({ value: true, user }));
-    }
-  }, []);
+      if (authToken && !isAuthenticated) {
+        const user = userStr ? JSON.parse(userStr) : undefined;
+        dispatch(setAuthenticated({ value: true, user }));
+      }
+    };
+    
+    checkAuthentication();
+  }, [dispatch]);
 
   // Load routes based on authentication status
   useEffect(() => {
@@ -110,7 +155,23 @@ function AppContent() {
       (!authRoutes || authRoutes.length === 0)
     ) {
       console.error("Menu loaded successfully but no routes found");
-      return <div>No routes available. Please contact support.</div>;
+      console.error("Menu response:", getMenuResponseStatus?.data);
+      console.error("Auth routes:", authRoutes);
+      console.error("User ID:", localStorage.getItem("userId"));
+      return (
+        <div style={{ padding: "2rem", textAlign: "center" }}>
+          <div>No routes available for this user.</div>
+          <button
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = "/sageAdmin/login";
+            }}
+            style={{ marginTop: "1rem", padding: "0.5rem 1rem", cursor: "pointer" }}
+          >
+            Logout and Try Again
+          </button>
+        </div>
+      );
     }
   }
 
