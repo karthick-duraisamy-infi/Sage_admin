@@ -111,10 +111,16 @@ function SidebarHeaderComponent() {
   return (
     <SidebarHeader className="cls-sidebar-header">
       <div
-        className={`cls-logo ${state === "collapsed" ? "cls-collapsed-state" : ""}`}
+        className={`cls-logo ${
+          state === "collapsed" ? "cls-collapsed-state" : ""
+        }`}
       >
         <div className="cls-logo-icon">
-          {state === "collapsed" ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+          {state === "collapsed" ? (
+            <PanelLeft className="h-4 w-4" />
+          ) : (
+            <PanelLeftClose className="h-4 w-4" />
+          )}
         </div>
         <div className="cls-logo-text">
           <h1>SAGE</h1>
@@ -140,10 +146,23 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
   const { state: sidebarState, toggleSidebar } = useSidebar();
   const dispatch = useDispatch();
   const [_, setLocation] = useLocation();
-  
-  // Get menu items from Redux store
-  const { menuItems: userMenuItems } = useAppSelector((state) => state.MenuDataReducer);
+
+  // Get menu items and user data from Redux store
+  const { menuItems: userMenuItems } = useAppSelector(
+    (state) => state.MenuDataReducer
+  );
+  const { user } = useAppSelector((state) => state.AuthReducer);
   const menuItemsToRender = userMenuItems || menuItems;
+
+  // Format role for display (capitalize first letter)
+  const formatRole = (role: string) => {
+    if (!role) return "User";
+    if (role === "superadmin") return "Super Admin";
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  };
+
+  const displayRole = user?.role ? formatRole(user.role) : "User";
+  const displayName = user?.name || user?.email || "User";
 
   // Map icon strings to actual icon components
   const iconMap: Record<string, any> = {
@@ -159,13 +178,16 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
   // Convert menu items with icon strings to icon components
   const processedMenuItems = menuItemsToRender.map((item: any) => ({
     ...item,
-    icon: typeof item.icon === 'string' ? iconMap[item.icon] || LayoutDashboard : item.icon,
+    icon:
+      typeof item.icon === "string"
+        ? iconMap[item.icon] || LayoutDashboard
+        : item.icon,
   }));
 
   // Initialize open menu based on current location
   React.useEffect(() => {
     const currentMenu = processedMenuItems.find((item: any) =>
-      item.items?.some((subItem: any) => subItem.href === location),
+      item.items?.some((subItem: any) => subItem.href === location)
     );
     if (currentMenu && !openMenus.includes(currentMenu.title)) {
       setOpenMenus([currentMenu.title]);
@@ -187,15 +209,15 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
 
   const handleLogout = () => {
     // Clear localStorage
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    localStorage.removeItem('userId');
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    localStorage.removeItem("userId");
 
     // Update Redux state
     dispatch(logout());
 
     // Navigate to login
-    setLocation('/login');
+    setLocation("/login");
   };
 
   return (
@@ -287,14 +309,16 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
                 justifyContent: sidebarState === "collapsed" ? "center" : "",
               }}
             >
-              <AvatarFallback>A</AvatarFallback>
+              <AvatarFallback>
+                {displayName.charAt(0).toUpperCase()}
+              </AvatarFallback>
             </Avatar>
             <div
               className="cls-user-info"
               style={{ display: sidebarState === "collapsed" ? "none" : "" }}
             >
-              <p className="cls-user-name">admin</p>
-              <p className="cls-user-role">Admin</p>
+              <p className="cls-user-name">{displayName}</p>
+              <p className="cls-user-role">{displayRole}</p>
             </div>
           </div>
           <Button
