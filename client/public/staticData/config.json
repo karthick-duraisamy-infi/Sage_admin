@@ -116,6 +116,11 @@
       "type": "Super admin",
       "menu": [
         {
+          "title": "Admin Dashboard",
+          "icon": "BarChart3",
+          "href": "/admin-dashboard"
+        },
+        {
           "title": "Dashboard",
           "icon": "LayoutDashboard",
           "href": "/dashboard"
@@ -125,7 +130,9 @@
           "icon": "Code",
           "items": [
             { "title": "API Keys", "href": "/api-keys" },
-            { "title": "API Docs", "href": "/api-docs" }
+            { "title": "API Docs", "href": "/api-docs" },
+            { "title": "Analytics", "href": "/analytics" },
+            { "title": "API Logs", "href": "/api-logs" }
           ]
         },
         {
@@ -148,11 +155,6 @@
           "href": "/subscriptions"
         },
         {
-          "title": "Analytics",
-          "icon": "Activity",
-          "href": "/analytics"
-        },
-        {
           "title": "Settings",
           "icon": "Settings",
           "href": "/settings"
@@ -167,60 +169,72 @@
         },
         {
           "id": 2,
+          "path": "/admin-dashboard",
+          "component": "AdminDashboard",
+          "default": false
+        },
+        {
+          "id": 3,
           "path": "/api-keys",
           "component": "ApiKeys",
           "default": false
         },
         {
-          "id": 3,
+          "id": 4,
           "path": "/api-docs",
           "component": "ApiDocs",
           "default": false
         },
         {
-          "id": 4,
+          "id": 5,
           "path": "/api-docs/:id",
           "component": "ApiDocDetail",
           "default": false
         },
         {
-          "id": 5,
+          "id": 6,
+          "path": "/api-logs",
+          "component": "ApiLogs",
+          "default": false
+        },
+        {
+          "id": 7,
           "path": "/users",
           "component": "UsersPage",
           "default": false
         },
         {
-          "id": 6,
+          "id": 8,
           "path": "/roles",
           "component": "RolesPage",
           "default": false
         },
         {
-          "id": 6,
+          "id": 9,
           "path": "/organizations",
           "component": "OrganizationsPage",
           "default": false
         },
         {
-          "id": 7,
+          "id": 10,
           "path": "/billing",
           "component": "Billing",
           "default": false
         },
         {
-          "id": 8,
+          "id": 11,
           "path": "/subscriptions",
           "component": "Subscriptions",
           "default": false
         },
         {
-          "id": 9,
+          "id": 12,
           "path": "/analytics",
           "component": "Analytics",
           "default": false
         },
         {
-          "id": 10,
+          "id": 13,
           "path": "/settings",
           "component": "Settings",
           "default": false

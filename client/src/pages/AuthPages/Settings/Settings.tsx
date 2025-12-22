@@ -146,6 +146,24 @@ export default function Settings() {
 
   const [emailError, setEmailError] = useState("");
 
+  // Screens Settings State
+  const [screenSettings, setScreenSettings] = useState({
+    adminDashboard: true,
+    dashboard: true,
+    apiManagement: true,
+    apiKeys: true,
+    apiDocs: true,
+    analytics: true,
+    apiLogs: true,
+    userManagement: true,
+    users: true,
+    rolesPrivileges: true,
+    organizations: true,
+    billing: true,
+    subscriptionPlans: true,
+    settings: true,
+  });
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
@@ -309,6 +327,15 @@ export default function Settings() {
               >
                 <Bell size={16} />
                 <span>Notifications</span>
+              </button>
+              <button
+                className={`cls-nav-item ${
+                  activeSection === "screens" ? "cls-nav-item-active" : ""
+                }`}
+                onClick={() => setActiveSection("screens")}
+              >
+                <SettingsIcon size={16} />
+                <span>Screens</span>
               </button>
             </nav>
           </div>
@@ -670,6 +697,284 @@ export default function Settings() {
                     >
                       Save Monitoring Settings
                     </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Screens Configuration */}
+            {activeSection === "screens" && (
+              <Card className="cls-settings-card">
+                <CardContent className="cls-settings-card-content">
+                  <div className="cls-settings-card-header">
+                    <SettingsIcon size={18} />
+                    <h3>Screen Configuration</h3>
+                  </div>
+
+                  <div className="cls-screens-settings">
+                    {/* Admin Dashboard */}
+                    <div className="cls-screen-item">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">Admin Dashboard</h4>
+                          <p className="cls-screen-path">/admin</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.adminDashboard}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, adminDashboard: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Dashboard */}
+                    <div className="cls-screen-item">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">Dashboard</h4>
+                          <p className="cls-screen-path">/dashboard</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.dashboard}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, dashboard: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* API Management Header */}
+                    <div className="cls-screen-item cls-screen-header">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">API Management</h4>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.apiManagement}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, apiManagement: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* API Keys */}
+                    <div className="cls-screen-item cls-screen-child">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">API Keys</h4>
+                          <p className="cls-screen-path">/api-keys</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.apiKeys}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, apiKeys: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* API Docs */}
+                    <div className="cls-screen-item cls-screen-child">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">API Docs</h4>
+                          <p className="cls-screen-path">/api-docs</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.apiDocs}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, apiDocs: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Analytics */}
+                    <div className="cls-screen-item cls-screen-child">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <Activity size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">Analytics</h4>
+                          <p className="cls-screen-path">/analytics</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.analytics}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, analytics: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* API Logs */}
+                    <div className="cls-screen-item cls-screen-child">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <Activity size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">API Logs</h4>
+                          <p className="cls-screen-path">/api-logs</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.apiLogs}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, apiLogs: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* User Management Header */}
+                    <div className="cls-screen-item cls-screen-header">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">User Management</h4>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.userManagement}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, userManagement: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Users */}
+                    <div className="cls-screen-item cls-screen-child">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">Users</h4>
+                          <p className="cls-screen-path">/user-management/users</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.users}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, users: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Roles & Privileges */}
+                    <div className="cls-screen-item cls-screen-child">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">Roles & Privileges</h4>
+                          <p className="cls-screen-path">/user-management/roles</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.rolesPrivileges}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, rolesPrivileges: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Organizations */}
+                    <div className="cls-screen-item cls-screen-child">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">Organizations</h4>
+                          <p className="cls-screen-path">/user-management/organizations</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.organizations}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, organizations: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Billing */}
+                    <div className="cls-screen-item">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">Billing</h4>
+                          <p className="cls-screen-path">/billing</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.billing}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, billing: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Subscription Plans */}
+                    <div className="cls-screen-item">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">Subscription Plans</h4>
+                          <p className="cls-screen-path">/subscription-plans</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.subscriptionPlans}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, subscriptionPlans: checked })
+                        }
+                      />
+                    </div>
+
+                    {/* Settings */}
+                    <div className="cls-screen-item">
+                      <div className="cls-screen-info">
+                        <div className="cls-screen-icon">
+                          <SettingsIcon size={16} />
+                        </div>
+                        <div className="cls-screen-content">
+                          <h4 className="cls-screen-title">Settings</h4>
+                          <p className="cls-screen-path">/settings</p>
+                        </div>
+                      </div>
+                      <Switch
+                        checked={screenSettings.settings}
+                        onCheckedChange={(checked) =>
+                          setScreenSettings({ ...screenSettings, settings: checked })
+                        }
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>

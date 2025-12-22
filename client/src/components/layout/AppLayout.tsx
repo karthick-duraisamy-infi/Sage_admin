@@ -16,6 +16,7 @@ import {
   PanelLeftOpen,
   Activity,
   PanelLeft,
+  BarChart3,
 } from "lucide-react";
 import {
   Sidebar,
@@ -184,6 +185,7 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
     Package,
     Activity,
     Settings,
+    BarChart3,
   };
 
   // Convert menu items with icon strings to icon components

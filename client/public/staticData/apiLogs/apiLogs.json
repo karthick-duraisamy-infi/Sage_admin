@@ -1,0 +1,107 @@
+{
+  "mainInfo": [
+    {
+      "title": "Total Requests",
+      "count": 8,
+      "icon": "docsIcon"
+    },
+    {
+      "title": "Success Rate",
+      "count": "50.0%",
+      "icon": "successIcon"
+    },
+    {
+      "title": "Client Errors (4xx)",
+      "count": "1",
+      "icon": "warningIcon"
+    },
+    {
+      "title": "Server Errors (5xx)",
+      "count": "1",
+      "icon": "ErrorIcon"
+    }
+  ],
+  "tableData": [
+    {
+      "date&time": "Jul 26, 2024, 3:30:01 PM",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "responseCode": 200,
+      "responseTime": "89ms",
+      "ipAddress": "192.168.1.1",
+      "user": "user-1",
+      "apiKeyId": "1",
+      "organizationId": "1",
+      "environment": "Production",
+      "requestBody": {
+        "email": "john.smith@company.com"
+      },
+      "responseBody": {
+        "token": "..."
+      }
+    },
+    {
+      "date&time": "Jul 26, 2024, 3:31:30 PM",
+      "method": "GET",
+      "path": "/api/v1/users/user-1",
+      "responseCode": 200,
+      "responseTime": "156ms",
+      "ipAddress": "192.168.1.1",
+      "user": "user-2"
+    },
+    {
+      "date&time": "Jul 26, 2024, 3:34:01 PM",
+      "method": "GET",
+      "path": "/api/v1/users/user-not-found",
+      "responseCode": 404,
+      "responseTime": "99ms",
+      "ipAddress": "192.168.1.1",
+      "user": "user-4"
+    },
+    {
+      "date&time": "Jul 26, 2024, 3:38:01 PM",
+      "method": "POST",
+      "path": "/api/v1/payments/process",
+      "responseCode": 500,
+      "responseTime": "550ms",
+      "ipAddress": "192.168.1.1",
+      "user": "user-3"
+    },
+    {
+      "date&time": "Jul 26, 2024, 3:30:01 PM",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "responseCode": 200,
+      "responseTime": "89ms",
+      "ipAddress": "192.168.1.1",
+      "user": "user-1"
+    },
+    {
+      "date&time": "Jul 26, 2024, 3:31:30 PM",
+      "method": "GET",
+      "path": "/api/v1/users/user-1",
+      "responseCode": 200,
+      "responseTime": "156ms",
+      "ipAddress": "192.168.1.1",
+      "user": "user-2"
+    },
+    {
+      "date&time": "Jul 26, 2024, 3:34:01 PM",
+      "method": "GET",
+      "path": "/api/v1/users/user-not-found",
+      "responseCode": 404,
+      "responseTime": "99ms",
+      "ipAddress": "192.168.1.1",
+      "user": "user-4"
+    },
+    {
+      "date&time": "Jul 26, 2024, 3:38:01 PM",
+      "method": "POST",
+      "path": "/api/v1/payments/process",
+      "responseCode": 500,
+      "responseTime": "550ms",
+      "ipAddress": "192.168.1.1",
+      "user": "user-3"
+    }
+  ]
+}

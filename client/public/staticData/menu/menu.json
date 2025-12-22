@@ -75,37 +75,37 @@
       "default": false
     },
     {
-      "id": 6,
+      "id": 7,
       "path": "/roles",
       "component": "RolesPage",
       "default": false
     },
     {
-      "id": 6,
+      "id": 8,
       "path": "/organizations",
       "component": "OrganizationsPage",
       "default": false
     },
     {
-      "id": 7,
+      "id": 9,
       "path": "/billing",
       "component": "Billing",
       "default": false
     },
     {
-      "id": 8,
+      "id": 10,
       "path": "/subscriptions",
       "component": "Subscriptions",
       "default": false
     },
     {
-      "id": 9,
+      "id": 11,
       "path": "/analytics",
       "component": "Analytics",
       "default": false
     },
     {
-      "id": 10,
+      "id": 12,
       "path": "/settings",
       "component": "Settings",
       "default": false

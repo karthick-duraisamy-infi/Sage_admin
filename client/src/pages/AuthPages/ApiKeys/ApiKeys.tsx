@@ -668,10 +668,10 @@ export default function ApiKeys() {
                           <TableCell>
                             <div className="cls-usage-cell">
                               <p className="cls-usage-count">
-                                {apiKey.usageToday.toLocaleString()}
+                                {apiKey.usageToday ? apiKey.usageToday.toLocaleString() : "0"}
                               </p>
                               <p className="cls-usage-limit">
-                                / {(apiKey.usageLimit / 1000).toFixed(0)}k/hour
+                                / {apiKey.usageLimit ? (apiKey.usageLimit / 1000).toFixed(0) : "0"}k/hour
                               </p>
                             </div>
                           </TableCell>

@@ -1,0 +1,403 @@
+
+@use '../../../styles/theme' as *;
+
+.cls-admin-dashboard-container {
+  padding: 2rem;
+  background-color: #F9FAFB;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+// Main Info Cards
+.cls-main-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.cls-info-card {
+  border: 1px solid #E5E7EB;
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  .cls-info-card-content {
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+}
+
+.cls-info-text {
+  flex: 1;
+}
+
+.cls-info-title {
+  font-size: 0.875rem;
+  color: #6B7280;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.cls-info-count {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cls-info-value {
+  font-size: 0.813rem;
+  color: #10B981;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.cls-info-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &.cls-icon-blue {
+    background-color: #DBEAFE;
+    color: #3B82F6;
+  }
+
+  &.cls-icon-green {
+    background-color: #D1FAE5;
+    color: #10B981;
+  }
+
+  &.cls-icon-yellow {
+    background-color: #FEF3C7;
+    color: #F59E0B;
+  }
+
+  &.cls-icon-red {
+    background-color: #FEE2E2;
+    color: #EF4444;
+  }
+}
+
+.cls-metric-icon-svg {
+  width: 24px;
+  height: 24px;
+}
+
+// Charts Row
+.cls-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  align-items: stretch;
+}
+
+@media (max-width: 1200px) {
+  .cls-charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cls-chart-card,
+.cls-customers-card {
+  padding: 1.5rem;
+  background-color: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 450px;
+}
+
+.cls-chart-header,
+.cls-customers-header {
+  margin-bottom: 1.5rem;
+}
+
+.cls-chart-title,
+.cls-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.cls-chart-subtitle,
+.cls-card-subtitle {
+  font-size: 0.875rem;
+  color: #6B7280;
+}
+
+.cls-chart-content {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+}
+
+.cls-bar-chart {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+}
+
+// Recent Customers
+.cls-customers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cls-customer-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #F9FAFB;
+  }
+}
+
+.cls-customer-avatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.cls-customer-info {
+  flex: 1;
+}
+
+.cls-customer-name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 2px;
+}
+
+.cls-customer-email {
+  font-size: 0.813rem;
+  color: #6B7280;
+}
+
+.cls-customer-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.cls-customer-time {
+  font-size: 0.75rem;
+  color: #9CA3AF;
+}
+
+.cls-view-all-button {
+  width: 100%;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #6366F1;
+
+  &:hover {
+    background-color: #F5F3FF;
+  }
+}
+
+.cls-arrow-icon {
+  width: 16px;
+  height: 16px;
+}
+
+// Badge Styles
+.cls-badge-professional {
+  background-color: #DBEAFE;
+  color: #1D4ED8;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+}
+
+.cls-badge-enterprise {
+  background-color: #FEE2E2;
+  color: #DC2626;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+}
+
+.cls-badge-starter {
+  background-color: #D1FAE5;
+  color: #047857;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+}
+
+.cls-badge-paid {
+  background-color: #D1FAE5;
+  color: #047857;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+}
+
+.cls-badge-pending {
+  background-color: #FEF3C7;
+  color: #D97706;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+}
+
+.cls-badge-overdue {
+  background-color: #FEE2E2;
+  color: #DC2626;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+}
+
+// Bottom Row
+.cls-bottom-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 1200px) {
+  .cls-bottom-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cls-usage-card,
+.cls-billing-card {
+  padding: 1.5rem;
+  background-color: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.75rem;
+}
+
+.cls-card-header {
+  margin-bottom: 1.5rem;
+}
+
+// Usage Table
+.cls-usage-table {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cls-table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #E5E7EB;
+  font-size: 0.813rem;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.cls-table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #F9FAFB;
+  }
+}
+
+.cls-td-organization {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.cls-td-usage {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cls-usage-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: #E5E7EB;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cls-usage-bar-fill {
+  height: 100%;
+  background-color: #6366F1;
+  transition: width 0.3s ease;
+}
+
+.cls-usage-text {
+  font-size: 0.813rem;
+  color: #6B7280;
+}
+
+// Billing List
+.cls-billing-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cls-billing-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #F9FAFB;
+  }
+}
+
+.cls-billing-info {
+  flex: 1;
+}
+
+.cls-billing-org {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.cls-billing-time {
+  font-size: 0.813rem;
+  color: #6B7280;
+}
+
+.cls-billing-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cls-billing-amount {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}

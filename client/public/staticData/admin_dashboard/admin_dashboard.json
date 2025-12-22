@@ -1,0 +1,202 @@
+{
+  "mainInfo": [
+    {
+      "title": "Total Customers",
+      "count": "1,250",
+      "icon": "groupIcon",
+      "value": "+15.2% vs last month"
+    },
+    {
+      "title": "Monthly Recurring Revenue",
+      "count": "$45,500",
+      "icon": "dollarIcon",
+      "value": "+8.1% vs last month"
+    },
+    {
+      "title": "Total API Calls (Month)",
+      "count": "1.2M",
+      "icon": "graphIcon",
+      "value": "+22.0% vs last month"
+    },
+    {
+      "title": "Churn Rate",
+      "count": "1.8%",
+      "icon": "decreaseIcon",
+      "value": "+15.2% vs last month"
+    }
+  ],
+  "monthlyRevenue": {
+    "title": "Monthly Recurring Revenue (MRR)",
+    "subtitle": "Revenue generated from active subscriptions over the last 12 months.",
+    "data": [
+      {
+        "month": "Jan",
+        "value": "45K"
+      },
+      {
+        "month": "Feb",
+        "value": "95K"
+      },
+      {
+        "month": "Mar",
+        "value": "55K"
+      },
+      {
+        "month": "Apr",
+        "value": "65K"
+      },
+      {
+        "month": "May",
+        "value": "75K"
+      },
+      {
+        "month": "Jun",
+        "value": "65K"
+      },
+      {
+        "month": "Jul",
+        "value": "85K"
+      },
+      {
+        "month": "Aug",
+        "value": "35K"
+      },
+      {
+        "month": "Sep",
+        "value": "25K"
+      },
+      {
+        "month": "Oct",
+        "value": "35K"
+      },
+      {
+        "month": "Nov",
+        "value": "65K"
+      },
+      {
+        "month": "Dec",
+        "value": "55K"
+      }
+    ]
+  },
+  "recentCustomer": {
+    "title": "Recent Customer Sign-ups",
+    "subtitle": "New customers who joined this week.",
+    "data": [
+      {
+        "name": "Olivia Martin",
+        "mailId": "olivia.m@example.com",
+        "employeeType": "Professional",
+        "time": "15 minutes ago"
+      },
+      {
+        "name": "Jackson Lee",
+        "mailId": "jackson.l@example.com",
+        "employeeType": "Enterprise",
+        "time": "45 minutes ago"
+      },
+      {
+        "name": "Isabella Nguyen",
+        "mailId": "isabella.n@example.com",
+        "employeeType": "Starter",
+        "time": "3 minutes ago"
+      },
+      {
+        "name": "William Kim",
+        "mailId": "will@example.com",
+        "employeeType": "Professional",
+        "time": "15 minutes ago"
+      },
+      {
+        "name": "Sofia Davis",
+        "mailId": "sofia.d@example.com",
+        "employeeType": "Enterprise",
+        "time": "5 minutes ago"
+      },
+      {
+        "name": "Olivia Martin",
+        "mailId": "olivia.m@example.com",
+        "employeeType": "Professional",
+        "time": "15 minutes ago"
+      },
+      {
+        "name": "Olivia Davis",
+        "mailId": "olivia.Davis@example.com",
+        "employeeType": "Enterprise",
+        "time": "50 minutes ago"
+      }
+    ]
+  },
+  "topCustomer": {
+    "title": "Top Customers by API Usage",
+    "subtitle": "Organizations with the highest API consumption this month.",
+    "data": [
+      {
+        "Organization": "TechCorp Solutions",
+        "plan": "Enterprise",
+        "Usage": "850,000",
+        "total": "1,000,000"
+      },
+      {
+        "Organization": "DataFlow Systems",
+        "plan": "Professional",
+        "Usage": "45,000",
+        "total": "100,000"
+      },
+      {
+        "Organization": "Cloudify Inc.",
+        "plan": "Enterprise",
+        "Usage": "120,000",
+        "total": "1,000,000"
+      },
+      {
+        "Organization": "Innovate LLC",
+        "plan": "Starter",
+        "Usage": "22,000",
+        "total": "25,000"
+      },
+      {
+        "Organization": "Quantum Leap",
+        "plan": "Enterprise",
+        "Usage": "480,000",
+        "total": "500,000"
+      }
+    ]
+  },
+  "recentBilling": {
+    "title": "Recent Billing Activity",
+    "subtitle": "Recent invoices and their payment status.",
+    "data": [
+      {
+        "organizations": "TechCorp Solutions",
+        "time": "2 days ago",
+        "amount": "$20,000.00",
+        "status": "Paid"
+      },
+      {
+        "organizations": "DataFlow Systems",
+        "time": "5 days ago",
+        "amount": "$6,500.00",
+        "status": "Pending"
+      },
+      {
+        "organizations": "Cloudify Inc.",
+        "time": "1 week ago",
+        "amount": "$20,000.00",
+        "status": "Overdue"
+      },
+      {
+        "organizations": "Innovate LLC",
+        "time": "2 weeks ago",
+        "amount": "$20,000.00",
+        "status": "Paid"
+      },
+      {
+        "organizations": "Quantum Leap",
+        "time": "2 weeks ago",
+        "amount": "$20,000.00",
+        "status": "Paid"
+      }
+    ]
+  }
+}
