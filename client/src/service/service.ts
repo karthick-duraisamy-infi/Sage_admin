@@ -22,8 +22,8 @@ const CommonService = createApi({
     //   return headers;
     // },
   }),
-  
-  tagTypes: ["users", "roles", "api-keys", "organizations"],
+
+  tagTypes: ["users", "roles", "api-keys", "organizations", "settings"],
   endpoints: () => ({}),
 });
 

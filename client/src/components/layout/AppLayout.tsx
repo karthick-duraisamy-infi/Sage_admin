@@ -239,7 +239,7 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
                       </CollapsibleTrigger>
                       {sidebarState !== "collapsed" && (
                         <CollapsibleContent className="cls-submenu">
-                          {item.items.map((subItem) => (
+                          {item.items.map((subItem: any) => (
                             <Link key={subItem.href} href={subItem.href}>
                               <SidebarMenuButton
                                 isActive={location === subItem.href}

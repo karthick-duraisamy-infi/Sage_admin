@@ -5,8 +5,7 @@ const menuService = LocalService.injectEndpoints({
     getMenuData: build.query<any, string | void>({
       queryFn: async (userId) => {
         try {
-          console.log('Fetching config.json...');
-          const response = await fetch('/staticData/config.json');
+          const response = await fetch('./staticData/config.json');
           
           if (!response.ok) {
             console.error('Failed to fetch config.json:', response.status, response.statusText);

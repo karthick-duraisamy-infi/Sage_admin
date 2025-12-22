@@ -30,7 +30,7 @@ export default function Login() {
 
     try {
       // Import credentials from config
-      const configResponse = await fetch('/staticData/config.json');
+      const configResponse = await fetch('./staticData/config.json');
       const config = await configResponse.json();
       
       // Find matching credentials

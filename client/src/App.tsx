@@ -20,7 +20,7 @@ function AppContent() {
   const dispatch = useDispatch();
   const { isAuthenticated } = useAppSelector((state) => state.AuthReducer);
   const { landingRoutes, authRoutes } = useAppSelector(
-    (state) => state.MenuDataReducer,
+    (state) => state.MenuDataReducer
   );
 
   const [getMenuData, getMenuResponseStatus] = useLazyGetMenuDataQuery();
@@ -41,12 +41,11 @@ function AppContent() {
   // Load routes based on authentication status
   useEffect(() => {
     if (isAuthenticated) {
-      const userId = localStorage.getItem('userId');
-      console.log('Loading menu data for userId:', userId);
+      const userId = localStorage.getItem("userId");
       if (userId) {
         getMenuData(userId);
       } else {
-        console.error('No userId found in localStorage');
+        console.error("No userId found in localStorage");
       }
     } else {
       getLandingRoute();
@@ -56,13 +55,13 @@ function AppContent() {
   // Handle menu data response (authenticated routes)
   useEffect(() => {
     if (getMenuResponseStatus?.isSuccess && getMenuResponseStatus?.data) {
-      console.log('Setting menu response in Redux:', getMenuResponseStatus.data);
       dispatch(setMenuReponse({ value: getMenuResponseStatus.data }));
     }
-    if (getMenuResponseStatus?.isError) {
-      console.error('Error loading menu data:', getMenuResponseStatus.error);
-    }
-  }, [getMenuResponseStatus?.isSuccess, getMenuResponseStatus?.data, getMenuResponseStatus?.isError]);
+  }, [
+    getMenuResponseStatus?.isSuccess,
+    getMenuResponseStatus?.data,
+    getMenuResponseStatus?.isError,
+  ]);
 
   // Handle landing routes response (unauthenticated routes)
   useEffect(() => {
@@ -73,44 +72,44 @@ function AppContent() {
 
   // Render routes based on authentication
   if (isAuthenticated) {
-    console.log('Authenticated - authRoutes:', authRoutes);
-    console.log('Menu response status:', {
-      isLoading: getMenuResponseStatus?.isLoading,
-      isSuccess: getMenuResponseStatus?.isSuccess,
-      isError: getMenuResponseStatus?.isError,
-      error: getMenuResponseStatus?.error
-    });
-    
     if (authRoutes && authRoutes.length > 0) {
-      console.log('Rendering authenticated routes', authRoutes);
       return <DynamicRoutes routes={authRoutes} isAuthenticated={true} />;
     }
-    
+
     // If there was an error loading routes
     if (getMenuResponseStatus?.isError) {
-      console.error('Menu loading error:', getMenuResponseStatus?.error);
+      
       return (
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <div>Error loading routes: {JSON.stringify(getMenuResponseStatus?.error)}</div>
-          <button onClick={() => {
-            localStorage.clear();
-            window.location.href = '/sageAdmin/login';
-          }}>
+        <div style={{ padding: "2rem", textAlign: "center" }}>
+          <div>
+            Error loading routes: {JSON.stringify(getMenuResponseStatus?.error)}
+          </div>
+          <button
+            onClick={() => {
+              localStorage.clear();
+              window.location.href = "/sageAdmin/login";
+            }}
+          >
             Logout and Try Again
           </button>
         </div>
       );
     }
-    
+
     // If authenticated but routes are still loading
-    if (getMenuResponseStatus?.isLoading || getMenuResponseStatus?.isUninitialized) {
-      console.log('Menu is loading or uninitialized');
+    if (
+      getMenuResponseStatus?.isLoading ||
+      getMenuResponseStatus?.isUninitialized
+    ) {
       return <div>Loading routes...</div>;
     }
-    
+
     // If we have success but no routes, something is wrong
-    if (getMenuResponseStatus?.isSuccess && (!authRoutes || authRoutes.length === 0)) {
-      console.error('Menu loaded successfully but no routes found');
+    if (
+      getMenuResponseStatus?.isSuccess &&
+      (!authRoutes || authRoutes.length === 0)
+    ) {
+      console.error("Menu loaded successfully but no routes found");
       return <div>No routes available. Please contact support.</div>;
     }
   }

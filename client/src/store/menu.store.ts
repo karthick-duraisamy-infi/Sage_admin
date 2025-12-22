@@ -20,12 +20,9 @@ const reducer = createSlice({
   reducers: {
     setMenuReponse: (state, { payload }: PayloadAction<{ value: any }>) => {
       if (payload) {
-        console.log('Setting menu response in store:', payload.value);
         state.menuResponse = payload.value;
         state.authRoutes = payload.value?.route;
         state.menuItems = payload.value?.menu;
-        console.log('Updated authRoutes:', state.authRoutes);
-        console.log('Updated menuItems:', state.menuItems);
       }
     },
     setLandingRoutes: (state, { payload }: PayloadAction<{ value: any[] }>) => {
