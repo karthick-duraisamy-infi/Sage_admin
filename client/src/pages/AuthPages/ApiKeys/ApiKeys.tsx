@@ -561,13 +561,13 @@ export default function ApiKeys() {
                   </PopoverContent>
                 </Popover>
 
-                <Button
+                {JSON.parse(localStorage?.getItem("user") as string).role == "superadmin" && <Button
                   onClick={() => setIsCreateDialogOpen(true)}
                   className="cls-new-key-button"
                 >
                   <Plus size={16} />
                   New API Key
-                </Button>
+                </Button>}
               </div>
             </div>
 

@@ -425,7 +425,7 @@ export default function Analytics() {
           </Card>
 
           {/* Geographic Usage Distribution */}
-          <Card className="cls-geographic-card">
+          {JSON.parse(localStorage?.getItem('user') as string).role == 'superadmin' && <Card className="cls-geographic-card">
             <div className="cls-section-header">
               <div className="cls-section-title-row">
                 <Activity className="cls-section-icon" size={20} />
@@ -499,7 +499,7 @@ export default function Analytics() {
                 </>
               )}
             </div>
-          </Card>
+          </Card>}
         </div>
 
         {/* System Monitoring */}

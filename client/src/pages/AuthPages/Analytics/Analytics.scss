@@ -313,7 +313,7 @@
 // Two Column Layout
 .cls-two-column-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 2rem;
   margin-bottom: 2rem;
   align-items: stretch;
@@ -464,7 +464,7 @@
   flex-direction: column;
 
   .cls-rate-limit-content {
-    padding: 0 1rem;
+    padding: 1rem;
     flex: 1;
   }
 

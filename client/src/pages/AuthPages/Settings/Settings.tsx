@@ -232,7 +232,7 @@ export default function Settings() {
     >
       <div className="cls-settings-container">
         {/* Quick Actions */}
-        <Card className="cls-quick-actions-card">
+        {JSON.parse(localStorage?.getItem("user") as string).role == "superadmin" && <Card className="cls-quick-actions-card">
           <CardContent className="cls-quick-actions-content">
             <div className="cls-quick-actions-header">
               <h3 className="cls-quick-actions-title">Quick Actions</h3>
@@ -268,7 +268,7 @@ export default function Settings() {
               </button>
             </div>
           </CardContent>
-        </Card>
+        </Card>}
 
         <div className="cls-settings-layout">
           {/* Left Sidebar */}

@@ -212,7 +212,7 @@ export default function Dashboard() {
         </div>
 
         {/* Alert Banner */}
-        <div className="cls-alert-banner">
+        {JSON.parse(localStorage?.getItem("user") as string).role == "superadmin" && <div className="cls-alert-banner">
           <AlertCircle className="cls-alert-icon" />
           <div className="cls-alert-content">
             <p className="cls-alert-text">
@@ -230,10 +230,10 @@ export default function Dashboard() {
               Upgrade Plan
             </Button>
           </div>
-        </div>
+        </div>}
 
         {/* AI Insights & Recommendations */}
-        <div className="cls-section">
+        {JSON.parse(localStorage?.getItem("user") as string).role == "superadmin" && <div className="cls-section">
           <div className="cls-section-header">
             <h2 className="cls-section-title">AI Insights & Recommendations</h2>
             <p className="cls-section-subtitle">
@@ -318,7 +318,7 @@ export default function Dashboard() {
               </Button>
             </Card>
           </div>
-        </div>
+        </div>}
 
         {/* Charts Row */}
         <div className="cls-charts-row">
