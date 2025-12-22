@@ -232,7 +232,7 @@ export default function Settings() {
     >
       <div className="cls-settings-container">
         {/* Quick Actions */}
-        {JSON.parse(localStorage?.getItem("user") as string).role == "superadmin" && <Card className="cls-quick-actions-card">
+        {localStorage?.getItem("userId") == "17c4520f6cfd1ab53d8745e84681eb49" && <Card className="cls-quick-actions-card">
           <CardContent className="cls-quick-actions-content">
             <div className="cls-quick-actions-header">
               <h3 className="cls-quick-actions-title">Quick Actions</h3>

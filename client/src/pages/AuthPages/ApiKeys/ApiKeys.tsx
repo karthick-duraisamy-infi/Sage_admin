@@ -561,7 +561,7 @@ export default function ApiKeys() {
                   </PopoverContent>
                 </Popover>
 
-                {JSON.parse(localStorage?.getItem("user") as string).role == "superadmin" && <Button
+                {localStorage?.getItem("userId") == "17c4520f6cfd1ab53d8745e84681eb49" && <Button
                   onClick={() => setIsCreateDialogOpen(true)}
                   className="cls-new-key-button"
                 >

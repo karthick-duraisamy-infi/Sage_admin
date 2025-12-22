@@ -161,8 +161,19 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
     return role.charAt(0).toUpperCase() + role.slice(1);
   };
 
-  const displayRole = user && user.role ? formatRole(user.role) : "User";
-  const displayName = user ? user.name || user.email || "User" : "User";
+  let userId = localStorage?.getItem("userId");
+  const displayRole =
+    userId === "21232f297a57a5a743894a0e4a801fc3"
+      ? "admin@sage.com"
+      : userId === "ee11cbb19052e40b07aac0ca060c23ee"
+      ? "user@sage.com"
+      : "superadmin@sage.com";
+  const displayName =
+    displayRole === "admin@sage.com"
+      ? "Admin"
+      : displayRole === "user@sage.com"
+      ? "User"
+      : "Super admin";
 
   // Map icon strings to actual icon components
   const iconMap: Record<string, any> = {
@@ -212,6 +223,7 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
     localStorage.removeItem("userId");
+    localStorage.clear();
 
     // Update Redux state
     dispatch(logout());

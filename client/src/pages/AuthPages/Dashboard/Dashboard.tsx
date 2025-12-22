@@ -212,7 +212,7 @@ export default function Dashboard() {
         </div>
 
         {/* Alert Banner */}
-        {JSON.parse(localStorage?.getItem("user") as string).role == "superadmin" && <div className="cls-alert-banner">
+        {localStorage?.getItem("userId") == "17c4520f6cfd1ab53d8745e84681eb49" && <div className="cls-alert-banner">
           <AlertCircle className="cls-alert-icon" />
           <div className="cls-alert-content">
             <p className="cls-alert-text">
@@ -233,7 +233,7 @@ export default function Dashboard() {
         </div>}
 
         {/* AI Insights & Recommendations */}
-        {JSON.parse(localStorage?.getItem("user") as string).role == "superadmin" && <div className="cls-section">
+        {localStorage?.getItem("userId") == "17c4520f6cfd1ab53d8745e84681eb49" && <div className="cls-section">
           <div className="cls-section-header">
             <h2 className="cls-section-title">AI Insights & Recommendations</h2>
             <p className="cls-section-subtitle">

@@ -425,7 +425,7 @@ export default function Analytics() {
           </Card>
 
           {/* Geographic Usage Distribution */}
-          {JSON.parse(localStorage?.getItem('user') as string).role == 'superadmin' && <Card className="cls-geographic-card">
+          {localStorage?.getItem("userId") == "17c4520f6cfd1ab53d8745e84681eb49" && <Card className="cls-geographic-card">
             <div className="cls-section-header">
               <div className="cls-section-title-row">
                 <Activity className="cls-section-icon" size={20} />
