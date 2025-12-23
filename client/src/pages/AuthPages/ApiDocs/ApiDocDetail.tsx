@@ -58,6 +58,7 @@ export default function ApiDocDetail() {
   const [yamlUrl, setYamlUrl] = useState<string>("");
   const [apiMetadata, setApiMetadata] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("swagger");
+  const [isYamlLoading, setIsYamlLoading] = useState(true);
 
 
   useEffect(() => {
@@ -67,17 +68,28 @@ export default function ApiDocDetail() {
 
       if (metadata?.yamlPath) {
         try {
+          setIsYamlLoading(true);
           // Construct the full URL for the YAML file
           const fullUrl = window.location.origin + metadata.yamlPath;
           setYamlUrl(fullUrl);
           setApiMetadata(metadata);
           
-          // Existing logic to parse YAML for the old view is no longer needed
-          // Keep it here for now in case of fallback, but ideally should be removed if integration is perfect
-          const response = await fetch(metadata.yamlPath);
+          // Fetch the YAML file
+          const response = await fetch(metadata.yamlPath, {
+            headers: {
+              'Accept': 'text/yaml, application/x-yaml, text/plain'
+            }
+          });
+          
           if (!response.ok) {
-            throw new Error(`Failed to fetch YAML file: ${response.statusText}`);
+            throw new Error(`Failed to fetch YAML file: ${response.status} ${response.statusText}`);
           }
+          
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('text/html')) {
+            throw new Error('Received HTML instead of YAML. The YAML file might not be accessible on the server.');
+          }
+          
           const yamlText = await response.text();
           
           if (yamlText.trim().startsWith('<!DOCTYPE') || yamlText.trim().startsWith('<html')) {
@@ -194,17 +206,20 @@ export default function ApiDocDetail() {
               setSelectedEndpoint(firstEndpoint.id);
             }
           }
+          setIsYamlLoading(false);
         } catch (error) {
           console.error("Error loading YAML:", error);
           setApiDoc(null);
           setApiMetadata(null); // Also clear metadata if YAML loading fails
           setYamlUrl(""); // Clear URL as well
+          setIsYamlLoading(false);
         }
       } else {
         console.error("No YAML path configured for this API");
         setApiDoc(null);
         setApiMetadata(null);
         setYamlUrl("");
+        setIsYamlLoading(false);
       }
 
       setIsLoading(false);
@@ -370,7 +385,11 @@ export default function ApiDocDetail() {
 
               <TabsContent value="swagger" className="cls-viewer-tab-content">
                 <div className="cls-swagger-container">
-                  {yamlUrl && (
+                  {isYamlLoading ? (
+                    <div className="flex items-center justify-center p-8">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+                    </div>
+                  ) : yamlUrl ? (
                     <SwaggerUI
                       url={yamlUrl}
                       docExpansion="list"
@@ -382,13 +401,17 @@ export default function ApiDocDetail() {
                       showCommonExtensions={true}
                       tryItOutEnabled={true}
                     />
-                  )}
+                  ) : null}
                 </div>
               </TabsContent>
 
               <TabsContent value="redoc" className="cls-viewer-tab-content">
                 <div className="cls-redoc-container">
-                  {yamlUrl && (
+                  {isYamlLoading ? (
+                    <div className="flex items-center justify-center p-8">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+                    </div>
+                  ) : yamlUrl ? (
                     <RedocStandalone
                       specUrl={yamlUrl}
                       options={{
@@ -412,7 +435,7 @@ export default function ApiDocDetail() {
                         hideLoading: false
                       }}
                     />
-                  )}
+                  ) : null}
                 </div>
               </TabsContent>
             </Tabs>

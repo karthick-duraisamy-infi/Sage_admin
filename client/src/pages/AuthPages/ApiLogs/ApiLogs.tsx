@@ -80,6 +80,7 @@ export default function ApiLogs() {
   const [selectedLog, setSelectedLog] = useState<ApiLog | null>(null);
   const [logToDelete, setLogToDelete] = useState<ApiLog | null>(null);
   const [copiedSection, setCopiedSection] = useState<string>("");
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     getApiLogsData();
@@ -88,6 +89,7 @@ export default function ApiLogs() {
   useEffect(() => {
     if (apiLogsResponse?.isSuccess && apiLogsResponse?.data) {
       setLogsData(apiLogsResponse.data);
+      setIsInitialized(true);
     }
   }, [apiLogsResponse]);
 

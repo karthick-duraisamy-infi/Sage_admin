@@ -16,6 +16,15 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({ extended: false }));
 
+// Serve API specs with correct content type
+app.use('/api-specs', express.static('client/public/api-specs', {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.yaml') || path.endsWith('.yml')) {
+      res.setHeader('Content-Type', 'text/yaml');
+    }
+  }
+}));
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
