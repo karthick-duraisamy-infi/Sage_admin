@@ -25,9 +25,9 @@ import {
   useLazyGetMenuPerformanceAnalyticsDataQuery,
 } from "@/service/analytics/analytics";
 // If api call fails or is loading, use static data as fallback
-import commonAnalytics from '../../../../public/staticData/analytics/commonAnalytics.json';
-import apiEndPointData from '../../../../public/staticData/analytics/Analytics_Menu_API_Endpoint_Details_section.json';
-import performancedData from '../../../../public/staticData/analytics/Analytics_Menu_System_Performance_Metrics.json';
+import commonAnalytics from "../../../../public/staticData/analytics/commonAnalytics.json";
+import apiEndPointData from "../../../../public/staticData/analytics/Analytics_Menu_API_Endpoint_Details_section.json";
+import performancedData from "../../../../public/staticData/analytics/Analytics_Menu_System_Performance_Metrics.json";
 
 export default function Analytics() {
   const [selectedTimeframe, setSelectedTimeframe] = useState("24H");
@@ -53,58 +53,68 @@ export default function Analytics() {
   }, []);
 
   // To trigger the filter based selections
-  useEffect(()=>{
+  useEffect(() => {
     GetMenuApiAnalyticsData({
-      endPointName : selectedEndpointFilter,
-      range : "30"
+      endPointName: selectedEndpointFilter,
+      range: "30",
     });
-  },[selectedEndpointFilter]);
+  }, [selectedEndpointFilter]);
 
   // To trigger the timeframe selection
-  useEffect(()=>{
+  useEffect(() => {
     GetMenuPerformanceData({
-      range : selectedTimeframe
+      range: selectedTimeframe,
     });
-  },[selectedTimeframe]);
+  }, [selectedTimeframe]);
 
   // Handle common analytics data response
   useEffect(() => {
-    if (analyticsCommonDataResponse?.isSuccess && analyticsCommonDataResponse?.data) {
+    if (
+      analyticsCommonDataResponse?.isSuccess &&
+      analyticsCommonDataResponse?.data
+    ) {
       setCommonData(analyticsCommonDataResponse.data);
     }
     // If api call fails or is loading, use static data as fallback
-    else{
-       setCommonData(commonAnalytics);
+    else {
+      setCommonData(commonAnalytics);
     }
   }, [analyticsCommonDataResponse]);
 
   // Handle API endpoint details response
   useEffect(() => {
-    if (GetMenuApiAnalyticsDataResponse?.isSuccess && GetMenuApiAnalyticsDataResponse?.data) {
+    if (
+      GetMenuApiAnalyticsDataResponse?.isSuccess &&
+      GetMenuApiAnalyticsDataResponse?.data
+    ) {
       setApiEndpointData(GetMenuApiAnalyticsDataResponse?.data);
     }
     // If api call fails or is loading, use static data as fallback
-    else{
+    else {
       setApiEndpointData(apiEndPointData);
     }
   }, [GetMenuApiAnalyticsDataResponse]);
 
   // Handle performance metrics response
   useEffect(() => {
-    if (GetMenuPerformanceDataResponse?.isSuccess && GetMenuPerformanceDataResponse?.data) {
+    if (
+      GetMenuPerformanceDataResponse?.isSuccess &&
+      GetMenuPerformanceDataResponse?.data
+    ) {
       setPerformanceData(GetMenuPerformanceDataResponse.data);
     }
     // If api call fails or is loading, use static data as fallback
-    else{
+    else {
       setPerformanceData(performancedData);
     }
   }, [GetMenuPerformanceDataResponse]);
 
   // Filter endpoints based on selected filter
-  const filteredEndpoints = apiEndpointData?.api_endpoint_details?.filter((endpoint: any) => {
-    if (selectedEndpointFilter === "all") return true;
-    return endpoint.status === selectedEndpointFilter;
-  }) || [];
+  const filteredEndpoints =
+    apiEndpointData?.api_endpoint_details?.filter((endpoint: any) => {
+      if (selectedEndpointFilter === "all") return true;
+      return endpoint.status === selectedEndpointFilter;
+    }) || [];
 
   return (
     <AppLayout
@@ -134,7 +144,8 @@ export default function Analytics() {
                   <div>
                     <p className="cls-metric-label">System Uptime</p>
                     <h2 className="cls-metric-value">
-                      {commonData?.Overall_System_Status?.System_Uptime || "N/A"}
+                      {commonData?.Overall_System_Status?.System_Uptime ||
+                        "N/A"}
                     </h2>
                   </div>
                   <div className="cls-metric-icon cls-icon-blue">
@@ -148,7 +159,8 @@ export default function Analytics() {
                   <div>
                     <p className="cls-metric-label">Avg. Response Time</p>
                     <h2 className="cls-metric-value">
-                      {commonData?.Overall_System_Status?.Avg_Response_Time || "N/A"}
+                      {commonData?.Overall_System_Status?.Avg_Response_Time ||
+                        "N/A"}
                     </h2>
                   </div>
                   <div className="cls-metric-icon cls-icon-green">
@@ -176,7 +188,8 @@ export default function Analytics() {
                   <div>
                     <p className="cls-metric-label">Overall Health</p>
                     <h2 className="cls-metric-value cls-operational-text">
-                      {commonData?.Overall_System_Status?.Overall_Health || "N/A"}
+                      {commonData?.Overall_System_Status?.Overall_Health ||
+                        "N/A"}
                     </h2>
                   </div>
                   <div className="cls-metric-icon cls-icon-red">
@@ -225,44 +238,56 @@ export default function Analytics() {
                 ))}
               </>
             ) : (
-              commonData?.Top_Performing_APIs?.map((api: any, index: number) => (
-                <div key={index} className="cls-api-row">
-                  <div className="cls-api-left">
-                    <div className="cls-api-icon">
-                      <Zap size={20} />
+              commonData?.Top_Performing_APIs?.map(
+                (api: any, index: number) => (
+                  <div key={index} className="cls-api-row">
+                    <div className="cls-api-left">
+                      <div className="cls-api-icon">
+                        <Zap size={20} />
+                      </div>
+                      <div className="cls-api-info">
+                        <h3 className="cls-api-name">{api.API_Name}</h3>
+                        <p className="cls-api-endpoint">{api.API_Endpoint}</p>
+                      </div>
                     </div>
-                    <div className="cls-api-info">
-                      <h3 className="cls-api-name">{api.API_Name}</h3>
-                      <p className="cls-api-endpoint">{api.API_Endpoint}</p>
+                    <div className="cls-api-right">
+                      <div className="cls-api-metrics">
+                        <div className="cls-metric-item">
+                          <span className="cls-metric-label">Requests</span>
+                          <span className="cls-metric-value">
+                            {api.Requests?.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="cls-metric-item">
+                          <span className="cls-metric-label">Avg Response</span>
+                          <span className="cls-metric-value">
+                            {api.Avg_Response_ms}ms
+                          </span>
+                        </div>
+                        <div className="cls-metric-item">
+                          <span className="cls-metric-label">Success Rate</span>
+                          <span className="cls-metric-value">
+                            {api.Success_Rate}
+                          </span>
+                        </div>
+                        <div className="cls-metric-item">
+                          <span className="cls-metric-label">Growth</span>
+                          <span className="cls-metric-value cls-growth">
+                            {api.Growth}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="cls-performance-score-section">
+                        <Badge
+                          className={`cls-status-badge cls-${api.Performance_Status}`}
+                        >
+                          {api.Performance_Status}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
-                  <div className="cls-api-right">
-                    <div className="cls-api-metrics">
-                      <div className="cls-metric-item">
-                        <span className="cls-metric-label">Requests</span>
-                        <span className="cls-metric-value">{api.Requests?.toLocaleString()}</span>
-                      </div>
-                      <div className="cls-metric-item">
-                        <span className="cls-metric-label">Avg Response</span>
-                        <span className="cls-metric-value">{api.Avg_Response_ms}ms</span>
-                      </div>
-                      <div className="cls-metric-item">
-                        <span className="cls-metric-label">Success Rate</span>
-                        <span className="cls-metric-value">{api.Success_Rate}</span>
-                      </div>
-                      <div className="cls-metric-item">
-                        <span className="cls-metric-label">Growth</span>
-                        <span className="cls-metric-value cls-growth">{api.Growth}</span>
-                      </div>
-                    </div>
-                    <div className="cls-performance-score-section">
-                      <Badge className={`cls-status-badge cls-${api.Performance_Status}`}>
-                        {api.Performance_Status}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              ))
+                )
+              )
             )}
           </CardContent>
         </Card>
@@ -276,7 +301,10 @@ export default function Analytics() {
                 <h2 className="cls-section-title">API Endpoint Details</h2>
               </div>
             </div>
-            <Select value={selectedEndpointFilter} onValueChange={setSelectedEndpointFilter}>
+            <Select
+              value={selectedEndpointFilter}
+              onValueChange={setSelectedEndpointFilter}
+            >
               <SelectTrigger className="cls-filter-select">
                 <SelectValue placeholder="All Endpoints" />
               </SelectTrigger>
@@ -320,11 +348,17 @@ export default function Analytics() {
                 <div key={index} className="cls-endpoint-item">
                   <div className="cls-endpoint-main-row">
                     <div className="cls-endpoint-left-section">
-                      <span className={`cls-method cls-${endpoint.method.toLowerCase()}`}>
+                      <span
+                        className={`cls-method cls-${endpoint.method.toLowerCase()}`}
+                      >
                         {endpoint.method}
                       </span>
-                      <span className="cls-endpoint-path">{endpoint.endpoint}</span>
-                      <Badge className={`cls-status-badge cls-${endpoint.status}`}>
+                      <span className="cls-endpoint-path">
+                        {endpoint.endpoint}
+                      </span>
+                      <Badge
+                        className={`cls-status-badge cls-${endpoint.status}`}
+                      >
                         {endpoint.status}
                       </Badge>
                       <p className="cls-last-checked">
@@ -352,7 +386,10 @@ export default function Analytics() {
                         </div>
                       </div>
                       <div className="cls-stat-column">
-                        <CheckCircle2 size={16} className="cls-stat-icon-green" />
+                        <CheckCircle2
+                          size={16}
+                          className="cls-stat-icon-green"
+                        />
                         <div className="cls-stat-info">
                           <span className="cls-stat-label">Success Rate</span>
                           <span className="cls-stat-value">
@@ -378,7 +415,14 @@ export default function Analytics() {
         </Card>
 
         {/* Two Column Layout: Rate Limiting & Geographic */}
-        <div className="cls-two-column-layout">
+        <div
+          className={`cls-two-column-layout ${
+            JSON.parse(localStorage.getItem("user") || "{}")?.role ===
+            "superadmin"
+              ? "cls-super-admin"
+              : ""
+          }`}
+        >
           {/* Rate Limiting Status */}
           <Card className="cls-rate-limit-card">
             <div className="cls-section-header">
@@ -404,102 +448,117 @@ export default function Analytics() {
                   ))}
                 </>
               ) : (
-                commonData?.Rate_Limiting_Status?.map((rate: any, index: number) => (
-                  <div key={index} className="cls-rate-limit-item">
-                    <div className="cls-rate-limit-header">
-                      <span className="cls-rate-endpoint">{rate?.API_Endpoint}</span>
-                      <Badge className={`cls-status-badge cls-${rate?.Status}`}>
-                        {rate?.Status}
-                      </Badge>
+                commonData?.Rate_Limiting_Status?.map(
+                  (rate: any, index: number) => (
+                    <div key={index} className="cls-rate-limit-item">
+                      <div className="cls-rate-limit-header">
+                        <span className="cls-rate-endpoint">
+                          {rate?.API_Endpoint}
+                        </span>
+                        <Badge
+                          className={`cls-status-badge cls-${rate?.Status}`}
+                        >
+                          {rate?.Status}
+                        </Badge>
+                      </div>
+                      <div className="cls-rate-stats">
+                        <span>
+                          <strong>{rate?.Usage}</strong> requests
+                        </span>
+                      </div>
+                      <p className="cls-reset-time">
+                        Resets in {rate?.Reset_Time}
+                      </p>
                     </div>
-                    <div className="cls-rate-stats">
-                      <span>
-                        <strong>{rate?.Usage}</strong> requests
-                      </span>
-                    </div>
-                    <p className="cls-reset-time">Resets in {rate?.Reset_Time}</p>
-                  </div>
-                ))
+                  )
+                )
               )}
             </div>
           </Card>
 
           {/* Geographic Usage Distribution */}
-          {localStorage?.getItem("userId") == "17c4520f6cfd1ab53d8745e84681eb49" && <Card className="cls-geographic-card">
-            <div className="cls-section-header">
-              <div className="cls-section-title-row">
-                <Activity className="cls-section-icon" size={20} />
-                <h2 className="cls-section-title">
-                  Geographic Usage Distribution
-                </h2>
+          {localStorage?.getItem("userId") ==
+            "17c4520f6cfd1ab53d8745e84681eb49" && (
+            <Card className="cls-geographic-card">
+              <div className="cls-section-header">
+                <div className="cls-section-title-row">
+                  <Activity className="cls-section-icon" size={20} />
+                  <h2 className="cls-section-title">
+                    Geographic Usage Distribution
+                  </h2>
+                </div>
               </div>
-            </div>
-            <div className="cls-geographic-content">
-              {analyticsCommonDataResponse?.isLoading ? (
-                <>
-                  <div className="animate-pulse bg-gray-200 h-4 w-48 rounded mb-6"></div>
-                  {[1, 2, 3, 4, 5].map((index) => (
-                    <div key={index} className="cls-country-row">
-                      <div className="cls-country-info">
-                        <div className="animate-pulse bg-gray-200 w-6 h-6 rounded"></div>
-                        <div className="animate-pulse bg-gray-200 h-4 w-32 rounded"></div>
-                      </div>
-                      <div className="cls-country-stats">
-                        <div className="animate-pulse bg-gray-200 h-3 w-24 rounded"></div>
-                      </div>
-                      <div className="cls-country-bar-container">
-                        <div className="animate-pulse bg-gray-200 h-2 w-full rounded"></div>
-                      </div>
-                    </div>
-                  ))}
-                </>
-              ) : (
-                <>
-                  <p className="cls-total-requests">
-                    Total Global Requests:{" "}
-                    {commonData?.Geographic_Usage_Distribution?.Total_Global_Requests?.toLocaleString()}
-                  </p>
-                  {commonData?.Geographic_Usage_Distribution?.Countries?.map(
-                    (country: any, index: number) => (
+              <div className="cls-geographic-content">
+                {analyticsCommonDataResponse?.isLoading ? (
+                  <>
+                    <div className="animate-pulse bg-gray-200 h-4 w-48 rounded mb-6"></div>
+                    {[1, 2, 3, 4, 5].map((index) => (
                       <div key={index} className="cls-country-row">
                         <div className="cls-country-info">
-                          <span className="cls-country-flag">
-                            {country.Country === "United States"
-                              ? "🇺🇸"
-                              : country.Country === "United Kingdom"
-                              ? "🇬🇧"
-                              : country.Country === "Germany"
-                              ? "🇩🇪"
-                              : country.Country === "Canada"
-                              ? "🇨🇦"
-                              : country.Country === "Australia"
-                              ? "🇦🇺"
-                              : "🌍"}
-                          </span>
-                          <span className="cls-country-name">{country?.Country}</span>
+                          <div className="animate-pulse bg-gray-200 w-6 h-6 rounded"></div>
+                          <div className="animate-pulse bg-gray-200 h-4 w-32 rounded"></div>
                         </div>
                         <div className="cls-country-stats">
-                          <span className="cls-country-percentage">
-                            {country?.Usage_Percentage}
-                          </span>
-                          <span>•</span>
-                          <span>{country?.Requests?.toLocaleString()} requests</span>
-                          <span>•</span>
-                          <span>{country?.Avg_Response_ms}ms avg</span>
+                          <div className="animate-pulse bg-gray-200 h-3 w-24 rounded"></div>
                         </div>
                         <div className="cls-country-bar-container">
-                          <div
-                            className="cls-country-bar"
-                            style={{ width: country?.Usage_Percentage }}
-                          />
+                          <div className="animate-pulse bg-gray-200 h-2 w-full rounded"></div>
                         </div>
                       </div>
-                    )
-                  )}
-                </>
-              )}
-            </div>
-          </Card>}
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <p className="cls-total-requests">
+                      Total Global Requests:{" "}
+                      {commonData?.Geographic_Usage_Distribution?.Total_Global_Requests?.toLocaleString()}
+                    </p>
+                    {commonData?.Geographic_Usage_Distribution?.Countries?.map(
+                      (country: any, index: number) => (
+                        <div key={index} className="cls-country-row">
+                          <div className="cls-country-info">
+                            <span className="cls-country-flag">
+                              {country.Country === "United States"
+                                ? "🇺🇸"
+                                : country.Country === "United Kingdom"
+                                ? "🇬🇧"
+                                : country.Country === "Germany"
+                                ? "🇩🇪"
+                                : country.Country === "Canada"
+                                ? "🇨🇦"
+                                : country.Country === "Australia"
+                                ? "🇦🇺"
+                                : "🌍"}
+                            </span>
+                            <span className="cls-country-name">
+                              {country?.Country}
+                            </span>
+                          </div>
+                          <div className="cls-country-stats">
+                            <span className="cls-country-percentage">
+                              {country?.Usage_Percentage}
+                            </span>
+                            <span>•</span>
+                            <span>
+                              {country?.Requests?.toLocaleString()} requests
+                            </span>
+                            <span>•</span>
+                            <span>{country?.Avg_Response_ms}ms avg</span>
+                          </div>
+                          <div className="cls-country-bar-container">
+                            <div
+                              className="cls-country-bar"
+                              style={{ width: country?.Usage_Percentage }}
+                            />
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </>
+                )}
+              </div>
+            </Card>
+          )}
         </div>
 
         {/* System Monitoring */}
@@ -511,7 +570,10 @@ export default function Analytics() {
                 <h2 className="cls-chart-title">System Performance Metrics</h2>
               </div>
               <div className="cls-chart-actions">
-                <Select value={selectedTimeframe} onValueChange={setSelectedTimeframe}>
+                <Select
+                  value={selectedTimeframe}
+                  onValueChange={setSelectedTimeframe}
+                >
                   <SelectTrigger className="cls-timeframe-select">
                     <SelectValue />
                   </SelectTrigger>
@@ -522,9 +584,12 @@ export default function Analytics() {
                     <SelectItem value="30D">30 Days</SelectItem>
                   </SelectContent>
                 </Select>
-                <button className="cls-refresh-button" onClick={() => {
-                  GetMenuPerformanceData({range : selectedTimeframe})
-                  }}>
+                <button
+                  className="cls-refresh-button"
+                  onClick={() => {
+                    GetMenuPerformanceData({ range: selectedTimeframe });
+                  }}
+                >
                   <RefreshCw size={16} />
                 </button>
               </div>
@@ -539,17 +604,59 @@ export default function Analytics() {
                   <div className="cls-performance-chart">
                     <svg viewBox="0 0 800 300" preserveAspectRatio="none">
                       <defs>
-                        <linearGradient id="gradient1" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                          <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
+                        <linearGradient
+                          id="gradient1"
+                          x1="0%"
+                          y1="0%"
+                          x2="0%"
+                          y2="100%"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#10b981"
+                            stopOpacity="0.4"
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#10b981"
+                            stopOpacity="0.1"
+                          />
                         </linearGradient>
-                        <linearGradient id="gradient2" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.4" />
-                          <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.1" />
+                        <linearGradient
+                          id="gradient2"
+                          x1="0%"
+                          y1="0%"
+                          x2="0%"
+                          y2="100%"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#3b82f6"
+                            stopOpacity="0.4"
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#3b82f6"
+                            stopOpacity="0.1"
+                          />
                         </linearGradient>
-                        <linearGradient id="gradient3" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.4" />
-                          <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.1" />
+                        <linearGradient
+                          id="gradient3"
+                          x1="0%"
+                          y1="0%"
+                          x2="0%"
+                          y2="100%"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#8b5cf6"
+                            stopOpacity="0.4"
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#8b5cf6"
+                            stopOpacity="0.1"
+                          />
                         </linearGradient>
                       </defs>
                       <path
@@ -582,19 +689,22 @@ export default function Analytics() {
                   <div className="cls-legend-item">
                     <div className="cls-legend-dot cls-green" />
                     <span>
-                      {performanceData?.series_legend?.metric_a_green || "Response Time"}
+                      {performanceData?.series_legend?.metric_a_green ||
+                        "Response Time"}
                     </span>
                   </div>
                   <div className="cls-legend-item">
                     <div className="cls-legend-dot cls-blue" />
                     <span>
-                      {performanceData?.series_legend?.metric_b_blue || "Throughput"}
+                      {performanceData?.series_legend?.metric_b_blue ||
+                        "Throughput"}
                     </span>
                   </div>
                   <div className="cls-legend-item">
                     <div className="cls-legend-dot cls-purple" />
                     <span>
-                      {performanceData?.series_legend?.metric_c_orange || "Error Rate"}
+                      {performanceData?.series_legend?.metric_c_orange ||
+                        "Error Rate"}
                     </span>
                   </div>
                 </div>
