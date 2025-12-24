@@ -142,6 +142,8 @@ function SidebarHeaderComponent() {
 }
 
 function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
+  const manualToggleRef = React.useRef(false);
+  const initializedRef = React.useRef(false);
   const [location] = useLocation();
   const [openMenus, setOpenMenus] = useState<string[]>([]);
   const { state: sidebarState, toggleSidebar } = useSidebar();
@@ -150,7 +152,7 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
 
   // Get menu items and user data from Redux store
   const { menuItems: userMenuItems } = useAppSelector(
-    (state) => state.MenuDataReducer
+    (state) => state.MenuDataReducer,
   );
   const { user } = useAppSelector((state) => state.AuthReducer);
   const menuItemsToRender = userMenuItems || menuItems;
@@ -167,14 +169,14 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
     userId === "21232f297a57a5a743894a0e4a801fc3"
       ? "admin@sage.com"
       : userId === "ee11cbb19052e40b07aac0ca060c23ee"
-      ? "user@sage.com"
-      : "superadmin@sage.com";
+        ? "user@sage.com"
+        : "superadmin@sage.com";
   const displayName =
     displayRole === "admin@sage.com"
       ? "Admin"
       : displayRole === "user@sage.com"
-      ? "User"
-      : "Super admin";
+        ? "User"
+        : "Super admin";
 
   // Map icon strings to actual icon components
   const iconMap: Record<string, any> = {
@@ -188,37 +190,46 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
     BarChart3,
   };
 
-  // Convert menu items with icon strings to icon components
-  const processedMenuItems = menuItemsToRender.map((item: any) => ({
-    ...item,
-    icon:
-      typeof item.icon === "string"
-        ? iconMap[item.icon] || LayoutDashboard
-        : item.icon,
-  }));
+  // Convert menu items with icon strings to icon components - memoize to prevent unnecessary re-renders
+  const processedMenuItems = React.useMemo(() => 
+    menuItemsToRender.map((item: any) => ({
+      ...item,
+      icon:
+        typeof item.icon === "string"
+          ? iconMap[item.icon] || LayoutDashboard
+          : item.icon,
+    })),
+    [menuItemsToRender]
+  );
 
-  // Initialize open menu based on current location
+  // Initialize open menu based on current location - only runs when location changes
   React.useEffect(() => {
-    const currentMenu = processedMenuItems.find((item: any) =>
-      item.items?.some((subItem: any) => subItem.href === location)
-    );
-    if (currentMenu && !openMenus.includes(currentMenu.title)) {
-      setOpenMenus([currentMenu.title]);
+    // If menu was toggled manually, do not auto-sync
+    if (manualToggleRef.current) {
+      manualToggleRef.current = false;
+      return;
     }
-  }, [location, processedMenuItems]);
 
-  const toggleMenu = (title: string) => {
-    setOpenMenus((prev) => {
-      // If sidebar is collapsed, don't toggle
-      if (sidebarState === "collapsed") return prev;
-      
-      // If the clicked menu is already the only open menu, close it
-      if (prev.length === 1 && prev[0] === title) {
-        return [];
-      }
-      // Otherwise, open this menu and close all others
-      return [title];
-    });
+    // Only run auto-sync after initial render is complete
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+    }
+
+    const currentMenu = processedMenuItems.find((item: any) =>
+      item.items?.some((subItem: any) => subItem.href === location),
+    );
+    if (currentMenu) {
+      setOpenMenus([currentMenu.title]);
+    } else {
+      setOpenMenus([]);
+    }
+  }, [location]);
+
+  const toggleMenu = (title: string, open: boolean) => {
+    if (sidebarState === "collapsed") return;
+
+    manualToggleRef.current = true;
+    setOpenMenus(open ? [title] : []);
   };
 
   const handleLogout = () => {
@@ -248,9 +259,9 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
                   <Collapsible
                     open={
                       sidebarState !== "collapsed" &&
-                      openMenus.includes(item?.title)
+                      openMenus[0] === item?.title
                     }
-                    onOpenChange={() => toggleMenu(item?.title)}
+                    onOpenChange={(open) => toggleMenu(item?.title, open)}
                   >
                     <>
                       <CollapsibleTrigger asChild>
@@ -267,7 +278,7 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
                             <span>{item?.title}</span>
                           )}
                           {sidebarState !== "collapsed" &&
-                            (openMenus?.includes(item.title) ? (
+                            (openMenus[0] === item.title ? (
                               <ChevronDown className="cls-chevron" />
                             ) : (
                               <ChevronRight className="cls-chevron" />

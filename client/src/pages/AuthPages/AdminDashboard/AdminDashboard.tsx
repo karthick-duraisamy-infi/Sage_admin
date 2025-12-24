@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { Card } from "@/components/ui/card";
@@ -79,7 +78,9 @@ export default function AdminDashboard() {
     const values = dashboardData.monthlyRevenue.data.map((item: any) => 
       parseInt(item.value.replace('K', '')) * 1000
     );
-    return Math.max(...values);
+    const max = Math.max(...values);
+    // Round up to nearest 10k for better scaling
+    return Math.ceil(max / 10000) * 10000;
   };
 
   return (
@@ -121,10 +122,12 @@ export default function AdminDashboard() {
                 {dashboardData?.monthlyRevenue?.data?.map((item: any, index: number) => {
                   const value = parseInt(item.value.replace('K', '')) * 1000;
                   const maxValue = getMaxValue();
-                  const barHeight = (value / maxValue) * 180;
-                  const x = 30 + index * 45;
-                  const y = 200 - barHeight;
-                  
+                  const chartHeight = 180;
+                  const chartBottom = 200;
+                  const barHeight = (value / maxValue) * chartHeight;
+                  const x = 50 + index * 45;
+                  const y = chartBottom - barHeight;
+
                   return (
                     <g key={index}>
                       <rect
@@ -147,12 +150,29 @@ export default function AdminDashboard() {
                     </g>
                   );
                 })}
-                <line x1="20" y1="20" x2="20" y2="200" stroke="#E5E7EB" strokeWidth="1" />
-                <text x="10" y="25" fontSize="10" fill="#9CA3AF">$60k</text>
-                <text x="10" y="75" fontSize="10" fill="#9CA3AF">$45k</text>
-                <text x="10" y="125" fontSize="10" fill="#9CA3AF">$30k</text>
-                <text x="10" y="175" fontSize="10" fill="#9CA3AF">$15k</text>
-                <text x="10" y="205" fontSize="10" fill="#9CA3AF">$0k</text>
+                {/* Y-axis labels - dynamically calculated */}
+                {(() => {
+                  const maxValue = getMaxValue();
+                  const steps = 5;
+                  const chartHeight = 180;
+                  const chartTop = 20;
+                  return Array.from({ length: steps }, (_, i) => {
+                    const value = (maxValue / 1000) * (1 - i / (steps - 1));
+                    const y = chartTop + (chartHeight * i / (steps - 1));
+                    return (
+                      <text key={i} x="5" y={y + 4} fontSize="10" fill="#9CA3AF" textAnchor="start">
+                        ${Math.round(value)}k
+                      </text>
+                    );
+                  });
+                })()}
+                {/* Horizontal grid lines */}
+                {Array.from({ length: 5 }, (_, i) => {
+                  const y = 20 + (180 * i / 4);
+                  return (
+                    <line key={i} x1="40" y1={y} x2="590" y2={y} stroke="#F3F4F6" strokeWidth="1" />
+                  );
+                })}
               </svg>
             </div>
           </Card>
@@ -214,7 +234,7 @@ export default function AdminDashboard() {
               </div>
               {dashboardData?.topCustomer?.data?.map((customer: any, index: number) => {
                 const usagePercent = (parseInt(customer.Usage.replace(/,/g, '')) / parseInt(customer.total.replace(/,/g, ''))) * 100;
-                
+
                 return (
                   <div key={index} className="cls-table-row">
                     <span className="cls-td-organization">{customer.Organization}</span>
