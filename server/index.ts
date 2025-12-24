@@ -17,10 +17,14 @@ app.use(express.json({
 app.use(express.urlencoded({ extended: false }));
 
 // Serve API specs with correct content type
-app.use('/api-specs', express.static('client/public/api-specs', {
+const apiSpecsPath = app.get('env') === 'production' 
+  ? 'dist/public/api-specs' 
+  : 'client/public/api-specs';
+
+app.use('/api-specs', express.static(apiSpecsPath, {
   setHeaders: (res, path) => {
     if (path.endsWith('.yaml') || path.endsWith('.yml')) {
-      res.setHeader('Content-Type', 'text/yaml');
+      res.setHeader('Content-Type', 'text/yaml; charset=utf-8');
     }
   }
 }));

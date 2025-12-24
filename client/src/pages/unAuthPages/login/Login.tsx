@@ -7,8 +7,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/hooks/use-toast';
 import { useDispatch } from 'react-redux';
 import { setAuthenticated } from '@/store/auth.store';
+import { setMenuReponse } from '@/store/menu.store';
 import { useLocation } from 'wouter';
-import authIllustration from '@assets/generated_images/Auth_page_side_illustration_6a131ae3.png';
 import './login.scss';
 
 export default function Login() {
@@ -71,8 +71,17 @@ export default function Login() {
           localStorage.setItem('user', JSON.stringify(matchedUser));
         }
         
-        // Update Redux state
+        // Get user config for menu and routes
+        const userConfig = (config.credentials as any)[matchedUser.id];
+        
+        // Update Redux state with authentication AND menu/routes
         dispatch(setAuthenticated({ value: true, user: matchedUser }));
+        dispatch(setMenuReponse({ 
+          value: {
+            menu: userConfig.menu,
+            route: userConfig.route
+          }
+        }));
         
         // Navigate to dashboard
         setTimeout(() => {

@@ -208,14 +208,15 @@ function AppLayoutContent({ children, title, subtitle }: AppLayoutProps) {
   }, [location, processedMenuItems]);
 
   const toggleMenu = (title: string) => {
-    // debugger
-    if (sidebarState === "collapsed") return;
     setOpenMenus((prev) => {
-      // If the menu is already open, close it
-      if (prev.includes(title)) {
-        return prev.filter((item) => item !== title);
+      // If sidebar is collapsed, don't toggle
+      if (sidebarState === "collapsed") return prev;
+      
+      // If the clicked menu is already the only open menu, close it
+      if (prev.length === 1 && prev[0] === title) {
+        return [];
       }
-      // Otherwise, close all other menus and open this one
+      // Otherwise, open this menu and close all others
       return [title];
     });
   };

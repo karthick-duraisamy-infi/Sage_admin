@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -6,7 +6,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAppSelector } from "@/store/hooks";
 import { useDispatch } from "react-redux";
 import {
-  useLazyGetMenuDataQuery,
   useLazyGetLandingRouteQuery,
 } from "@/service/menu/menu";
 import { setMenuReponse, setLandingRoutes } from "@/store/menu.store";
@@ -23,9 +22,10 @@ function AppContent() {
     (state) => state.MenuDataReducer
   );
 
-  const [getMenuData, getMenuResponseStatus] = useLazyGetMenuDataQuery();
   const [getLandingRoute, getLandingRouteResponse] =
     useLazyGetLandingRouteQuery();
+  
+  const [isLoadingAuthRoutes, setIsLoadingAuthRoutes] = useState(false);
 
   // Check for query parameter authentication or localStorage on initial load
   useEffect(() => {
@@ -58,8 +58,14 @@ function AppContent() {
             localStorage.setItem('userId', queryParamKey);
             localStorage.setItem('user', JSON.stringify(user));
             
-            // Update Redux state
+            // Update Redux state with user data AND menu/routes
             dispatch(setAuthenticated({ value: true, user }));
+            dispatch(setMenuReponse({ 
+              value: {
+                menu: userConfig.menu,
+                route: userConfig.route
+              }
+            }));
             
             // Clean up URL by removing query parameter
             window.history.replaceState({}, '', window.location.pathname);
@@ -88,25 +94,36 @@ function AppContent() {
     if (isAuthenticated) {
       const userId = localStorage.getItem("userId");
       if (userId) {
-        getMenuData(userId);
+        // Load menu and routes directly from config.json
+        setIsLoadingAuthRoutes(true);
+        fetch('./staticData/config.json')
+          .then(response => response.json())
+          .then(config => {
+            if (config.credentials && config.credentials[userId]) {
+              const userConfig = config.credentials[userId];
+              dispatch(setMenuReponse({ 
+                value: {
+                  menu: userConfig.menu,
+                  route: userConfig.route
+                }
+              }));
+            } else {
+              console.error('User configuration not found for ID:', userId);
+            }
+          })
+          .catch(error => {
+            console.error('Error loading user configuration:', error);
+          })
+          .finally(() => {
+            setIsLoadingAuthRoutes(false);
+          });
       } else {
         console.error("No userId found in localStorage");
       }
     } else {
       getLandingRoute();
     }
-  }, [isAuthenticated]);
-
-  // Handle menu data response (authenticated routes)
-  useEffect(() => {
-    if (getMenuResponseStatus?.isSuccess && getMenuResponseStatus?.data) {
-      dispatch(setMenuReponse({ value: getMenuResponseStatus.data }));
-    }
-  }, [
-    getMenuResponseStatus?.isSuccess,
-    getMenuResponseStatus?.data,
-    getMenuResponseStatus?.isError,
-  ]);
+  }, [isAuthenticated, dispatch]);
 
   // Handle landing routes response (unauthenticated routes)
   useEffect(() => {
@@ -121,57 +138,16 @@ function AppContent() {
       return <DynamicRoutes routes={authRoutes} isAuthenticated={true} />;
     }
 
-    // If there was an error loading routes
-    if (getMenuResponseStatus?.isError) {
-      
-      return (
-        <div style={{ padding: "2rem", textAlign: "center" }}>
-          <div>
-            Error loading routes: {JSON.stringify(getMenuResponseStatus?.error)}
-          </div>
-          <button
-            onClick={() => {
-              localStorage.clear();
-              window.location.href = "/sageAdmin/login";
-            }}
-          >
-            Logout and Try Again
-          </button>
-        </div>
-      );
-    }
-
     // If authenticated but routes are still loading
-    if (
-      getMenuResponseStatus?.isLoading ||
-      getMenuResponseStatus?.isUninitialized
-    ) {
+    if (isLoadingAuthRoutes) {
       return <div>Loading routes...</div>;
     }
 
-    // If we have success but no routes, something is wrong
-    if (
-      getMenuResponseStatus?.isSuccess &&
-      (!authRoutes || authRoutes.length === 0)
-    ) {
-      console.error("Menu loaded successfully but no routes found");
-      console.error("Menu response:", getMenuResponseStatus?.data);
-      console.error("Auth routes:", authRoutes);
+    // If no routes available after loading
+    if (!authRoutes || authRoutes.length === 0) {
+      console.error("No routes found for authenticated user");
       console.error("User ID:", localStorage.getItem("userId"));
-      return (
-        <div style={{ padding: "2rem", textAlign: "center" }}>
-          <div>No routes available for this user.</div>
-          <button
-            onClick={() => {
-              localStorage.clear();
-              window.location.href = "/sageAdmin/login";
-            }}
-            style={{ marginTop: "1rem", padding: "0.5rem 1rem", cursor: "pointer" }}
-          >
-            Logout and Try Again
-          </button>
-        </div>
-      );
+      return <div>Loading routes...</div>;
     }
   }
 

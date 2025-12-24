@@ -9,7 +9,7 @@ const menuService = LocalService.injectEndpoints({
           
           if (!response.ok) {
             console.error('Failed to fetch config.json:', response.status, response.statusText);
-            return { error: { status: response.status, data: 'Failed to fetch configuration' } };
+            return { data: { menu: [], route: [] } };
           }
           
           const config = await response.json();
@@ -21,13 +21,13 @@ const menuService = LocalService.injectEndpoints({
           
           if (!userIdToUse) {
             console.error('No user ID provided');
-            return { error: { status: 401, data: 'User ID not found' } };
+            return { data: { menu: [], route: [] } };
           }
           
           if (!config.credentials || !config.credentials[userIdToUse]) {
             console.error('User configuration not found for ID:', userIdToUse);
             console.log('Available user IDs:', Object.keys(config.credentials || {}));
-            return { error: { status: 404, data: 'User configuration not found' } };
+            return { data: { menu: [], route: [] } };
           }
           
           const userConfig = config.credentials[userIdToUse];
@@ -35,7 +35,7 @@ const menuService = LocalService.injectEndpoints({
           
           if (!userConfig.menu || !userConfig.route) {
             console.error('Invalid user configuration structure');
-            return { error: { status: 500, data: 'Invalid configuration structure' } };
+            return { data: { menu: [], route: [] } };
           }
           
           console.log('Menu data loaded successfully:', { menu: userConfig.menu, route: userConfig.route });
@@ -48,7 +48,7 @@ const menuService = LocalService.injectEndpoints({
           };
         } catch (error) {
           console.error('Error loading menu configuration:', error);
-          return { error: { status: 500, data: String(error) } };
+          return { data: { menu: [], route: [] } };
         }
       },
     }),

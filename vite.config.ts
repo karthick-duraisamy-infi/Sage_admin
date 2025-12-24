@@ -60,4 +60,5 @@ export default defineConfig({
       deny: ["**/.*"],
     },
   },
+  publicDir: path.resolve(import.meta.dirname, "client/public"),
 });
